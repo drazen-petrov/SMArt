@@ -1,0 +1,667 @@
+TITLE
+File          : 54a8_polyions.mtb
+Force field   : 54A8 (condensed-phase simulations)
+Reference     : Reif et al. J. Chem. Theory Comput. Comput. 8, 3705-3723
+File content  : Molecular topology building blocks (polyatomic ions)
+Format        : GROMOS11
+Initial file  : MMR, PHH, CO, Vienna/Zuerich, June 2012
+Time stamp    : PHH, Sun Nov  8 12:28:51 CET 2015
+Remark        : ***warning*** this file is an auxiliary mtb file - since Nov 2011, these
+                files no longer contain blocks that were redundant with those of the
+                corresponding main mtb file. As a result, make_top must always be called
+                with inclusion of the main mtb file in addition to possible auxiliary ones.
+Remark        : ********************************************************************************
+                **** topologies must be built using a make_top version of June 2012 or later ***
+                ********************************************************************************
+                Reason: make_top must recognize negative IAC in patches, which indicate the
+                closest preceding atom with the indicated atom name (used in COO- and BOO- 
+                patches to locate the preceding CA)
+Remark        : The main general changes from the 54A(B)7 force-field
+                version to the 54A(B)8 force-field version involve a
+                reparametrization of
+                - the charged amino-acid sidechains of peptides
+                - the charged peptide termini
+                - the lipid DPPC
+                - the uronate residues
+Remark        : This file is new in 54A8
+Remark        : There is no B force-field version for this set (use 54B7 instead)
+Remark        : Versions beyond 54A(B)7 [including 54C(D)7, 53A(B)6@OXY, 56A(B)6@CARBO]
+                are only available in GROMOS11 format (i.e. all after the release of May 2011)
+Remark        : PHH, June 2012
+                - finalized for distribution on www.gromos.net
+Modifications : [list below changes after June 2012 - with initials, location and date - and update time stamp]
+PHH, 08.11.2015: Updated journal reference in the comments (no change in the data)
+END
+FORCEFIELD
+54A8
+END
+MAKETOPVERSION
+1.1
+END
+#
+# Supplementary Material to
+# "New interaction parameters for charged amino acid side chains in the GROMOS force field"
+#
+#
+# -> GROMOS 54A8 topology building blocks of the ten ions considered
+#
+# Institute for Molecular Modeling and Simulation,
+# University of Natural Resources and Life Sciences, 1190 Vienna, Austria
+#
+#
+#       3O
+#      /
+# 2H-1C                   FORM
+#      \
+#       4O
+#
+#
+#
+#       3O
+#      /
+# 2C-1C                   ACET
+#      \
+#       4O
+#
+#
+#
+#
+#         4O
+#        /
+# 3C-2C-1C                PROP
+#        \
+#         5O
+#
+#
+#
+#          1H
+#          |
+#       3H-2N-5H         H4C0
+#          |
+#          4H
+#
+#
+#
+#          1C
+#          |
+#       3H-2N-5H         H3C1
+#          |
+#          4H
+#
+#
+#
+#          1C
+#          |
+#       3C-2N-5H         H2C2
+#          |
+#          4H
+#
+#
+#
+#          1C
+#          |
+#       3C-2N-5H         H1C3
+#          |
+#          4C
+#
+#
+#
+#          1C
+#          |
+#       3C-2N-5C         H0C4
+#          |
+#          4C
+#
+#
+#
+#       3H    4H
+#         \  /
+#          2N
+#          |
+#          1C
+#         / \
+#     6H-5N  8N-10H      GUAN
+#        |   |
+#        7H  9H
+#
+#
+#       2H
+#       |
+#       1N
+#      / \
+#  4H-3C  7C-8H          IMID
+#     |   |
+#  6H-5N__9C-10H
+#
+#
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 54a8_polyions.mtb BLK FORM SOL TYPE MOLE NAME formate anion
+# building block (residue, nucleotide, etc.)
+# RNME
+FORM
+# number of atoms, number of preceding exclusions
+# NMAT,NLIN
+    4    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 H2     21    1   0.16000   0   3    2    3    4
+    2 C1     12   12   0.27000   0   2    3    4
+    3 O1      2   16   -0.7150   0   1    4
+    4 O2      2   16   -0.7150   1   0
+# bonds
+#  NB
+    3
+#  IB   JB  MCB
+    1    2    3
+    2    3    6
+    2    4    6
+# bond angles
+# NBA
+    3
+#  IB   JB   KB  MCB
+    1    2    3   22
+    1    2    4   22
+    3    2    4   38
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    2    1    3    4    1
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 54a8_polyions.mtb BLK ACET SOL TYPE MOLE NAME acetate anion
+# building block (residue, nucleotide, etc.)
+# RNME
+ACET
+# number of atoms, number of preceding exclusions
+# NMAT,NLIN
+    4    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C2     16    5   0.16000   0   3    2    3    4
+    2 C1     12   12   0.27000   0   2    3    4
+    3 O1      2   16   -0.7150   0   1    4
+    4 O2      2   16   -0.7150   1   0
+# bonds
+#  NB
+    3
+#  IB   JB  MCB
+    1    2   27
+    2    3    6
+    2    4    6
+# bond angles
+# NBA
+    3
+#  IB   JB   KB  MCB
+    1    2    3   22
+    1    2    4   22
+    3    2    4   38
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    2    1    3    4    1
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 54a8_polyions.mtb BLK PROP SOL TYPE MOLE NAME propanoate anion
+# building block (residue, nucleotide, etc.)
+# RNME
+PROP
+# number of atoms, number of preceding exclusions
+# NMAT,NLIN
+    5    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C3     16    5   0.0000   1   2    2    3
+    2 C2     15    4   0.1600   0   3    3    4    5
+    3 C1     12   12   0.2700   0   2    4    5
+    4 O1      2   16  -0.7150   0   1    5
+    5 O2      2   16  -0.7150   1   0
+# bonds
+#  NB
+    4
+#  IB   JB  MCB
+    1    2   27
+    2    3   27
+    3    4    6
+    3    5    6
+# bond angles
+# NBA
+    4
+#  IB   JB   KB  MCB
+    1    2    3   15
+    2    3    4   22
+    2    3    5   22
+    4    3    5   38
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    3    2    4    5    1
+# dihedrals
+# NDA
+    1
+#  IB   JB   KB   LB  MCB
+    1    2    3    4   40
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 54a8_polyions.mtb BLK H4C0 SOL TYPE MOLE NAME ammonium cation
+# building block (residue, nucleotide, etc.)
+# RNME
+H4C0
+# number of atoms, number of preceding exclusions
+# NMAT,NLIN
+    5    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 H1     21    1   0.25   0   4    2    3    4    5
+    2 N1      8   14   0.00   0   3    3    4    5
+    3 H2     21    1   0.25   0   2    4    5
+    4 H3     21    1   0.25   0   1    5
+    5 H4     21    1   0.25   1   0
+# bonds
+#  NB
+    4
+#  IB   JB  MCB
+    1    2    2
+    2    3    2
+    2    4    2
+    2    5    2
+# bond angles
+# NBA
+    6
+#  IB   JB   KB  MCB
+    1    2    3   10
+    1    2    4   10
+    1    2    5   10
+    3    2    4   10
+    3    2    5   10
+    4    2    5   10
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 54a8_polyions.mtb BLK H3C1 SOL TYPE MOLE NAME monomethylammonium cation
+# building block (residue, nucleotide, etc.)
+# RNME
+H3C1
+# number of atoms, number of preceding exclusions
+# NMAT,NLIN
+    5    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     54    5   0.20   0   4    2    3    4    5
+    2 N1      8   14   0.05   0   3    3    4    5
+    3 H1     21    1   0.25   0   2    4    5
+    4 H2     21    1   0.25   0   1    5
+    5 H3     21    1   0.25   1   0
+# bonds
+#  NB
+    4
+#  IB   JB  MCB
+    1    2   21
+    2    3    2
+    2    4    2
+    2    5    2
+# bond angles
+# NBA
+    6
+#  IB   JB   KB  MCB
+    1    2    3   11
+    1    2    4   11
+    1    2    5   11
+    3    2    4   10
+    3    2    5   10
+    4    2    5   10
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 54a8_polyions.mtb BLK H2C2 SOL TYPE MOLE NAME dimethylammonium cation
+# building block (residue, nucleotide, etc.)
+# RNME
+H2C2
+# number of atoms, number of preceding exclusions
+# NMAT,NLIN
+    5    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1    54    5    0.20   0   4    2    3    4    5
+    2 N1      8   14   0.10   0   3    3    4    5
+    3 C2     54    5   0.20   0   2    4    5
+    4 H1     21    1   0.25   0   1    5
+    5 H2     21    1   0.25   1   0
+# bonds
+#  NB
+    4
+#  IB   JB  MCB
+    1    2   21
+    2    3   21
+    2    4    2
+    2    5    2
+# bond angles
+# NBA
+    6
+#  IB   JB   KB  MCB
+    1    2    3   13
+    1    2    4   11
+    1    2    5   11
+    3    2    4   11
+    3    2    5   11
+    4    2    5   10
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 54a8_polyions.mtb BLK H1C3 SOL TYPE MOLE NAME trimethylammonium cation
+# building block (residue, nucleotide, etc.)
+# RNME
+H1C3
+# number of atoms, number of preceding exclusions
+# NMAT,NLIN
+    5    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     54    5   0.20   0   4    2    3    4    5
+    2 N1      8   14   0.15   0   3    3    4    5
+    3 C2     54    5   0.20   0   2    4    5
+    4 C3     54    5   0.20   0   1    5
+    5 H1     21    1   0.25   1   0
+# bonds
+#  NB
+    4
+#  IB   JB  MCB
+    1    2   21
+    2    3   21
+    2    4   21
+    2    5    2
+# bond angles
+# NBA
+    6
+#  IB   JB   KB  MCB
+    1    2    3   13
+    1    2    4   13
+    1    2    5   11
+    3    2    4   13
+    3    2    5   11
+    4    2    5   11
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 54a8_polyions.mtb BLK H0C4 SOL TYPE MOLE NAME tetramethylammonium cation
+# building block (residue, nucleotide, etc.)
+# RNME
+H0C4
+# number of atoms, number of preceding exclusions
+# NMAT,NLIN
+    5    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     54    5   0.200   0   4    2    3    4    5
+    2 N1      8   14   0.200   0   3    3    4    5
+    3 C2     54    5   0.200   0   2    4    5
+    4 C3     54    5   0.200   0   1    5
+    5 C4     54    5   0.200   1   0
+# bonds
+#  NB
+    4
+#  IB   JB  MCB
+    1    2   21
+    2    3   21
+    2    4   21
+    2    5   21
+# bond angles
+# NBA
+    6
+#  IB   JB   KB  MCB
+    1    2    3   13
+    1    2    4   13
+    1    2    5   13
+    3    2    4   13
+    3    2    5   13
+    4    2    5   13
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 54a8_polyions.mtb BLK GUAN SOL TYPE MOLE NAME guanidinium cation
+# building block (residue, nucleotide, etc.)
+# RNME
+GUAN
+# number of atoms, number of preceding exclusions
+# NMAT,NLIN
+   10   0
+# preceding exclusions
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     12   12    0.0100   0   9   2 3 4 5 6 7 8 9 10
+    2 NH1    10   14   -0.3600   0   4   3 4 5 8
+    3 HH11   21    1    0.3450   0   1   4
+    4 HH12   21    1    0.3450   0   0
+    5 NH2    10   14   -0.3600   0   3   6 7 8
+    6 HH21   21    1    0.3450   0   1   7
+    7 HH22   21    1    0.3450   0   0
+    8 NH3    10   14   -0.3600   0   2   9 10
+    9 HH31   21    1    0.3450   0   1   10
+   10 HH32   21    1    0.3450   1   0
+# trailing atoms
+# bonds
+#  NB
+   9
+#  IB   JB  MCB
+    1    2   11
+    1    5   11
+    1    8   11
+    2    3    2
+    2    4    2
+    5    6    2
+    5    7    2
+    8    9    2
+    8   10    2
+# bond angles
+# NBA
+   12
+#  IB   JB   KB  MCB
+    2    1    5   28
+    2    1    8   28
+    5    1    8   28
+    3    2    4   24
+    6    5    7   24
+    9    8   10   24
+    1    2    3   23
+    1    2    4   23
+    1    5    7   23
+    1    5    6   23
+    1    8    9   23
+    1    8   10   23
+# improper dihedrals
+# NIDA
+    4
+#  IB   JB   KB   LB  MCB
+    1    2    5    8    1
+    2    3    4    1    1
+    5    6    7    1    1
+    8    9   10    1    1
+# dihedrals
+# NDA
+   3
+#  IB   JB   KB   LB  MCB
+    5    1    2    3   14
+    8    1    5    6   14
+    2    1    8    9   14
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 54a8_polyions.mtb BLK IMID SOL TYPE MOLE NAME imidazolium cation
+# building block (residue, nucleotide, etc.)
+# RNME
+IMID
+# number of atoms, number of preceding exclusions
+# NMAT, NLIN
+   10    0
+# preceding exclusions
+# ATOM           MAE MSAE
+# atoms
+#
+# ATOM  ANM IACM MASS  CGM   ICGM  MAE  MSAE
+    1    N    9   14  -0.03   0    9    2    3    7    4    5    8    9    6   10
+    2    H   21    1  0.32    0    6    3    7    4    5    8    9
+    3    C   12   12  0.00    0    7    4    5    6    7    9    8   10
+    4    H   20    1  0.14    0    4    5    6    7    9
+    5    N    9   14  -0.03   0    5    6    9    7   10    8
+    6    H   21    1  0.32    0    3    9    7   10
+    7    C   12   12  0.00    0    3    8    9   10
+    8    H   20    1  0.14    0    2    9   10
+    9    C   12   12  0.00    0    1   10
+   10    H   20    1  0.14    1    0
+#
+#
+# bonds
+#  NB
+   10
+#
+#  IB   JB  MCB
+    1    2    2
+    1    3   10
+    1    7   10
+    3    4    3
+    3    5   10
+    5    6    2
+    5    9   10
+    7    8    3
+    7    9   10
+    9   10    3
+# bond angles
+# NBA
+   15
+#
+#  IB   JB   KB   MCB
+    2    1    3   36
+    2    1    7   36
+    3    1    7    7
+    1    3    4   36
+    1    3    5    7
+    4    3    5   36
+    3    5    6   36
+    3    5    9    7
+    6    5    9   36
+    1    7    8   36
+    1    7    9    7
+    8    7    9   36
+    5    9    7    7
+    5    9   10   36
+    7    9   10   36
+# improper dihedrals
+# NIDA
+   10
+#  IB   JB   KB   LB   MCB
+    3    5    9    7    1
+    1    3    5    9    1
+    7    1    3    5    1
+    3    1    7    9    1
+    1    7    9    5    1
+    7    1    8    9    1
+    1    2    3    7    1
+    3    1    4    5    1
+    5    3    6    9    1
+    9    5    7   10    1
+# dihedrals
+#
+# NDA
+    0
+#  IB   JB   KB   LB   MCB
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END

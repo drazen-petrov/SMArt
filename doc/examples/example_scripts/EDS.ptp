@@ -1,0 +1,52 @@
+TITLE
+PERTURBATION TOPOLOGY BASED ON N = 16 STATES
+
+	from /mnt/c/Users/draze/poso_local/coding/clean_smart/smart/doc/examples/some_data/gromos/GRA2/tops/stateA.top (GROMOS)
+
+	from /mnt/c/Users/draze/poso_local/coding/clean_smart/smart/doc/examples/some_data/gromos/GRA2/tops/stateB.top (GROMOS)
+
+	from /mnt/c/Users/draze/poso_local/coding/clean_smart/smart/doc/examples/some_data/gromos/GRA2/tops/stateC.top (GROMOS)
+
+	from /mnt/c/Users/draze/poso_local/coding/clean_smart/smart/doc/examples/some_data/gromos/GRA2/tops/stateD.top (GROMOS)
+
+	from /mnt/c/Users/draze/poso_local/coding/clean_smart/smart/doc/examples/some_data/gromos/GRA2/tops/stateE.top (GROMOS)
+
+	from /mnt/c/Users/draze/poso_local/coding/clean_smart/smart/doc/examples/some_data/gromos/GRA2/tops/stateF.top (GROMOS)
+
+	from /mnt/c/Users/draze/poso_local/coding/clean_smart/smart/doc/examples/some_data/gromos/GRA2/tops/stateG.top (GROMOS)
+
+	from /mnt/c/Users/draze/poso_local/coding/clean_smart/smart/doc/examples/some_data/gromos/GRA2/tops/stateH.top (GROMOS)
+
+	from /mnt/c/Users/draze/poso_local/coding/clean_smart/smart/doc/examples/some_data/gromos/GRA2/tops/stateI.top (GROMOS)
+
+	from /mnt/c/Users/draze/poso_local/coding/clean_smart/smart/doc/examples/some_data/gromos/GRA2/tops/stateJ.top (GROMOS)
+
+	from /mnt/c/Users/draze/poso_local/coding/clean_smart/smart/doc/examples/some_data/gromos/GRA2/tops/stateK.top (GROMOS)
+
+	from /mnt/c/Users/draze/poso_local/coding/clean_smart/smart/doc/examples/some_data/gromos/GRA2/tops/stateL.top (GROMOS)
+
+	from /mnt/c/Users/draze/poso_local/coding/clean_smart/smart/doc/examples/some_data/gromos/GRA2/tops/stateM.top (GROMOS)
+
+	from /mnt/c/Users/draze/poso_local/coding/clean_smart/smart/doc/examples/some_data/gromos/GRA2/tops/stateN.top (GROMOS)
+
+	from /mnt/c/Users/draze/poso_local/coding/clean_smart/smart/doc/examples/some_data/gromos/GRA2/tops/stateO.top (GROMOS)
+
+	from /mnt/c/Users/draze/poso_local/coding/clean_smart/smart/doc/examples/some_data/gromos/GRA2/tops/stateP.top (GROMOS)
+
+END
+MPERTATOM
+   12   16
+                       st_1           st_2           st_3           st_4           st_5           st_6           st_7           st_8           st_9          st_10          st_11          st_12          st_13          st_14          st_15          st_16
+     1    C1  12   -0.14000  12    0.17000  12   -0.14000  12   -0.14000  12   -0.14000  12    0.17000  12    0.17000  12    0.17000  12   -0.14000  12   -0.14000  12   -0.14000  12    0.17000  12    0.17000  12    0.17000  12   -0.14000  12    0.17000     1.00     1.00
+     2    H2  20    0.14000  22    0.00000  20    0.14000  20    0.14000  20    0.14000  22    0.00000  22    0.00000  22    0.00000  20    0.14000  20    0.14000  20    0.14000  22    0.00000  22    0.00000  22    0.00000  20    0.14000  22    0.00000     1.00     1.00
+     3    F2  22    0.00000  32   -0.17000  22    0.00000  22    0.00000  22    0.00000  32   -0.17000  32   -0.17000  32   -0.17000  22    0.00000  22    0.00000  22    0.00000  32   -0.17000  32   -0.17000  32   -0.17000  22    0.00000  32   -0.17000     1.00     1.00
+     4    C4  12   -0.14000  12   -0.14000  12    0.17000  12   -0.14000  12   -0.14000  12    0.17000  12   -0.14000  12   -0.14000  12    0.17000  12    0.17000  12   -0.14000  12    0.17000  12    0.17000  12   -0.14000  12    0.17000  12    0.17000     1.00     1.00
+     5    H5  20    0.14000  20    0.14000  22    0.00000  20    0.14000  20    0.14000  22    0.00000  20    0.14000  20    0.14000  22    0.00000  22    0.00000  20    0.14000  22    0.00000  22    0.00000  20    0.14000  22    0.00000  22    0.00000     1.00     1.00
+     6    F5  22    0.00000  22    0.00000  32   -0.17000  22    0.00000  22    0.00000  32   -0.17000  22    0.00000  22    0.00000  32   -0.17000  32   -0.17000  22    0.00000  32   -0.17000  32   -0.17000  22    0.00000  32   -0.17000  32   -0.17000     1.00     1.00
+     7    C6  12   -0.14000  12   -0.14000  12   -0.14000  12    0.17000  12   -0.14000  12   -0.14000  12    0.17000  12   -0.14000  12    0.17000  12   -0.14000  12    0.17000  12    0.17000  12   -0.14000  12    0.17000  12    0.17000  12    0.17000     1.00     1.00
+     8    H7  20    0.14000  20    0.14000  20    0.14000  22    0.00000  20    0.14000  20    0.14000  22    0.00000  20    0.14000  22    0.00000  20    0.14000  22    0.00000  22    0.00000  20    0.14000  22    0.00000  22    0.00000  22    0.00000     1.00     1.00
+     9    F7  22    0.00000  22    0.00000  22    0.00000  32   -0.17000  22    0.00000  22    0.00000  32   -0.17000  22    0.00000  32   -0.17000  22    0.00000  32   -0.17000  32   -0.17000  22    0.00000  32   -0.17000  32   -0.17000  32   -0.17000     1.00     1.00
+    10    C8  12   -0.14000  12   -0.14000  12   -0.14000  12   -0.14000  12    0.17000  12   -0.14000  12   -0.14000  12    0.17000  12   -0.14000  12    0.17000  12    0.17000  12   -0.14000  12    0.17000  12    0.17000  12    0.17000  12    0.17000     1.00     1.00
+    11    H9  20    0.14000  20    0.14000  20    0.14000  20    0.14000  22    0.00000  20    0.14000  20    0.14000  22    0.00000  20    0.14000  22    0.00000  22    0.00000  20    0.14000  22    0.00000  22    0.00000  22    0.00000  22    0.00000     1.00     1.00
+    12    F9  22    0.00000  22    0.00000  22    0.00000  22    0.00000  32   -0.17000  22    0.00000  22    0.00000  32   -0.17000  22    0.00000  32   -0.17000  32   -0.17000  22    0.00000  32   -0.17000  32   -0.17000  32   -0.17000  32   -0.17000     1.00     1.00
+END

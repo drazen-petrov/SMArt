@@ -1,0 +1,6416 @@
+TITLE
+File          : 45b4.mtb
+Force field   : 45B4 (vacuum simulations)
+Reference     : Soares et al. J. Comput. Chem. 2005, 26, 725-737;
+                Lins & Hunenberger J. Comput. Chem. 2005, 26, 1400-1412
+File content  : Molecular topology building blocks (alpha amino acids, nucleic acids, lipids)
+Format        : GROMOS11
+Initial file  : PHH, Zuerich, May 2011
+Time stamp    : PHH, Thu May  2 09:15:14 CEST 2013
+Remark        : Changes from 45A(B)3 are extensive and affect the nucleotides, carbohydrates, 
+                lipids and heme
+Remark        : DG, CO, NS, PHH, Jan 2008, following adaptations/corrections were made:
+                - Explicit aromatic hydrogens were added
+                - Dihedral type 22 added to P-O5*-C5*-C4* in nucleotides and cofactors
+                - Exclusion error in URA was corrected
+                - Small errors were corrected in cofactors CYT*, DHF, THF, TMP, TMPH, TMPHP
+                - Exclusion errors in HEME and HEMC cofactors were corrected
+                - A RNA Capping group was added (3OH)
+                - A small error in the charge distribution in NH2 was corrected
+                - Carbohydrates were added
+Remark        : The above changes are propagated to subsequent force-field versions
+Remark        : DG, NS, Oct 07: exclusion errors corrected in FMNR, ATP, TMP, THF and HEME
+Remark        : DG, CO, Jan 08: errors in improper dihedrals 21-24 in NADH corrected
+Remark        : These two changes become permanent from 53A(B)5 onward
+Remark        : PHH, May 2011
+                - finalized GROMOS11 file distribution
+                - enforced sequential ordering by (central) atom numbers in covalent terms
+                  for all files (no effect on GROMOS11 make_top; make_top enforced it anyway,
+                  but now, we avoid the big list of warnings)
+Modifications : [list below changes after May 2011 - with initials, location and date - and update time stamp]
+PHH, 09.11.2011: Reintroduced a FORCEFIELD block in all GROMOS11 files.
+PHH, 09.11.2011: Changed atom name H3 by H2 in NH2 patch.
+PHH, 09.11.2011: Introduced a copy of patch D5OH named 5OH, the latter meant for RNA instead of DNA.
+PHH, 22.11.2011: Finalized the #@BLOCKTYPE comments in mtb files listing file name, residue
+                 code (BLK=...), function (SOL,INI,TER,SVT), type (TYPE=APEP,BPEP,DNUC,RNUC,
+                 HEXP,HEXU,MOLE), and full name (NAME=...): intended for later use by make_top.
+PHH, 26.06.2012: Introduced MAKETOPVERSION blocks in all GROMOS11 files
+PHH, 12.07.2012: Removed all LINKEXCLUSIONS and PHYSICALCONSTANTS blocks from GROMOS11 
+                 auxiliary mtb files (now only included in the main mtb file). As a result 
+                 (and also since MTBUILBLSOLVENT is only to be found there), make_top must
+                 always be called with inclusion of the main mtb file (in addition to 
+                 the possible auxiliary ones).
+PHH, 01.05.2013: New N-terminal patches GH3+ and GH2 for alpha-peptides;
+                 these are meant to precede a residue where CA is a CH2
+                 united atom (for natural aminoacids, this is only glycine;
+                 for CH1 united atom, use NH3+ and NH2 instead)
+PHH, 19.06.2017: The residue HYP had the stereochemistry (2S,4S), but the one of the 
+                 biochemically most relevant hydroxyproline is (2S,4R). To avoid confusions,
+                 the residue HYP was deleted and replaced by two new building blocks
+                 HYPR with (2S,4R) and HYPS with (2S,4S); HYPR is the biochemically
+                 most relevant form, and HYPS is identical to the old HYP.
+END
+FORCEFIELD
+45B4
+END
+MAKETOPVERSION
+1.0
+END
+PHYSICALCONSTANTS
+# FPEPSI: 1.0/(4.0*PI*EPS0) (EPS0 is the permittivity of vacuum)
+  0.1389354E+03
+# HBAR: Planck's constant HBAR = H/(2* PI)
+  0.6350780E-01
+# SPDL: Speed of light (in nm/ps)
+  2.9979245800E05
+# BOLTZ: Boltzmann's constant
+  8.31441E-03
+END
+LINKEXCLUSIONS
+#nearest neighbour exclusions when linking
+#NRNE
+    2
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK ALA SOL TYPE APEP NAME Alanine
+# building block (residue, nucleotide, etc.)
+# RNME
+ALA
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    6    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4    5
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   4    4    5    6    7
+    4 CB     14    5    0.00000   1   1    5
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    5 C      11   12    0.38000   0
+    6 O       1   16   -0.38000   1
+# bonds
+#  NB
+    6
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3    5   26
+    5    6    4
+    5    7    9
+    3    4   26
+# bond angles
+# NBA
+    9
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3    5   12
+    3    5    7   18
+    3    5    6   29
+    6    5    7   32
+    1    3    4   12
+    4    3    5   12
+# improper dihedrals
+# NIDA
+    3
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+    5    3    7    6    1
+    3    1    5    4    2
+# dihedrals
+# NDA
+    3
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3    5   19
+    1    3    5    7   20
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK ARG SOL TYPE APEP NAME Arginine (protonated; charge +e)
+# building block (residue, nucleotide, etc.)
+# RNME
+ARG
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+   17    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4   16
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5   16   17   18
+    4 CB     13    4    0.00000   0   3    5    6   16
+    5 CG     13    4    0.00000   1   2    6    7
+    6 CD     13    4    0.00000   0   3    7    8    9
+    7 NE     10   14   -0.24000   0   4    8    9   10   13
+    8 HE     18    1    0.24000   0   1    9
+    9 CZ     11   12    0.00000   0   6   10   11   12   13   14   15
+   10 NH1     9   14   -0.48000   0   3   11   12   13
+   11 HH11   18    1    0.24000   0   1   12
+   12 HH12   18    1    0.24000   0   0
+   13 NH2     9   14   -0.48000   0   2   14   15
+   14 HH21   18    1    0.24000   0   1   15
+   15 HH22   18    1    0.24000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+   16 C      11   12    0.38000   0
+   17 O       1   16   -0.38000   1
+# bonds
+#  NB
+   17
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3   16   26
+   16   17    4
+   16   18    9
+    3    4   26
+    4    5   26
+    5    6   26
+    6    7   20
+    7    8    2
+#        10
+    7    9   10
+    9   10   10
+    9   13   10
+   10   11    2
+   10   12    2
+   13   14    2
+   13   15    2
+# bond angles
+# NBA
+   24
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3   16   12
+    3   16   18   18
+    3   16   17   29
+   17   16   18   32
+    1    3    4   12
+    4    3   16   12
+    3    4    5   14
+#        10
+    4    5    6   14
+    5    6    7   12
+    6    7    8   19
+    8    7    9   22
+    6    7    9   32
+    7    9   10   27
+    7    9   13   27
+   10    9   13   27
+    9   10   11   22
+    9   10   12   22
+#        20
+   11   10   12   23
+    9   13   14   22
+    9   13   15   22
+   14   13   15   23
+# improper dihedrals
+# NIDA
+    7
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+   16    3   18   17    1
+    3    1   16    4    2
+    7    6    9    8    1
+    9   10   13    7    1
+   10   11   12    9    1
+   13   14   15    9    1
+# dihedrals
+# NDA
+   10
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3   16   19
+    1    3   16   18   20
+    1    3    4    5   17
+    3    4    5    6   17
+    4    5    6    7   17
+    5    6    7    9   19
+    6    7    9   10    4
+    7    9   10   11    4
+    7    9   13   14    4
+#        10
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK ARGN SOL TYPE APEP NAME Arginine (deprotonated; neutral)
+# building block (residue, nucleotide, etc.)
+# RNME
+ARGN
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+   16    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4   15
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5   15   16   17
+    4 CB     13    4    0.00000   1   3    5    6   15
+    5 CG     13    4    0.00000   0   2    6    7
+    6 CD     13    4    0.00000   1   3    7    8    9
+    7 NE     10   14   -0.28000   0   4    8    9   10   12
+    8 HE     18    1    0.28000   1   1    9
+    9 CZ     11   12    0.15000   0   5   10   11   12   13   14
+   10 NH1    10   14   -0.54800   0   2   11   12
+   11 HH1    18    1    0.39800   1   0
+   12 NH2     9   14   -0.83000   0   2   13   14
+   13 HH21   18    1    0.41500   0   1   14
+   14 HH22   18    1    0.41500   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+   15 C      11   12    0.38000   0
+   16 O       1   16   -0.38000   1
+# bonds
+#  NB
+   16
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3   15   26
+   15   16    4
+   15   17    9
+    3    4   26
+    4    5   26
+    5    6   26
+    6    7   20
+    7    8    2
+#        10
+    7    9   10
+    9   10   10
+    9   12   10
+   10   11    2
+   12   13    2
+   12   14    2
+# bond angles
+# NBA
+   22
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3   15   12
+    3   15   17   18
+    3   15   16   29
+   16   15   17   32
+    1    3    4   12
+    4    3   15   12
+    3    4    5   14
+#        10
+    4    5    6   14
+    5    6    7   12
+    6    7    8   19
+    8    7    9   22
+    6    7    9   32
+    7    9   10   27
+    7    9   12   27
+   10    9   12   27
+    9   10   11   22
+    9   12   13   22
+#        20
+    9   12   14   22
+   13   12   14   23
+# improper dihedrals
+# NIDA
+    6
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+   15    3   17   16    1
+    3    1   15    4    2
+    7    6    9    8    1
+    9   10   12    7    1
+   12   13   14    9    1
+# dihedrals
+# NDA
+   10
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3   15   19
+    1    3   15   17   20
+    1    3    4    5   17
+    3    4    5    6   17
+    4    5    6    7   17
+    5    6    7    9   19
+    6    7    9   10    4
+    7    9   10   11    4
+    7    9   12   13    4
+#        10
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK ASN SOL TYPE APEP NAME Asparagine
+# building block (residue, nucleotide, etc.)
+# RNME
+ASN
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+   11    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4   10
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5   10   11   12
+    4 CB     13    4    0.00000   1   4    5    6    7   10
+    5 CG     11   12    0.38000   0   4    6    7    8    9
+    6 OD1     1   16   -0.38000   1   1    7
+    7 ND2     6   14   -0.83000   0   2    8    9
+    8 HD21   18    1    0.41500   0   1    9
+    9 HD22   18    1    0.41500   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+   10 C      11   12    0.38000   0
+   11 O       1   16   -0.38000   1
+# bonds
+#  NB
+   11
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3   10   26
+   10   11    4
+   10   12    9
+    3    4   26
+    4    5   26
+    5    6    4
+    5    7    8
+    7    8    2
+#        10
+    7    9    2
+# bond angles
+# NBA
+   16
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3   10   12
+    3   10   12   18
+    3   10   11   29
+   11   10   12   32
+    1    3    4   12
+    4    3   10   12
+    3    4    5   14
+#        10
+    4    5    6   29
+    4    5    7   18
+    6    5    7   32
+    5    7    8   22
+    5    7    9   22
+    8    7    9   23
+# improper dihedrals
+# NIDA
+    5
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+   10    3   12   11    1
+    3    1   10    4    2
+    5    6    7    4    1
+    7    8    9    5    1
+# dihedrals
+# NDA
+    6
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3   10   19
+    1    3   10   12   20
+    1    3    4    5   17
+    3    4    5    7   20
+    4    5    7    8    4
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK ASN1 SOL TYPE APEP NAME Asparagine (coordinated with ZN)
+# building block (residue, nucleotide, etc.)
+# RNME
+ASN1
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+   11    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4   10
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5   10   11   12
+    4 CB     13    4    0.00000   1   4    5    6    7   10
+    5 CG     11   12    0.38000   0   4    6    7    8    9
+    6 OD1     1   16   -0.38000   1   1    7
+    7 ND2     7   14   -0.83000   0   2    8    9
+    8 HD21   18    1    0.41500   0   1    9
+    9 HD22   18    1    0.41500   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+   10 C      11   12    0.38000   0
+   11 O       1   16   -0.38000   1
+# bonds
+#  NB
+   11
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3   10   26
+   10   11    4
+   10   12    9
+    3    4   26
+    4    5   26
+    5    6    4
+    5    7    8
+    7    8    2
+#        10
+    7    9    2
+# bond angles
+# NBA
+   16
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3   10   12
+    3   10   12   18
+    3   10   11   29
+   11   10   12   32
+    1    3    4   12
+    4    3   10   12
+    3    4    5   14
+#        10
+    4    5    6   29
+    4    5    7   18
+    6    5    7   32
+    5    7    8   22
+    5    7    9   22
+    8    7    9   23
+# improper dihedrals
+# NIDA
+    5
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+   10    3   12   11    1
+    3    1   10    4    2
+    5    6    7    4    1
+    7    8    9    5    1
+# dihedrals
+# NDA
+    6
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3   10   19
+    1    3   10   12   20
+    1    3    4    5   17
+    3    4    5    7   20
+    4    5    7    8    4
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK ASP SOL TYPE APEP NAME Aspartic acid (deprotonated; charge -e)
+# building block (residue, nucleotide, etc.)
+# RNME
+ASP
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    9    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4    8
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5    8    9   10
+    4 CB     13    4    0.00000   1   4    5    6    7    8
+    5 CG     11   12    0.72000   0   2    6    7
+    6 OD1     2   16   -0.36000   0   1    7
+    7 OD2     2   16   -0.36000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    8 C      11   12    0.38000   0
+    9 O       1   16   -0.38000   1
+# bonds
+#  NB
+    9
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3    8   26
+    8    9    4
+    8   10    9
+    3    4   26
+    4    5   26
+    5    6    5
+    5    7    5
+# bond angles
+# NBA
+   13
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3    8   12
+    3    8   10   18
+    3    8    9   29
+    9    8   10   32
+    1    3    4   12
+    4    3    8   12
+    3    4    5   14
+#        10
+    4    5    6   21
+    4    5    7   21
+    6    5    7   37
+# improper dihedrals
+# NIDA
+    4
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+    8    3   10    9    1
+    3    1    8    4    2
+    5    6    7    4    1
+# dihedrals
+# NDA
+    5
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3    8   19
+    1    3    8   10   20
+    1    3    4    5   17
+    3    4    5    6   20
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK ASPH SOL TYPE APEP NAME Aspartic acid (protonated; neutral)
+# building block (residue, nucleotide, etc.)
+# RNME
+ASPH
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+   10    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4    9
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5    9   10   11
+    4 CB     13    4    0.00000   1   4    5    6    7    9
+    5 CG     11   12    0.53000   0   3    6    7    8
+    6 OD1     1   16   -0.38000   0   1    7
+    7 OD2     3   16   -0.54800   0   1    8
+    8 HD2    18    1    0.39800   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    9 C      11   12    0.38000   0
+   10 O       1   16   -0.38000   1
+# bonds
+#  NB
+   10
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3    9   26
+    9   10    4
+    9   11    9
+    3    4   26
+    4    5   26
+    5    6    4
+    5    7   12
+    7    8    1
+#        10
+# bond angles
+# NBA
+   14
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3    9   12
+    3    9   11   18
+    3    9   10   29
+   10    9   11   32
+    1    3    4   12
+    4    3    9   12
+    3    4    5   14
+#        10
+    4    5    6   29
+    4    5    7   18
+    6    5    7   32
+    5    7    8   11
+# improper dihedrals
+# NIDA
+    4
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+    9    3   11   10    1
+    3    1    9    4    2
+    5    6    7    4    1
+# dihedrals
+# NDA
+    6
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3    9   19
+    1    3    9   11   20
+    1    3    4    5   17
+    3    4    5    7   20
+    4    5    7    8    3
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK CYS SOL TYPE APEP NAME Cysteine (deprotonated; charge -0.5e)
+# building block (residue, nucleotide, etc.)
+# RNME
+CYS
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    7    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4    6
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   1   5    4    5    6    7    8
+    4 CB     13    4    0.20000   0   2    5    6
+    5 SG     20   32   -0.20000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    6 C      11   12    0.38000   0
+    7 O       1   16   -0.38000   1
+# bonds
+#  NB
+    7
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3    6   26
+    6    7    4
+    6    8    9
+    3    4   26
+    4    5   30
+# bond angles
+# NBA
+   10
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3    6   12
+    3    6    8   18
+    3    6    7   29
+    7    6    8   32
+    1    3    4   12
+    4    3    6   12
+    3    4    5   15
+#        10
+# improper dihedrals
+# NIDA
+    3
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+    6    3    8    7    1
+    3    1    6    4    2
+# dihedrals
+# NDA
+    4
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3    6   19
+    1    3    6    8   20
+    1    3    4    5   17
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK CYSH SOL TYPE APEP NAME Cysteine (protonated; neutral)
+# building block (residue, nucleotide, etc.)
+# RNME
+CYSH
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    8    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4    7
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5    7    8    9
+    4 CB     13    4    0.00000   1   3    5    6    7
+    5 SG     20   32   -0.06400   0   1    6
+    6 HG     18    1    0.06400   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    7 C      11   12    0.38000   0
+    8 O       1   16   -0.38000   1
+# bonds
+#  NB
+    8
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3    7   26
+    7    8    4
+    7    9    9
+    3    4   26
+    4    5   30
+    5    6    7
+# bond angles
+# NBA
+   11
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3    7   12
+    3    7    9   18
+    3    7    8   29
+    8    7    9   32
+    1    3    4   12
+    4    3    7   12
+    3    4    5   15
+#        10
+    4    5    6    2
+# improper dihedrals
+# NIDA
+    3
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+    7    3    9    8    1
+    3    1    7    4    2
+# dihedrals
+# NDA
+    5
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3    7   19
+    1    3    7    9   20
+    1    3    4    5   17
+    3    4    5    6   13
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK CYS1 SOL TYPE APEP NAME Cysteine (1st member of S-S bridge)
+# building block (residue, nucleotide, etc.)
+# RNME
+CYS1
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    7    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4    6
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5    6    7    8
+    4 CB     13    4    0.00000   0   3    5    6   -5
+    5 SG     20   32    0.00000   1   2   -4   -5
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    6 C      11   12    0.38000   0
+    7 O       1   16   -0.38000   1
+# bonds
+#  NB
+    8
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3    6   26
+    6    7    4
+    6    8    9
+    3    4   26
+    4    5   30
+   -5    5   33
+# bond angles
+# NBA
+   12
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3    6   12
+    3    6    8   18
+    3    6    7   29
+    7    6    8   32
+    1    3    4   12
+    4    3    6   12
+    3    4    5   15
+#        10
+   -5    5    4    5
+   -4   -5    5    5
+# improper dihedrals
+# NIDA
+    3
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+    6    3    8    7    1
+    3    1    6    4    2
+# dihedrals
+# NDA
+    7
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3    6   19
+    1    3    6    8   20
+    1    3    4    5   17
+    3    4    5   -5   13
+   -4   -5    5    4   10
+    5   -5   -4   -3   13
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK CYS2 SOL TYPE APEP NAME Cysteine (2nd member of S-S bridge)
+# building block (residue, nucleotide, etc.)
+# RNME
+CYS2
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    7    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4    6
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5    6    7    8
+    4 CB     13    4    0.00000   0   2    5    6
+    5 SG     20   32    0.00000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    6 C      11   12    0.38000   0
+    7 O       1   16   -0.38000   1
+# bonds
+#  NB
+    7
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3    6   26
+    6    7    4
+    6    8    9
+    3    4   26
+    4    5   30
+# bond angles
+# NBA
+   10
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3    6   12
+    3    6    8   18
+    3    6    7   29
+    7    6    8   32
+    1    3    4   12
+    4    3    6   12
+    3    4    5   15
+#        10
+# improper dihedrals
+# NIDA
+    3
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+    6    3    8    7    1
+    3    1    6    4    2
+# dihedrals
+# NDA
+    4
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3    6   19
+    1    3    6    8   20
+    1    3    4    5   17
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK GLN SOL TYPE APEP NAME Glutamine
+# building block (residue, nucleotide, etc.)
+# RNME
+GLN
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+   12    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4   11
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5   11   12   13
+    4 CB     13    4    0.00000   0   3    5    6   11
+    5 CG     13    4    0.00000   1   3    6    7    8
+    6 CD     11   12    0.38000   0   4    7    8    9   10
+    7 OE1     1   16   -0.38000   1   1    8
+    8 NE2     6   14   -0.83000   0   2    9   10
+    9 HE21   18    1    0.41500   0   1   10
+   10 HE22   18    1    0.41500   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+   11 C      11   12    0.38000   0
+   12 O       1   16   -0.38000   1
+# bonds
+#  NB
+   12
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3   11   26
+   11   12    4
+   11   13    9
+    3    4   26
+    4    5   26
+    5    6   26
+    6    7    4
+    6    8    8
+#        10
+    8    9    2
+    8   10    2
+# bond angles
+# NBA
+   17
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3   11   12
+    3   11   13   18
+    3   11   12   29
+   12   11   13   32
+    1    3    4   12
+    4    3   11   12
+    3    4    5   14
+#        10
+    4    5    6   14
+    5    6    7   29
+    5    6    8   18
+    7    6    8   32
+    6    8    9   22
+    6    8   10   22
+    9    8   10   23
+# improper dihedrals
+# NIDA
+    5
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+   11    3   13   12    1
+    3    1   11    4    2
+    6    7    8    5    1
+    8    9   10    6    1
+# dihedrals
+# NDA
+    7
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3   11   19
+    1    3   11   13   20
+    1    3    4    5   17
+    3    4    5    6   17
+    4    5    6    8   20
+    5    6    8    9    4
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK GLU SOL TYPE APEP NAME Glutamine acid (deprotonated; charge -e)
+# building block (residue, nucleotide, etc.)
+# RNME
+GLU
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+   10    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4    9
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5    9   10   11
+    4 CB     13    4    0.00000   0   3    5    6    9
+    5 CG     13    4    0.00000   1   3    6    7    8
+    6 CD     11   12    0.72000   0   2    7    8
+    7 OE1     2   16   -0.36000   0   1    8
+    8 OE2     2   16   -0.36000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    9 C      11   12    0.38000   0
+   10 O       1   16   -0.38000   1
+# bonds
+#  NB
+   10
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3    9   26
+    9   10    4
+    9   11    9
+    3    4   26
+    4    5   26
+    5    6   26
+    6    7    5
+    6    8    5
+#        10
+# bond angles
+# NBA
+   14
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3    9   12
+    3    9   11   18
+    3    9   10   29
+   10    9   11   32
+    1    3    4   12
+    4    3    9   12
+    3    4    5   14
+#        10
+    4    5    6   14
+    5    6    7   21
+    5    6    8   21
+    7    6    8   37
+# improper dihedrals
+# NIDA
+    4
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+    9    3   11   10    1
+    3    1    9    4    2
+    6    7    8    5    1
+# dihedrals
+# NDA
+    6
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3    9   19
+    1    3    9   11   20
+    1    3    4    5   17
+    3    4    5    6   17
+    4    5    6    8   20
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK GLUH SOL TYPE APEP NAME Glutamine acid (protonated; neutral)
+# building block (residue, nucleotide, etc.)
+# RNME
+GLUH
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+   11    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4   10
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5   10   11   12
+    4 CB     13    4    0.00000   0   3    5    6   10
+    5 CG     13    4    0.00000   1   3    6    7    8
+    6 CD     11   12    0.53000   0   3    7    8    9
+    7 OE1     1   16   -0.38000   0   1    8
+    8 OE2     3   16   -0.54800   0   1    9
+    9 HE2    18    1    0.39800   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+   10 C      11   12    0.38000   0
+   11 O       1   16   -0.38000   1
+# bonds
+#  NB
+   11
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3   10   26
+   10   11    4
+   10   12    9
+    3    4   26
+    4    5   26
+    5    6   26
+    6    7    4
+    6    8   12
+#        10
+    8    9    1
+# bond angles
+# NBA
+   15
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3   10   12
+    3   10   12   18
+    3   10   11   29
+   11   10   12   32
+    1    3    4   12
+    4    3   10   12
+    3    4    5   14
+#        10
+    4    5    6   14
+    5    6    7   29
+    5    6    8   18
+    7    6    8   32
+    6    8    9   11
+# improper dihedrals
+# NIDA
+    4
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+   10    3   12   11    1
+    3    1   10    4    2
+    6    7    8    5    1
+# dihedrals
+# NDA
+    7
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3   10   19
+    1    3   10   12   20
+    1    3    4    5   17
+    3    4    5    6   17
+    4    5    6    8   20
+    5    6    8    9    3
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK GLY SOL TYPE APEP NAME Glycine
+# building block (residue, nucleotide, etc.)
+# RNME
+GLY
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    5    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   3    2    3    4
+    2 H      18    1    0.28000   1   1    3
+    3 CA     13    4    0.00000   1   3    4    5    6
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    4 C      11   12    0.38000   0
+    5 O       1   16   -0.38000   1
+# bonds
+#  NB
+    5
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3    4   26
+    4    5    4
+    4    6    9
+# bond angles
+# NBA
+    7
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3    4   12
+    3    4    6   18
+    3    4    5   29
+    5    4    6   32
+# improper dihedrals
+# NIDA
+    2
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+    4    3    6    5    1
+# dihedrals
+# NDA
+    3
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3    4   19
+    1    3    4    6   20
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK HISA SOL TYPE APEP NAME Histidine (protonated at ND1; neutral)
+# building block (residue, nucleotide, etc.)
+# RNME
+HISA
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+   12    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4   11
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5   11   12   13
+    4 CB     13    4    0.00000   1   7    5    6    7    8    9   10   11
+    5 CG     11   12    0.00000   0   5    6    7    8    9   10
+    6 ND1     8   14    0.00000   0   4    7    8    9   10
+    7 HD1    18    1    0.19000   0   3    8    9   10
+    8 CD2    16    3    0.13000   0   2    9   10
+    9 CE1    16    3    0.26000   0   1   10
+   10 NE2     8   14   -0.58000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+   11 C      11   12    0.38000   0
+   12 O       1   16   -0.38000   1
+# bonds
+#  NB
+   13
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3   11   26
+   11   12    4
+   11   13    9
+    3    4   26
+    4    5   26
+    5    6    9
+    5    8    9
+    6    7    2
+#        10
+    6    9    9
+    8   10    9
+    9   10    9
+# bond angles
+# NBA
+   19
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3   11   12
+    3   11   13   18
+    3   11   12   29
+   12   11   13   32
+    1    3    4   12
+    4    3   11   12
+    3    4    5   14
+#        10
+    4    5    6   36
+    4    5    8   36
+    6    5    8    6
+    5    6    7   35
+    5    6    9    6
+    7    6    9   35
+    5    8   10    6
+    6    9   10    6
+    8   10    9    6
+# improper dihedrals
+# NIDA
+   10
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+   11    3   13   12    1
+    3    1   11    4    2
+    5    6    8    4    1
+    8    5    6    9    1
+    6    5    8   10    1
+    5    6    9   10    1
+    5    8   10    9    1
+    6    9   10    8    1
+    6    5    9    7    1
+#        10
+# dihedrals
+# NDA
+    5
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3   11   19
+    1    3   11   13   20
+    1    3    4    5   17
+    3    4    5    6   20
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK HISB SOL TYPE APEP NAME Histidine (protonated at NE2; neutral)
+# building block (residue, nucleotide, etc.)
+# RNME
+HISB
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+   12    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4   11
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5   11   12   13
+    4 CB     13    4    0.00000   1   6    5    6    7    8    9   11
+    5 CG     11   12    0.13000   0   5    6    7    8    9   10
+    6 ND1     8   14   -0.58000   0   4    7    8    9   10
+    7 CD2    16    3    0.00000   0   3    8    9   10
+    8 CE1    16    3    0.26000   0   2    9   10
+    9 NE2     8   14    0.00000   0   1   10
+   10 HE2    18    1    0.19000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+   11 C      11   12    0.38000   0
+   12 O       1   16   -0.38000   1
+# bonds
+#  NB
+   13
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3   11   26
+   11   12    4
+   11   13    9
+    3    4   26
+    4    5   26
+    5    6    9
+    5    7    9
+    6    8    9
+#        10
+    7    9    9
+    8    9    9
+    9   10    2
+# bond angles
+# NBA
+   19
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3   11   12
+    3   11   13   18
+    3   11   12   29
+   12   11   13   32
+    1    3    4   12
+    4    3   11   12
+    3    4    5   14
+#        10
+    4    5    6   36
+    4    5    7   36
+    6    5    7    6
+    5    6    8    6
+    5    7    9    6
+    6    8    9    6
+    7    9    8    6
+    7    9   10   35
+    8    9   10   35
+# improper dihedrals
+# NIDA
+   10
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+   11    3   13   12    1
+    3    1   11    4    2
+    5    6    7    4    1
+    7    5    6    8    1
+    6    5    7    9    1
+    5    6    8    9    1
+    5    7    9    8    1
+    6    8    9    7    1
+    9    7    8   10    1
+#        10
+# dihedrals
+# NDA
+    5
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3   11   19
+    1    3   11   13   20
+    1    3    4    5   17
+    3    4    5    6   20
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK HISH SOL TYPE APEP NAME Histidine (protonated at ND1 and NE2; charge +e)
+# building block (residue, nucleotide, etc.)
+# RNME
+HISH
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+   13    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4   12
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5   12   13   14
+    4 CB     13    4    0.00000   1   7    5    6    7    8    9   10   12
+    5 CG     11   12    0.00000   0   6    6    7    8    9   10   11
+    6 ND1     8   14   -0.30000   0   5    7    8    9   10   11
+    7 HD1    18    1    0.30000   0   3    8    9   10
+    8 CD2    16    3    0.00000   0   3    9   10   11
+    9 CE1    16    3    0.00000   0   2   10   11
+   10 NE2     8   14   -0.30000   0   1   11
+   11 HE2    18    1    0.30000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+   12 C      11   12    0.38000   0
+   13 O       1   16   -0.38000   1
+# bonds
+#  NB
+   14
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3   12   26
+   12   13    4
+   12   14    9
+    3    4   26
+    4    5   26
+    5    6    9
+    5    8    9
+    6    7    2
+#        10
+    6    9    9
+    8   10    9
+    9   10    9
+   10   11    2
+# bond angles
+# NBA
+   21
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3   12   12
+    3   12   14   18
+    3   12   13   29
+   13   12   14   32
+    1    3    4   12
+    4    3   12   12
+    3    4    5   14
+#        10
+    4    5    6   36
+    4    5    8   36
+    6    5    8    6
+    5    6    7   35
+    5    6    9    6
+    7    6    9   35
+    5    8   10    6
+    6    9   10    6
+    8   10    9    6
+    8   10   11   35
+#        20
+    9   10   11   35
+# improper dihedrals
+# NIDA
+   11
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+   12    3   14   13    1
+    3    1   12    4    2
+    5    6    8    4    1
+    8    5    6    9    1
+    6    5    8   10    1
+    5    6    9   10    1
+    5    8   10    9    1
+    6    9   10    8    1
+    6    5    9    7    1
+#        10
+   10    8    9   11    1
+# dihedrals
+# NDA
+    5
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3   12   19
+    1    3   12   14   20
+    1    3    4    5   17
+    3    4    5    6   20
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK HIS1 SOL TYPE APEP NAME Histidine (coupled to HEME at NE2; neutral)
+# building block (residue, nucleotide, etc.)
+# RNME
+HIS1
+#
+# Histidine covalently bound to HEME group
+#
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+   12    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4   11
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5   11   12   13
+    4 CB     13    4    0.00000   1   7    5    6    7    8    9   10
+                                          11
+    5 CG     11   12    0.00000   0   6   -1    6    7    8    9   10
+    6 ND1     8   14    0.00000   0   5   -1    7    8    9   10
+    7 HD1    18    1    0.19000   0   3    8    9   10
+    8 CD2    16    3    0.13000   0   3   -1    9   10
+    9 CE1    16    3    0.26000   0   2   -1   10
+   10 NE2     8   14   -0.58000   1   5   -5   -4   -3   -2   -1
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+   11 C      11   12    0.38000   0
+   12 O       1   16   -0.38000   1
+# bonds
+#  NB
+   14
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3    4   26
+    3   11   26
+    4    5   26
+    5    6    9
+    5    8    9
+    6    7    2
+    6    9    9
+    8   10    9
+    9   10    9
+   11   12    4
+   11   13    9
+   -1   10   48
+# bond angles
+# NBA
+   25
+#  IB   JB   KB  MCB
+   -1    1    2   31
+   -1    1    3   30
+    2    1    3   17
+    1    3    4   12
+    1    3   11   12
+    4    3   11   12
+    3    4    5   14
+    4    5    6   36
+    4    5    8   36
+    6    5    8    6
+    5    6    7   35
+    5    6    9    6
+    7    6    9   35
+    5    8   10    6
+    6    9   10    6
+   -1   10    8   33
+   -1   10    9   33
+   -2   -1   10    1
+   -3   -1   10    1
+   -4   -1   10    1
+   -5   -1   10    1
+    8   10    9    6
+    3   11   12   29
+    3   11   13   18
+   12   11   13   32
+# improper dihedrals
+# NIDA
+   10
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+    3    1   11    4    2
+    5    6    8    4    1
+    5    6    9   10    1
+    5    8   10    9    1
+    6    5    8   10    1
+    6    5    9    7    1
+    6    9   10    8    1
+    8    5    6    9    1
+   11    3   13   12    1
+# dihedrals
+# NDA
+    6
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3   11   19
+    1    3    4    5   17
+    1    3   11   13   20
+    3    4    5    6   20
+   -2   -1   10    8   18
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK HIS2 SOL TYPE APEP NAME Histidine (coupled to HEMC at NE2: neutral)
+# building block (residue, nucleotide, etc.)
+# RNME
+HIS2
+#
+# Histidine covalently bound to HEME group to be used if a sixth ligand is bound to FE
+#
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+   12    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4   11
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5   11   12   13
+    4 CB     13    4    0.00000   1   7    5    6    7    8    9   10
+                                          11
+    5 CG     11   12    0.00000   0   6   -1    6    7    8    9   10
+    6 ND1     8   14    0.00000   0   5   -1    7    8    9   10
+    7 HD1    18    1    0.19000   0   3    8    9   10
+    8 CD2    16    3    0.13000   0   3   -1    9   10
+    9 CE1    16    3    0.26000   0   2   -1   10
+   10 NE2     8   14   -0.58000   1   6   -5   -4   -3   -2   -1  -48
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+   11 C      11   12    0.38000   0
+   12 O       1   16   -0.38000   1
+# bonds
+#  NB
+   14
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3    4   26
+    3   11   26
+    4    5   26
+    5    6    9
+    5    8    9
+    6    7    2
+    6    9    9
+    8   10    9
+    9   10    9
+   11   12    4
+   11   13    9
+   -1   10   48
+# bond angles
+# NBA
+   25
+#  IB   JB   KB  MCB
+   -1    1    2   31
+   -1    1    3   30
+    2    1    3   17
+    1    3    4   12
+    1    3   11   12
+    4    3   11   12
+    3    4    5   14
+    4    5    6   36
+    4    5    8   36
+    6    5    8    6
+    5    6    7   35
+    5    6    9    6
+    7    6    9   35
+    5    8   10    6
+    6    9   10    6
+   -1   10    8   33
+   -1   10    9   33
+   -2   -1   10    1
+   -3   -1   10    1
+   -4   -1   10    1
+   -5   -1   10    1
+    8   10    9    6
+    3   11   12   29
+    3   11   13   18
+   12   11   13   32
+# improper dihedrals
+# NIDA
+   10
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+    3    1   11    4    2
+    5    6    8    4    1
+    5    6    9   10    1
+    5    8   10    9    1
+    6    5    8   10    1
+    6    5    9    7    1
+    6    9   10    8    1
+    8    5    6    9    1
+   11    3   13   12    1
+# dihedrals
+# NDA
+    6
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3   11   19
+    1    3    4    5   17
+    1    3   11   13   20
+    3    4    5    6   20
+   -2   -1   10    8   18
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK HYPR SOL TYPE APEP NAME 4R-Hydroxyproline
+# building block (residue, nucleotide, etc.)
+# RNME
+HYPR
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    9    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    7
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14    0.00000   1   5    2    3    4    7    8
+    2 CA     12    3    0.00000   0   6    3    4    7    8    9   10
+    3 CB     44    4    0.00000   1   4    4    5    7    8
+    4 CG     12    3    0.15000   0   3    5    6    7
+    5 OD1     3   16   -0.54800   0   2    6    7
+    6 HD1    18    1    0.39800   1   0
+    7 CD2    44    4    0.00000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    8 C      11   12    0.38000   0
+    9 O       1   16   -0.38000   1
+# bonds
+#  NB
+   10
+#  IB   JB  MCB
+    1    2   20
+    2    8   26
+    8    9    4
+    8   10    9
+    2    3   26
+    3    4   26
+    4    5   17
+    5    6    1
+    4    7   26
+    1    7   20
+#        10
+# bond angles
+# NBA
+   15
+#  IB   JB   KB  MCB
+   -1    1    2   30
+    1    2    8   12
+    2    8   10   18
+    2    8    9   29
+    9    8   10   32
+    1    2    3   12
+    3    2    8   12
+    2    3    4   12
+    3    4    5   12
+    3    4    7   12
+#        10
+    4    5    6   11
+    5    4    7   12
+    1    7    4   12
+    2    1    7   20
+   -1    1    7   30
+# improper dihedrals
+# NIDA
+    4
+#  IB   JB   KB   LB  MCB
+    1   -1    2    7    1
+    8    2   10    9    1
+    2    1    8    3    2
+    4    3    7    5    2
+# dihedrals
+# NDA
+    8
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    2    4
+   -1    1    2    8   19
+    1    2    8   10   20
+    1    2    3    4   17
+    2    3    4    7   17
+    3    4    7    1   17
+    2    1    7    4   19
+    3    4    5    6   12
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK HYPS SOL TYPE APEP NAME 4S-Hydroxyproline
+# building block (residue, nucleotide, etc.)
+# RNME
+HYPS
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    9    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    7
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14    0.00000   1   5    2    3    4    7    8
+    2 CA     12    3    0.00000   0   6    3    4    7    8    9   10
+    3 CB     44    4    0.00000   1   4    4    5    7    8
+    4 CG     12    3    0.15000   0   3    5    6    7
+    5 OD1     3   16   -0.54800   0   2    6    7
+    6 HD1    18    1    0.39800   1   0
+    7 CD2    44    4    0.00000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    8 C      11   12    0.38000   0
+    9 O       1   16   -0.38000   1
+# bonds
+#  NB
+   10
+#  IB   JB  MCB
+    1    2   20
+    2    8   26
+    8    9    4
+    8   10    9
+    2    3   26
+    3    4   26
+    4    5   17
+    5    6    1
+    4    7   26
+    1    7   20
+#        10
+# bond angles
+# NBA
+   15
+#  IB   JB   KB  MCB
+   -1    1    2   30
+    1    2    8   12
+    2    8   10   18
+    2    8    9   29
+    9    8   10   32
+    1    2    3   12
+    3    2    8   12
+    2    3    4   12
+    3    4    5   12
+    3    4    7   12
+#        10
+    4    5    6   11
+    5    4    7   12
+    1    7    4   12
+    2    1    7   20
+   -1    1    7   30
+# improper dihedrals
+# NIDA
+    4
+#  IB   JB   KB   LB  MCB
+    1   -1    2    7    1
+    8    2   10    9    1
+    2    1    8    3    2
+    5    3    7    4    2
+# dihedrals
+# NDA
+    8
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    2    4
+   -1    1    2    8   19
+    1    2    8   10   20
+    1    2    3    4   17
+    2    3    4    7   17
+    3    4    7    1   17
+    2    1    7    4   19
+    3    4    5    6   12
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK ILE SOL TYPE APEP NAME Isoleucine
+# building block (residue, nucleotide, etc.)
+# RNME
+ILE
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    9    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4    8
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   1   6    4    5    6    8    9   10
+    4 CB     12    3    0.00000   0   4    5    6    7    8
+    5 CG1    13    4    0.00000   0   2    6    7
+    6 CG2    14    5    0.00000   0   0
+    7 CD     14    5    0.00000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    8 C      11   12    0.38000   0
+    9 O       1   16   -0.38000   1
+# bonds
+#  NB
+    9
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3    8   26
+    8    9    4
+    8   10    9
+    3    4   26
+    4    5   26
+    4    6   26
+    5    7   26
+# bond angles
+# NBA
+   13
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3    8   12
+    3    8   10   18
+    3    8    9   29
+    9    8   10   32
+    1    3    4   12
+    4    3    8   12
+    3    4    5   14
+#        10
+    3    4    6   14
+    5    4    6   14
+    4    5    7   14
+# improper dihedrals
+# NIDA
+    4
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+    8    3   10    9    1
+    3    1    8    4    2
+    4    5    6    3    2
+# dihedrals
+# NDA
+    5
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3    8   19
+    1    3    8   10   20
+    1    3    4    5   17
+    3    4    5    7   17
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK LEU SOL TYPE APEP NAME Leucine
+# building block (residue, nucleotide, etc.)
+# RNME
+LEU
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    9    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4    8
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5    8    9   10
+    4 CB     13    4    0.00000   1   4    5    6    7    8
+    5 CG     12    3    0.00000   0   2    6    7
+    6 CD1    14    5    0.00000   0   1    7
+    7 CD2    14    5    0.00000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    8 C      11   12    0.38000   0
+    9 O       1   16   -0.38000   1
+# bonds
+#  NB
+    9
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3    8   26
+    8    9    4
+    8   10    9
+    3    4   26
+    4    5   26
+    5    6   26
+    5    7   26
+# bond angles
+# NBA
+   13
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3    8   12
+    3    8   10   18
+    3    8    9   29
+    9    8   10   32
+    1    3    4   12
+    4    3    8   12
+    3    4    5   14
+#        10
+    4    5    6   14
+    4    5    7   14
+    6    5    7   14
+# improper dihedrals
+# NIDA
+    4
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+    8    3   10    9    1
+    3    1    8    4    2
+    4    6    7    5    2
+# dihedrals
+# NDA
+    5
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3    8   19
+    1    3    8   10   20
+    1    3    4    5   17
+    3    4    5    6   17
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK LYS SOL TYPE APEP NAME Lysine (deprotonated; neutral)
+# building block (residue, nucleotide, etc.)
+# RNME
+LYS
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+   12    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4   11
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5   11   12   13
+    4 CB     13    4    0.00000   1   3    5    6   11
+    5 CG     13    4    0.00000   0   2    6    7
+    6 CD     13    4    0.00000   1   2    7    8
+    7 CE     13    4    0.00000   0   3    8    9   10
+    8 NZ      6   14   -0.83000   0   2    9   10
+    9 HZ1    18    1    0.41500   0   1   10
+   10 HZ2    18    1    0.41500   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+   11 C      11   12    0.38000   0
+   12 O       1   16   -0.38000   1
+# bonds
+#  NB
+   12
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3   11   26
+   11   12    4
+   11   13    9
+    3    4   26
+    4    5   26
+    5    6   26
+    6    7   26
+    7    8   20
+#        10
+    8    9    2
+    8   10    2
+# bond angles
+# NBA
+   16
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3   11   12
+    3   11   13   18
+    3   11   12   29
+   12   11   13   32
+    1    3    4   12
+    4    3   11   12
+    3    4    5   14
+#        10
+    4    5    6   14
+    5    6    7   14
+    6    7    8   14
+    7    8    9   10
+    7    8   10   10
+    9    8   10    9
+# improper dihedrals
+# NIDA
+    3
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+   11    3   13   12    1
+    3    1   11    4    2
+# dihedrals
+# NDA
+    8
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3   11   19
+    1    3   11   13   20
+    1    3    4    5   17
+    3    4    5    6   17
+    4    5    6    7   17
+    5    6    7    8   17
+    6    7    8    9   14
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK LYSH SOL TYPE APEP NAME Lysine (protonated; charge +e)
+# building block (residue, nucleotide, etc.)
+# RNME
+LYSH
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+   13    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4   12
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5   12   13   14
+    4 CB     13    4    0.00000   1   3    5    6   12
+    5 CG     13    4    0.00000   0   2    6    7
+    6 CD     13    4    0.00000   1   2    7    8
+    7 CE     13    4    0.00000   0   4    8    9   10   11
+    8 NZ      7   14   -0.74400   0   3    9   10   11
+    9 HZ1    18    1    0.24800   0   2   10   11
+   10 HZ2    18    1    0.24800   0   1   11
+   11 HZ3    18    1    0.24800   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+   12 C      11   12    0.38000   0
+   13 O       1   16   -0.38000   1
+# bonds
+#  NB
+   13
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3   12   26
+   12   13    4
+   12   14    9
+    3    4   26
+    4    5   26
+    5    6   26
+    6    7   26
+    7    8   20
+#        10
+    8    9    2
+    8   10    2
+    8   11    2
+# bond angles
+# NBA
+   19
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3   12   12
+    3   12   14   18
+    3   12   13   29
+   13   12   14   32
+    1    3    4   12
+    4    3   12   12
+    3    4    5   14
+#        10
+    4    5    6   14
+    5    6    7   14
+    6    7    8   14
+    7    8    9   10
+    7    8   10   10
+    7    8   11   10
+    9    8   10    9
+    9    8   11    9
+   10    8   11    9
+# improper dihedrals
+# NIDA
+    3
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+   12    3   14   13    1
+    3    1   12    4    2
+# dihedrals
+# NDA
+    8
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3   12   19
+    1    3   12   14   20
+    1    3    4    5   17
+    3    4    5    6   17
+    4    5    6    7   17
+    5    6    7    8   17
+    6    7    8    9   14
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK MET SOL TYPE APEP NAME Methionine
+# building block (residue, nucleotide, etc.)
+# RNME
+MET
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    9    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4    8
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5    8    9   10
+    4 CB     13    4    0.00000   0   3    5    6    8
+    5 CG     13    4    0.00000   1   2    6    7
+    6 SD     20   32    0.00000   0   1    7
+    7 CE     14    5    0.00000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    8 C      11   12    0.38000   0
+    9 O       1   16   -0.38000   1
+# bonds
+#  NB
+    9
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3    8   26
+    8    9    4
+    8   10    9
+    3    4   26
+    4    5   26
+    5    6   30
+    6    7   29
+# bond angles
+# NBA
+   12
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3    8   12
+    3    8   10   18
+    3    8    9   29
+    9    8   10   32
+    1    3    4   12
+    4    3    8   12
+    3    4    5   14
+#        10
+    4    5    6   15
+    5    6    7    3
+# improper dihedrals
+# NIDA
+    3
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+    8    3   10    9    1
+    3    1    8    4    2
+# dihedrals
+# NDA
+    6
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3    8   19
+    1    3    8   10   20
+    1    3    4    5   17
+    3    4    5    6   17
+    4    5    6    7   13
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK PHE SOL TYPE APEP NAME Phenylalanine
+# building block (residue, nucleotide, etc.)
+# RNME
+PHE
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+   17    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4   16
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5   16   17   18
+    4 CB     13    4    0.00000   0   8    5    6    7    8    9   10   12   16
+    5 CG     11   12    0.00000   1   9    6    7    8    9   10   11   12   13
+                                          14
+    6 CD1    11   12   -0.10000   0   8    7    8    9   10   11   12   14   15
+    7 HD1    17    1    0.10000   1   4    8   10   11   14
+    8 CD2    11   12   -0.10000   0   6    9   10   12   13   14   15
+    9 HD2    17    1    0.10000   1   3   12   13   14
+   10 CE1    11   12   -0.10000   0   5   11   12   13   14   15
+   11 HE1    17    1    0.10000   1   3   12   14   15
+   12 CE2    11   12   -0.10000   0   3   13   14   15
+   13 HE2    17    1    0.10000   1   2   14   15
+   14 CZ     11   12   -0.10000   0   1   15
+   15 HZ     17    1    0.10000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+   16 C      11   12    0.38000   0
+   17 O       1   16   -0.38000   1
+# bonds
+#  NB
+   18
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3   16   26
+   16   17    4
+   16   18    9
+    3    4   26
+    4    5   26
+    5    6   15
+    5    8   15
+    6    7    3
+#        10
+    6   10   15
+    8    9    3
+    8   12   15
+   10   11    3
+   10   14   15
+   12   13    3
+   12   14   15
+   14   15    3
+# bond angles
+# NBA
+   28
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3   16   12
+    3   16   18   18
+    3   16   17   29
+   17   16   18   32
+    1    3    4   12
+    4    3   16   12
+    3    4    5   14
+#        10
+    4    5    6   26
+    4    5    8   26
+    6    5    8   26
+    5    6    7   24
+    7    6   10   24
+    5    6   10   26
+    5    8    9   24
+    9    8   12   24
+    5    8   12   26
+    6   10   11   24
+#        20
+   11   10   14   24
+    6   10   14   26
+    8   12   13   24
+   13   12   14   24
+    8   12   14   26
+   10   14   15   24
+   12   14   15   24
+   10   14   12   26
+# improper dihedrals
+# NIDA
+   15
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+   16    3   18   17    1
+    3    1   16    4    2
+    5    6    8    4    1
+    8    5    6   10    1
+    6    5    8   12    1
+    5    6   10   14    1
+    5    8   12   14    1
+    6   10   14   12    1
+    8   12   14   10    1
+#        10
+    6    5   10    7    1
+    8    5   12    9    1
+   11    6   14   10    1
+   13    8   14   12    1
+   14   10   12   15    1
+# dihedrals
+# NDA
+    5
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3   16   19
+    1    3   16   18   20
+    1    3    4    5   17
+    3    4    5    6   20
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK PRO SOL TYPE APEP NAME Proline
+# building block (residue, nucleotide, etc.)
+# RNME
+PRO
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    7    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    5
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14    0.00000   1   5    2    3    4    5    6
+    2 CA     12    3    0.00000   0   6    3    4    5    6    7    8
+    3 CB     44    4    0.00000   1   3    4    5    6
+    4 CG     44    4    0.00000   0   1    5
+    5 CD     44    4    0.00000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    6 C      11   12    0.38000   0
+    7 O       1   16   -0.38000   1
+# bonds
+#  NB
+    8
+#  IB   JB  MCB
+    1    2   20
+    2    6   26
+    6    7    4
+    6    8    9
+    2    3   26
+    3    4   26
+    4    5   26
+    1    5   20
+# bond angles
+# NBA
+   12
+#  IB   JB   KB  MCB
+   -1    1    2   30
+    1    2    6   12
+    2    6    8   18
+    2    6    7   29
+    7    6    8   32
+    1    2    3   12
+    3    2    6   12
+    2    3    4   12
+    3    4    5   12
+    1    5    4   12
+#        10
+    2    1    5   20
+   -1    1    5   30
+# improper dihedrals
+# NIDA
+    3
+#  IB   JB   KB   LB  MCB
+    1   -1    2    5    1
+    6    2    8    7    1
+    2    1    6    3    2
+# dihedrals
+# NDA
+    7
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    2    4
+   -1    1    2    6   19
+    1    2    6    8   20
+    1    2    3    4   17
+    2    3    4    5   17
+    3    4    5    1   17
+    2    1    5    4   19
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK SER SOL TYPE APEP NAME Serine
+# building block (residue, nucleotide, etc.)
+# RNME
+SER
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    8    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4    7
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   1   5    4    5    7    8    9
+    4 CB     13    4    0.15000   0   3    5    6    7
+    5 OG      3   16   -0.54800   0   1    6
+    6 HG     18    1    0.39800   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    7 C      11   12    0.38000   0
+    8 O       1   16   -0.38000   1
+# bonds
+#  NB
+    8
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3    7   26
+    7    8    4
+    7    9    9
+    3    4   26
+    4    5   17
+    5    6    1
+# bond angles
+# NBA
+   11
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3    7   12
+    3    7    9   18
+    3    7    8   29
+    8    7    9   32
+    1    3    4   12
+    4    3    7   12
+    3    4    5   12
+#        10
+    4    5    6   11
+# improper dihedrals
+# NIDA
+    3
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+    7    3    9    8    1
+    3    1    7    4    2
+# dihedrals
+# NDA
+    5
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3    7   19
+    1    3    7    9   20
+    1    3    4    5   17
+    3    4    5    6   12
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK THR SOL TYPE APEP NAME Threonine
+# building block (residue, nucleotide, etc.)
+# RNME
+THR
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    9    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4    8
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   1   6    4    5    7    8    9   10
+    4 CB     12    3    0.15000   0   4    5    6    7    8
+    5 OG1     3   16   -0.54800   0   2    6    7
+    6 HG1    18    1    0.39800   1   0
+    7 CG2    14    5    0.00000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    8 C      11   12    0.38000   0
+    9 O       1   16   -0.38000   1
+# bonds
+#  NB
+    9
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3    8   26
+    8    9    4
+    8   10    9
+    3    4   26
+    4    5   17
+    4    7   26
+    5    6    1
+# bond angles
+# NBA
+   13
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3    8   12
+    3    8   10   18
+    3    8    9   29
+    9    8   10   32
+    1    3    4   12
+    4    3    8   12
+    3    4    5   12
+#        10
+    3    4    7   14
+    5    4    7   14
+    4    5    6   11
+# improper dihedrals
+# NIDA
+    4
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+    8    3   10    9    1
+    3    1    8    4    2
+    4    5    7    3    2
+# dihedrals
+# NDA
+    5
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3    8   19
+    1    3    8   10   20
+    1    3    4    5   17
+    3    4    5    6   12
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK TRP SOL TYPE APEP NAME Tryptophan
+# building block (residue, nucleotide, etc.)
+# RNME
+TRP
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+   21    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4   20
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5   20   21   22
+    4 CB     13    4    0.00000   1   8    5    6    7    8    9   11   12   20
+    5 CG     11   12   -0.14000   0  10    6    7    8    9   10   11   12   13
+                                          14   16
+    6 CD1    11   12   -0.10000   0   7    7    8    9   10   11   12   14
+    7 HD1    17    1    0.10000   0   4    8    9   10   11
+    8 CD2    11   12    0.00000   0  10    9   10   11   12   13   14   15   16
+                                          17   18
+    9 NE1     8   14   -0.05000   0   6   10   11   12   14   15   18
+   10 HE1    18    1    0.19000   0   2   11   14
+   11 CE2    11   12    0.00000   1   7   12   13   14   15   16   18   19
+   12 CE3    11   12   -0.10000   0   6   13   14   16   17   18   19
+   13 HE3    17    1    0.10000   1   3   16   17   18
+   14 CZ2    11   12   -0.10000   0   5   15   16   17   18   19
+   15 HZ2    17    1    0.10000   1   3   16   18   19
+   16 CZ3    11   12   -0.10000   0   3   17   18   19
+   17 HZ3    17    1    0.10000   1   2   18   19
+   18 CH2    11   12   -0.10000   0   1   19
+   19 HH2    17    1    0.10000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+   20 C      11   12    0.38000   0
+   21 O       1   16   -0.38000   1
+# bonds
+#  NB
+   23
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3   20   26
+   20   21    4
+   20   22    9
+    3    4   26
+    4    5   26
+    5    6    9
+    5    8   15
+    6    7    3
+#        10
+    6    9    9
+    8   11   15
+    8   12   15
+    9   10    2
+    9   11    9
+   11   14   15
+   12   13    3
+   12   16   15
+   14   15    3
+   14   18   15
+#        20
+   16   17    3
+   16   18   15
+   18   19    3
+# bond angles
+# NBA
+   37
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3   20   12
+    3   20   22   18
+    3   20   21   29
+   21   20   22   32
+    1    3    4   12
+    4    3   20   12
+    3    4    5   14
+#        10
+    4    5    6   36
+    4    5    8   36
+    6    5    8    6
+    5    6    7   35
+    7    6    9   35
+    5    6    9    6
+    5    8   11    6
+    6    9   11    6
+    6    9   10   35
+   10    9   11   35
+#        20
+    8   11    9    6
+    5    8   12   38
+    9   11   14   38
+    8   11   14   26
+   11    8   12   26
+    8   12   13   24
+   13   12   16   24
+    8   12   16   26
+   11   14   15   24
+   15   14   18   24
+#        30
+   11   14   18   26
+   12   16   17   24
+   17   16   18   24
+   12   16   18   26
+   14   18   19   24
+   16   18   19   24
+   14   18   16   26
+# improper dihedrals
+# NIDA
+   23
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+   20    3   22   21    1
+    3    1   20    4    2
+    5    6    8    4    1
+    8    5    6    9    1
+    6    5    8   11    1
+    5    6    9   11    1
+    5    8   11    9    1
+    6    9   11    8    1
+    6    5    9    7    1
+#        10
+    9    6   11   10    1
+    8   11   12    5    1
+   11    8   14    9    1
+   12    8   11   14    1
+    8   11   14   18    1
+   11    8   12   16    1
+   11   14   18   16    1
+    8   12   16   18    1
+   12   16   18   14    1
+   12    8   16   13    1
+#        20
+   14   11   18   15    1
+   16   12   18   17    1
+   18   14   16   19    1
+# dihedrals
+# NDA
+    5
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3   20   19
+    1    3   20   22   20
+    1    3    4    5   17
+    3    4    5    8   20
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK TYR SOL TYPE APEP NAME Tyrosine
+# building block (residue, nucleotide, etc.)
+# RNME
+TYR
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+   18    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4   17
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5   17   18   19
+    4 CB     13    4    0.00000   0   8    5    6    7    8    9   10   12   17
+    5 CG     11   12    0.00000   1   9    6    7    8    9   10   11   12   13
+                                          14
+    6 CD1    11   12   -0.10000   0   8    7    8    9   10   11   12   14   15
+    7 HD1    17    1    0.10000   1   4    8   10   11   14
+    8 CD2    11   12   -0.10000   0   6    9   10   12   13   14   15
+    9 HD2    17    1    0.10000   1   3   12   13   14
+   10 CE1    11   12   -0.10000   0   5   11   12   13   14   15
+   11 HE1    17    1    0.10000   1   3   12   14   15
+   12 CE2    11   12   -0.10000   0   3   13   14   15
+   13 HE2    17    1    0.10000   1   2   14   15
+   14 CZ     11   12    0.15000   0   2   15   16
+   15 OH      3   16   -0.54800   0   1   16
+   16 HH     18    1    0.39800   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+   17 C      11   12    0.38000   0
+   18 O       1   16   -0.38000   1
+# bonds
+#  NB
+   19
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3   17   26
+   17   18    4
+   17   19    9
+    3    4   26
+    4    5   26
+    5    6   15
+    5    8   15
+    6    7    3
+#        10
+    6   10   15
+    8    9    3
+    8   12   15
+   10   11    3
+   10   14   15
+   12   13    3
+   12   14   15
+   14   15   12
+   15   16    1
+# bond angles
+# NBA
+   29
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3   17   12
+    3   17   19   18
+    3   17   18   29
+   18   17   19   32
+    1    3    4   12
+    4    3   17   12
+    3    4    5   14
+#        10
+    4    5    6   26
+    4    5    8   26
+    6    5    8   26
+    5    6    7   24
+    7    6   10   24
+    5    6   10   26
+    5    8    9   24
+    9    8   12   24
+    5    8   12   26
+    6   10   11   24
+#        20
+   11   10   14   24
+    6   10   14   26
+    8   12   13   24
+   13   12   14   24
+    8   12   14   26
+   10   14   12   26
+   10   14   15   26
+   12   14   15   26
+   14   15   16   11
+# improper dihedrals
+# NIDA
+   15
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+   17    3   19   18    1
+    3    1   17    4    2
+    5    6    8    4    1
+    8    5    6   10    1
+    6    5    8   12    1
+    5    6   10   14    1
+    5    8   12   14    1
+    6   10   14   12    1
+    8   12   14   10    1
+#        10
+    6    5   10    7    1
+    8    5   12    9    1
+   11    6   14   10    1
+   13    8   14   12    1
+   14   10   12   15    1
+# dihedrals
+# NDA
+    6
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3   17   19
+    1    3   17   19   20
+    1    3    4    5   17
+    3    4    5    6   20
+   10   14   15   16    2
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK VAL SOL TYPE APEP NAME Valine
+# building block (residue, nucleotide, etc.)
+# RNME
+VAL
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    8    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4    7
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   6    4    5    6    7    8    9
+    4 CB     12    3    0.00000   0   3    5    6    7
+    5 CG1    14    5    0.00000   0   1    6
+    6 CG2    14    5    0.00000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    7 C      11   12    0.38000   0
+    8 O       1   16   -0.38000   1
+# bonds
+#  NB
+    8
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3    7   26
+    7    8    4
+    7    9    9
+    3    4   26
+    4    5   26
+    4    6   26
+# bond angles
+# NBA
+   12
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3    7   12
+    3    7    9   18
+    3    7    8   29
+    8    7    9   32
+    1    3    4   12
+    4    3    7   12
+    3    4    5   14
+#        10
+    3    4    6   14
+    5    4    6   14
+# improper dihedrals
+# NIDA
+    4
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+    7    3    9    8    1
+    3    1    7    4    2
+    3    5    6    4    2
+# dihedrals
+# NDA
+    4
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3    7   19
+    1    3    7    9   20
+    1    3    4    5   17
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK DALA SOL TYPE APEP NAME D-Alanine
+# building block (residue, nucleotide, etc.)
+# RNME
+DALA
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    6    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4    5
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   4    4    5    6    7
+    4 CB     14    5    0.00000   1   1    5
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    5 C      11   12    0.38000   0
+    6 O       1   16   -0.38000   1
+# bonds
+#  NB
+    6
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3    5   26
+    5    6    4
+    5    7    9
+    3    4   26
+# bond angles
+# NBA
+    9
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3    5   12
+    3    5    7   18
+    3    5    6   29
+    6    5    7   32
+    1    3    4   12
+    4    3    5   12
+# improper dihedrals
+# NIDA
+    3
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+    5    3    7    6    1
+    4    1    5    3    2
+# dihedrals
+# NDA
+    3
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3    5   19
+    1    3    5    7   20
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK ABU SOL TYPE APEP NAME L-2-amino-butanoic acid
+# building block (residue, nucleotide, etc.)
+# RNME
+ABU
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    7    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14   -0.28000   0   4    2    3    4    6
+    2 H      18    1    0.28000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5    6    7    8
+    4 CB     13    4    0.00000   0   2    5    6
+    5 CG     14    5    0.00000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    6 C      11   12    0.38000   0
+    7 O       1   16   -0.38000   1
+# bonds
+#  NB
+    7
+#  IB   JB  MCB
+    1    2    2
+    1    3   20
+    3    6   26
+    6    7    4
+    6    8    9
+    3    4   26
+    4    5   26
+# bond angles
+# NBA
+   10
+#  IB   JB   KB  MCB
+   -1    1    2   31
+    2    1    3   17
+   -1    1    3   30
+    1    3    6   12
+    3    6    8   18
+    3    6    7   29
+    7    6    8   32
+    1    3    4   12
+    4    3    6   12
+    3    4    5   14
+#        10
+# improper dihedrals
+# NIDA
+    3
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+    6    3    8    7    1
+    3    1    6    4    2
+# dihedrals
+# NDA
+    4
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3    6   19
+    1    3    6    8   20
+    1    3    4    5   17
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK MEBMT SOL TYPE APEP NAME (4R)-4-[(E)-2-butanyl]-4,N-dimethyl-L-threonine
+# building block (residue, nucleotide, etc.)
+# RNME
+MEBMT
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+   14    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14    0.00000   0   4    2    3    4   13
+    2 CN     14    5    0.00000   1   1    3
+    3 CA     12    3    0.00000   1   6    4    5    7   13   14   15
+    4 CB     12    3    0.15000   0   6    5    6    7    8    9   13
+    5 OG1     3   16   -0.54800   0   2    6    7
+    6 HG1    18    1    0.39800   1   0
+    7 CG2    12    3    0.00000   0   3    8    9   10
+    8 CD1    14    5    0.00000   0   1    9
+    9 CD2    13    4    0.00000   1   2   10   11
+   10 CE     16    3    0.00000   0   2   11   12
+   11 CZ     16    3    0.00000   0   1   12
+   12 CH     14    5    0.00000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+   13 C      11   12    0.38000   0
+   14 O       1   16   -0.38000   1
+# bonds
+#  NB
+   14
+#  IB   JB  MCB
+    1    2   20
+    1    3   20
+    3   13   26
+   13   14    4
+   13   15    9
+    3    4   26
+    4    5   17
+    5    6    1
+    4    7   26
+    7    8   26
+#        10
+    7    9   26
+    9   10   26
+   10   11    9
+   11   12   26
+# bond angles
+# NBA
+   19
+#  IB   JB   KB  MCB
+   -1    1    2   21
+    2    1    3   29
+   -1    1    3   30
+    1    3   13   12
+    3   13   15   18
+    3   13   14   29
+   14   13   15   32
+    1    3    4   12
+    4    3   13   12
+    3    4    5   12
+#        10
+    3    4    7   14
+    5    4    7   14
+    4    5    6   11
+    4    7    8   14
+    4    7    9   14
+    8    7    9   14
+    7    9   10   14
+    9   10   11   26
+   10   11   12   26
+# improper dihedrals
+# NIDA
+    5
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+   13    3   15   14    1
+    3    1   13    4    2
+    4    5    7    3    2
+    7    8    9    4    2
+# dihedrals
+# NDA
+    9
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3   13   19
+    1    3   13   15   20
+    1    3    4    7   17
+    3    4    5    6   12
+    3    4    7    9   17
+    4    7    9   10   17
+    7    9   10   11   20
+    9   10   11   12    4
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK MELEU SOL TYPE APEP NAME N-methyl-L-leucine
+# building block (residue, nucleotide, etc.)
+# RNME
+MELEU
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    9    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14    0.00000   0   4    2    3    4    8
+    2 CN     14    5    0.00000   1   1    3
+    3 CA     12    3    0.00000   0   5    4    5    8    9   10
+    4 CB     13    4    0.00000   1   4    5    6    7    8
+    5 CG     12    3    0.00000   0   2    6    7
+    6 CD1    14    5    0.00000   0   1    7
+    7 CD2    14    5    0.00000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    8 C      11   12    0.38000   0
+    9 O       1   16   -0.38000   1
+# bonds
+#  NB
+    9
+#  IB   JB  MCB
+    1    2   20
+    1    3   20
+    3    8   26
+    8    9    4
+    8   10    9
+    3    4   26
+    4    5   26
+    5    6   26
+    5    7   26
+# bond angles
+# NBA
+   13
+#  IB   JB   KB  MCB
+   -1    1    2   21
+    2    1    3   29
+   -1    1    3   30
+    1    3    8   12
+    3    8   10   18
+    3    8    9   29
+    9    8   10   32
+    1    3    4   12
+    4    3    8   12
+    3    4    5   14
+#        10
+    4    5    6   14
+    4    5    7   14
+    6    5    7   14
+# improper dihedrals
+# NIDA
+    4
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+    8    3   10    9    1
+    3    1    8    4    2
+    4    6    7    5    2
+# dihedrals
+# NDA
+    5
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3    8   19
+    1    3    8   10   20
+    1    3    4    5   17
+    3    4    5    6   17
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK MEVAL SOL TYPE APEP NAME N-methyl-L-valine
+# building block (residue, nucleotide, etc.)
+# RNME
+MEVAL
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    8    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14    0.00000   0   4    2    3    4    7
+    2 CN     14    5    0.00000   1   1    3
+    3 CA     12    3    0.00000   0   6    4    5    6    7    8    9
+    4 CB     12    3    0.00000   0   3    5    6    7
+    5 CG1    14    5    0.00000   0   1    6
+    6 CG2    14    5    0.00000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    7 C      11   12    0.38000   0
+    8 O       1   16   -0.38000   1
+# bonds
+#  NB
+    8
+#  IB   JB  MCB
+    1    2   20
+    1    3   20
+    3    7   26
+    7    8    4
+    7    9    9
+    3    4   26
+    4    5   26
+    4    6   26
+# bond angles
+# NBA
+   12
+#  IB   JB   KB  MCB
+   -1    1    2   21
+    2    1    3   29
+   -1    1    3   30
+    1    3    7   12
+    3    7    9   18
+    3    7    8   29
+    8    7    9   32
+    1    3    4   12
+    4    3    7   12
+    3    4    5   14
+#        10
+    3    4    6   14
+    5    4    6   14
+# improper dihedrals
+# NIDA
+    4
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+    7    3    9    8    1
+    3    1    7    4    2
+    3    5    6    4    2
+# dihedrals
+# NDA
+    4
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3    7   19
+    1    3    7    9   20
+    1    3    4    5   17
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK SAR SOL TYPE APEP NAME Sarcosine or N-methylglycine
+# building block (residue, nucleotide, etc.)
+# RNME
+SAR
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    5    2
+# preceding exclusions
+#ATOM                               MAE MSAE
+   -1                                 4    0    1    2    3
+    0                                 1    1
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 N       5   14    0.00000   0   3    2    3    4
+    2 CN     14    5    0.00000   1   1    3
+    3 CA     13    4    0.00000   1   3    4    5    6
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+    4 C      11   12    0.38000   0
+    5 O       1   16   -0.38000   1
+# bonds
+#  NB
+    5
+#  IB   JB  MCB
+    1    2   20
+    1    3   20
+    3    4   26
+    4    5    4
+    4    6    9
+# bond angles
+# NBA
+    7
+#  IB   JB   KB  MCB
+   -1    1    2   21
+    2    1    3   29
+   -1    1    3   30
+    1    3    4   12
+    3    4    6   18
+    3    4    5   29
+    5    4    6   32
+# improper dihedrals
+# NIDA
+    2
+#  IB   JB   KB   LB  MCB
+    1   -1    3    2    1
+    4    3    6    5    1
+# dihedrals
+# NDA
+    3
+#  IB   JB   KB   LB  MCB
+   -2   -1    1    3    4
+   -1    1    3    4   19
+    1    3    4    6   20
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK DADE SOL TYPE DNUC NAME 2-deoxyadenosine 5-phosphoric acid (DNA, charge -e)
+# building block (residue, nucleotide, etc.)
+# RNME
+DADE
+# NMAT NLIN
+    25     2
+#ATOM                               MAE MSAE
+   -1                                 2    0    1
+    0                                 4    1    2    3    4
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1    P   27   31       1.44   0   4    2    3    4    5
+    2  O1P    2   16     -0.360   0   2    3    4
+    3  O2P    2   16     -0.360   0   1    4
+    4  O5*    3   16      -0.36   1   2    5    6
+    5  C5*   13    4          0   1   3    6    7   24
+    6  C4*   12    3       0.16   0   5    7    8   23   24   25
+    7  O4*    3   16      -0.36   0   4    8    9   23   24
+    8  C1*   12    3        0.2   1   9    9   10   11   19   20   21   22   23   24
+    9   N9    8   14       -0.2   0   9   10   11   12   15   19   20   21   22   23
+   10   C4   11   12        0.2   1  10   11   12   13   14   15   16
+                                          19   20   21   22
+   11   N3    8   14      -0.54   0   7   12   13   14   15   19   20   21
+   12   C2   11   12       0.44   0   5   13   14   15   16   19
+   13   H2   17    1        0.1   1   2   14   15
+   14   N1    8   14      -0.54   0   4   15   16   19   20
+   15   C6   11   12       0.54   1   6   16   17   18   19   20   21
+   16   N6    6   14      -0.83   0   4   17   18   19   20
+# N7 is excluded from H61 and H62 to prevent shake failures
+   17  H61   18    1      0.415   0   2   18   20
+   18  H62   18    1      0.415   1   1   20
+   19   C5   11   12          0   0   3   20   21   22
+   20   N7    8   14      -0.54   0   2   21   22
+   21   C8   11   12       0.44   0   1   22
+   22   H8   17    1        0.1   1   0
+   23  C2*   44    4          0   0   2   24   25
+   24  C3*   12    3          0   1
+   25  O3*    3   16      -0.36   0
+#  NB
+   28
+#  IB   JB  MCB
+    1    2   23
+    1    3   23
+    1    4   27
+    4    5   19
+    5    6   25
+    6    7   19
+    6   24   25
+    7    8   19
+    8    9   21
+    8   23   25
+    9   10    9
+    9   21    9
+   10   11   11
+   10   19   15
+   11   12    6
+   12   13    3
+   12   14    6
+   14   15   11
+   15   16    8
+   15   19   15
+   16   17    2
+   16   18    2
+   19   20    9
+   20   21    9
+   21   22    3
+   23   24   25
+   24   25   19
+   25   26   27
+# NBA
+   44
+#  IB   JB   KB  MCB
+    0    1    2   13
+    0    1    3   13
+    0    1    4    4
+    2    1    3   28
+    2    1    4   13
+    3    1    4   13
+    1    4    5   25
+    4    5    6    8
+    5    6    7    8
+    5    6   24    7
+    7    6   24    8
+    6    7    8    9
+    7    8    9    8
+    7    8   23    8
+    9    8   23    8
+    8    9   10   36
+    8    9   21   36
+   10    9   21    6
+    9   10   11   38
+    9   10   19    6
+   11   10   19   26
+   10   11   12   26
+   11   12   13   24
+   11   12   14   26
+   13   12   14   24
+   12   14   15   26
+   14   15   16   26
+   14   15   19   26
+   16   15   19   26
+   15   16   17   22
+   15   16   18   22
+   17   16   18   23
+   10   19   15   26
+   10   19   20    6
+   15   19   20   38
+   19   20   21    6
+    9   21   20    6
+    9   21   22   35
+   20   21   22   35
+    8   23   24    7
+    6   24   23    7
+    6   24   25    8
+   23   24   25    8
+   24   25   26   25
+# NIDA
+   21
+#  IB   JB   KB   LB  MCB
+    8   10   21    9    1
+    9   10   19   20    1
+   10    9   11   19    1
+   10    9   21   20    1
+   10   11   12   14    1
+   10   19   20   21    1
+   11   10   19   15    1
+   11   12   14   15    1
+   12   14   15   19    1
+   12   11   13   14    1
+   14   15   19   10    1
+   16   14   19   15    1
+   16   17   18   15    1
+   19   10   11   12    1
+   19   15   20   10    1
+   19   20   21    9    1
+   21    9   10   19    1
+   21    9   20   22    1
+   23    7    9    8    2
+   24    5    7    6    2
+   24   23   25    6    2
+# NDA
+   23
+#  IB   JB   KB   LB  MCB
+   -1    0    1    4   24
+   -1    0    1    4   25
+    0    1    4    5   24
+    0    1    4    5   25
+    1    4    5    6   26
+    1    4    5    6   11
+    4    5    6    7   22
+    4    5    6    7   23
+    4    5    6   24    7
+    4    5    6   24   17
+   24    6    7    8   14
+    5    6   24   23   17
+    5    6   24   25    7
+    7    6   24   23    7
+    7    6   24   25    8
+    6    7    8   23   14
+    7    8    9   10    6
+    7    8   23   24    7
+    7    8   23   24   17
+   19   15   16   17    4
+    8   23   24    6   17
+    8   23   24   25    7
+    6   24   25   26   14
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK DGUA SOL TYPE DNUC NAME 2-deoxyguanosine 5-phosphoric acid (DNA, charge -e)
+# building block (residue, nucleotide, etc.)
+# RNME
+DGUA
+# NMAT NLIN
+    26     2
+#ATOM                               MAE MSAE
+   -1                                 2    0    1
+    0                                 4    1    2    3    4
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1    P   27   31       1.44   0   4    2    3    4    5
+    2  O1P    2   16     -0.360   0   2    3    4
+    3  O2P    2   16     -0.360   0   1    4
+    4  O5*    3   16      -0.36   1   2    5    6
+    5  C5*   13    4          0   1   3    6    7   25
+    6  C4*   12    3       0.16   0   5    7    8   24   25   26
+    7  O4*    3   16      -0.36   0   4    8    9   24   25
+    8  C1*   12    3        0.2   1   9    9   10   11   20   21   22
+                                          23   24    25
+    9   N9    8   14       -0.2   0   9   10   11   12   18   20   21
+                                          22   23   24
+   10   C4   11   12        0.2   1  10   11   12   13   16   18   19
+                                               20   21   22   23
+   11   N3    8   14      -0.54   0   8   12   13   16   17   18   20
+                                               21   22
+   12   C2   11   12       0.54   1   8   13   14   15   16   17   18
+                                               19   20
+   13   N2    6   14      -0.83   0   5   14   15   16   17   18
+   14  H21   18    1      0.415   0   1   15
+   15  H22   18    1      0.415   1   0
+   16   N1    8   14      -0.31   0   5   17   18   19   20   21
+   17   H1   18    1       0.31   1   3   18   19   20
+   18   C6   11   12       0.45   0   4   19   20   21   22
+   19   O6    1   16      -0.45   1   2   20   21
+   20   C5   11   12          0   0   3   21   22   23
+   21   N7    8   14      -0.54   0   2   22   23
+   22   C8   11   12       0.44   0   1   23
+   23   H8   17    1       0.10   1   0
+   24  C2*   44    4          0   0   2   25   26
+   25  C3*   12    3          0   1
+   26  O3*    3   16      -0.36   0
+#  NB
+   29
+#  IB   JB  MCB
+    1    2   23
+    1    3   23
+    1    4   27
+    4    5   19
+    5    6   25
+    6    7   19
+    6   25   25
+    7    8   19
+    8    9   21
+    8   24   25
+    9   10    9
+    9   22    9
+   10   11   11
+   10   20   15
+   11   12   11
+   12   13    8
+   12   16   16
+   13   14    2
+   13   15    2
+   16   17    2
+   16   18   16
+   18   19    4
+   18   20   15
+   20   21    9
+   21   22    9
+   22   23    3
+   24   25   25
+   25   26   19
+   26   27   27
+# NBA
+   46
+#  IB   JB   KB  MCB
+    0    1    2   13
+    0    1    3   13
+    0    1    4    4
+    2    1    3   28
+    2    1    4   13
+    3    1    4   13
+    1    4    5   25
+    4    5    6    8
+    5    6    7    8
+    5    6   25    7
+    7    6   25    8
+    6    7    8    9
+    7    8    9    8
+    7    8   24    8
+    9    8   24    8
+    8    9   10   36
+    8    9   22   36
+   10    9   22    6
+    9   10   11   38
+    9   10   20    6
+   11   10   20   26
+   10   11   12   26
+   11   12   13   26
+   11   12   16   26
+   13   12   16   26
+   12   13   14   22
+   12   13   15   22
+   14   13   15   23
+   12   16   17   24
+   12   16   18   26
+   17   16   18   24
+   16   18   19   26
+   16   18   20   26
+   19   18   20   26
+   10   20   18   26
+   10   20   21    6
+   18   20   21   38
+   20   21   22    6
+    9   22   21    6
+    9   22   23   35
+   21   22   23   35
+    8   24   25    7
+    6   25   24    7
+    6   25   26    8
+   24   25   26    8
+   25   26   27   25
+# NIDA
+   22
+#  IB   JB   KB   LB  MCB
+    8   10   22    9    1
+    9   10   20   21    1
+   10    9   11   20    1
+   10    9   22   21    1
+   10   11   12   16    1
+   10   20   21   22    1
+   11   10   20   18    1
+   11   12   16   18    1
+   12   16   18   20    1
+   13   11   16   12    1
+   13   14   15   12    1
+   16   18   20   10    1
+   17   12   18   16    1
+   19   16   20   18    1
+   20   10   11   12    1
+   20   18   21   10    1
+   20   21   22    9    1
+   22    9   10   20    1
+   22    9   21   23    1
+   24    7    9    8    2
+   25    5    7    6    2
+   25   24   26    6    2
+# NDA
+   23
+#  IB   JB   KB   LB  MCB
+   -1    0    1    4   24
+   -1    0    1    4   25
+    0    1    4    5   24
+    0    1    4    5   25
+    1    4    5    6   26
+    1    4    5    6   11
+    4    5    6    7   22
+    4    5    6    7   23
+    4    5    6   25    7
+    4    5    6   25   17
+   25    6    7    8   14
+    5    6   25   24   17
+    5    6   25   26    7
+    7    6   25   24    7
+    7    6   25   26    8
+    6    7    8   24   14
+    7    8    9   10    6
+    7    8   24   25    7
+    7    8   24   25   17
+   11   12   13   14    4
+    8   24   25    6   17
+    8   24   25   26    7
+    6   25   26   27   14
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK DCYT SOL TYPE DNUC NAME 2-deoxycitidine 5-phosphoric acid (DNA, charge -e)
+# building block (residue, nucleotide, etc.)
+# RNME
+DCYT
+# NMAT NLIN
+    23     2
+#ATOM                               MAE MSAE
+   -1                                 2    0    1
+    0                                 4    1    2    3    4
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1    P   27   31       1.44   0   4    2    3    4    5
+    2  O1P    2   16     -0.360   0   2    3    4
+    3  O2P    2   16     -0.360   0   1    4
+    4  O5*    3   16      -0.36   1   2    5    6
+    5  C5*   13    4          0   1   3    6    7   22
+    6  C4*   12    3       0.16   0   5    7    8   21   22   23
+    7  O4*    3   16      -0.36   0   4    8    9   21   22
+    8  C1*   12    3        0.2   1   9    9   10   11   12   13   14
+                                          19   21   22
+    9   N1    8   14       -0.2   0   9   10   11   12   13   14   15
+                                          19   20   21
+   10   C6   11   12        0.1   0   8   11   12   13   14   15   16
+                                          19   20
+   11   H6   17    1        0.1   1   4   12   15   19   20
+   12   C2   11   12       0.45   0   5   13   14   15   16   19
+   13   O2    1   16      -0.45   1   2   14   15
+   14   N3    8   14      -0.54   0   4   15   16   19   20
+   15   C4   11   12       0.54   1   5   16   17   18   19   20
+   16   N4    6   14      -0.83   0   4   17   18   19   20
+   17  H41   18    1      0.415   0   1   18
+   18  H42   18    1      0.415   1   0
+   19   C5   11   12       -0.1   0   1   20
+   20   H5   17    1        0.1   1   0
+   21  C2*   44    4          0   0   2   22   23
+   22  C3*   12    3          0   1
+   23  O3*    3   16      -0.36   0
+#  NB
+   25
+#  IB   JB  MCB
+    1    2   23
+    1    3   23
+    1    4   27
+    4    5   19
+    5    6   25
+    6    7   19
+    6   22   25
+    7    8   19
+    8    9   22
+    8   21   25
+    9   10   16
+    9   12   16
+   10   11    3
+   10   19   15
+   12   13    4
+   12   14   11
+   14   15   11
+   15   16    8
+   15   19   15
+   16   17    2
+   16   18    2
+   19   20    3
+   21   22   25
+   22   23   19
+   23   24   27
+# NBA
+   39
+#  IB   JB   KB  MCB
+    0    1    2   13
+    0    1    3   13
+    0    1    4    4
+    2    1    3   28
+    2    1    4   13
+    3    1    4   13
+    1    4    5   25
+    4    5    6    8
+    5    6    7    8
+    5    6   22    7
+    7    6   22    8
+    6    7    8    9
+    7    8    9    8
+    7    8   21    8
+    9    8   21    7
+    8    9   10   26
+    8    9   12   26
+   10    9   12   26
+    9   10   11   24
+    9   10   19   26
+   11   10   19   24
+    9   12   13   26
+    9   12   14   26
+   13   12   14   26
+   12   14   15   26
+   14   15   16   26
+   14   15   19   26
+   16   15   19   26
+   15   16   17   22
+   15   16   18   22
+   17   16   18   23
+   10   19   15   26
+   10   19   20   24
+   15   19   20   24
+    8   21   22    7
+    6   22   21    7
+    6   22   23    8
+   21   22   23    8
+   22   23   24   25
+# NIDA
+   15
+#  IB   JB   KB   LB  MCB
+    9   10   12    8    1
+    9   10   19   15    1
+    9   12   14   15    1
+   10    9   12   14    1
+   10    9   19   11    1
+   12    9   10   19    1
+   12   14   15   19    1
+   13    9   14   12    1
+   14   15   19   10    1
+   16   14   19   15    1
+   16   17   18   15    1
+   19   10   15   20    1
+   21    7    9    8    2
+   22    5    7    6    2
+   22   21   23    6    2
+# NDA
+   23
+#  IB   JB   KB   LB  MCB
+   -1    0    1    4   24
+   -1    0    1    4   25
+    0    1    4    5   24
+    0    1    4    5   25
+    1    4    5    6   26
+    1    4    5    6   11
+    4    5    6    7   22
+    4    5    6    7   23
+    4    5    6   22    7
+    4    5    6   22   17
+   22    6    7    8   14
+    5    6   22   21   17
+    5    6   22   23    7
+    7    6   22   21    7
+    7    6   22   23    8
+    6    7    8   21   14
+    7    8    9   12    6
+    7    8   21   22    7
+    7    8   21   22   17
+   14   15   16   17    4
+    8   21   22    6   17
+    8   21   22   23    7
+    6   22   23   24   14
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK DTHY SOL TYPE DNUC NAME 2-deoxythymidine 5-phosphoric acid (DNA, charge -e)
+# building block (residue, nucleotide, etc.)
+# RNME
+DTHY
+# NMAT NLIN
+    22     2
+#ATOM                               MAE MSAE
+   -1                                 2    0    1
+    0                                 4    1    2    3    4
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1    P   27   31       1.44   0   4    2    3    4    5
+    2  O1P    2   16     -0.360   0   2    3    4
+    3  O2P    2   16     -0.360   0   1    4
+    4  O5*    3   16      -0.36   1   2    5    6
+    5  C5*   13    4          0   1   3    6    7   21
+    6  C4*   12    3       0.16   0   5    7    8   20   21   22
+    7  O4*    3   16      -0.36   0   4    8    9   20   21
+    8  C1*   12    3        0.2   1   9    9   10   11   12   13   14
+                                          18   20   21
+    9   N1    8   14       -0.2   0  10   10   11   12   13   14   15
+                                          16   18   19   20
+   10   C6   11   12        0.1   0   8   11   12   13   14   16   17
+                                          18   19
+   11   H6   17    1        0.1   1   4   12   16   18   19
+   12   C2   11   12       0.45   0   6   13   14   15   16   17   18
+   13   O2    1   16      -0.45   1   3   14   15   16
+   14   N3    8   14      -0.31   0   5   15   16   17   18   19
+   15   H3   18    1       0.31   1   3   16   17   18
+   16   C4   11   12       0.45   0   3   17   18   19
+   17   O4    1   16      -0.45   1   2   18   19
+   18   C5   11   12          0   0   1   19
+   19  C5M   14    5          0   1   0
+   20  C2*   44    4          0   0   2   21   22
+   21  C3*   12    3          0   1
+   22  O3*    3   16      -0.36   0
+#  NB
+   24
+#  IB   JB  MCB
+    1    2   23
+    1    3   23
+    1    4   27
+    4    5   19
+    5    6   25
+    6    7   19
+    6   21   25
+    7    8   19
+    8    9   22
+    8   20   25
+    9   10   16
+    9   12   16
+   10   11    3
+   10   18   15
+   12   13    4
+   12   14   16
+   14   15    2
+   14   16   16
+   16   17    4
+   16   18   15
+   18   19   26
+   20   21   25
+   21   22   19
+   22   23   27
+# NBA
+   38
+#  IB   JB   KB  MCB
+    0    1    2   13
+    0    1    3   13
+    0    1    4    4
+    2    1    3   28
+    2    1    4   13
+    3    1    4   13
+    1    4    5   25
+    4    5    6    8
+    5    6    7    8
+    5    6   21    7
+    7    6   21    8
+    6    7    8    9
+    7    8    9    8
+    7    8   20    8
+    9    8   20    7
+    8    9   10   26
+    8    9   12   26
+   10    9   12   26
+    9   10   11   24
+    9   10   18   26
+   11   10   18   24
+    9   12   13   26
+    9   12   14   26
+   13   12   14   26
+   12   14   15   24
+   12   14   16   26
+   15   14   16   24
+   14   16   17   26
+   14   16   18   26
+   17   16   18   26
+   10   18   16   26
+   10   18   19   26
+   16   18   19   26
+    8   20   21    7
+    6   21   20    7
+    6   21   22    8
+   20   21   22    8
+   21   22   23   25
+# NIDA
+   15
+#  IB   JB   KB   LB  MCB
+    9   10   12    8    1
+    9   10   18   16    1
+    9   12   14   16    1
+   10    9   12   14    1
+   10    9   18   11    1
+   12    9   10   18    1
+   12   14   16   18    1
+   13    9   14   12    1
+   14   16   18   10    1
+   15   12   16   14    1
+   17   14   18   16    1
+   18   10   16   19    1
+   20    7    9    8    2
+   21    5    7    6    2
+   21   20   22    6    2
+# NDA
+   22
+#  IB   JB   KB   LB  MCB
+   -1    0    1    4   24
+   -1    0    1    4   25
+    0    1    4    5   24
+    0    1    4    5   25
+    1    4    5    6   26
+    1    4    5    6   11
+    4    5    6    7   22
+    4    5    6    7   23
+    4    5    6   21    7
+    4    5    6   21   17
+   21    6    7    8   14
+    5    6   21   20   17
+    5    6   21   22    7
+    7    6   21   20    7
+    7    6   21   22    8
+    6    7    8   20   14
+    7    8    9   12    6
+    7    8   20   21    7
+    7    8   20   21   17
+    8   20   21    6   17
+    8   20   21   22    7
+    6   21   22   23   14
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK ADE SOL TYPE RNUC NAME adenosine 5-phosphoric acid (RNA, charge -e)
+# building block (residue, nucleotide, etc.)
+# RNME
+ADE
+# NMAT NLIN
+    27     2
+#ATOM                               MAE MSAE
+   -1                                 2    0    1
+    0                                 4    1    2    3    4
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1    P   27   31       1.44   0   4    2    3    4    5
+    2  O1P    2   16     -0.360   0   2    3    4
+    3  O2P    2   16     -0.360   0   1    4
+    4  O5*    3   16      -0.36   1   2    5    6
+    5  C5*   13    4          0   1   3    6    7   26
+    6  C4*   12    3       0.16   0   5    7    8   23   26   27
+    7  O4*    3   16      -0.36   0   4    8    9   23   26
+    8  C1*   12    3        0.2   1  10    9   10   11   19   20   21
+                                          22   23   24   26
+    9   N9    8   14       -0.2   0   9   10   11   12   15   19   20   21   22   23
+   10   C4   11   12        0.2   1  10   11   12   13   14   15   16   19   20   21   22
+   11   N3    8   14      -0.54   0   7   12   13   14   15   19   20   21
+   12   C2   11   12       0.44   0   5   13   14   15   16   19
+   13   H2   17    1        0.1   1   2   14   15
+   14   N1    8   14      -0.54   0   4   15   16   19   20
+   15   C6   11   12       0.54   1   6   16   17   18   19   20   21
+   16   N6    6   14      -0.83   0   4   17   18   19   20
+   17  H61   18    1      0.415   0   2   18   20
+   18  H62   18    1      0.415   1   1   20
+   19   C5   11   12          0   0   3   20   21   22
+   20   N7    8   14      -0.54   0   2   21   22
+   21   C8   11   12       0.44   0   1   22
+   22   H8   17    1        0.1   1   0
+   23  C2*   12    3       0.15   0   4   24   25   26   27
+   24  O2*    3   16     -0.548   0   2   25   26
+   25  H2*   18    1      0.398   1   0
+   26  C3*   12    3          0   1
+   27  O3*    3   16      -0.36   0
+#  NB
+   30
+#  IB   JB  MCB
+    1    2   23
+    1    3   23
+    1    4   27
+    4    5   19
+    5    6   25
+    6    7   19
+    6   26   25
+    7    8   19
+    8    9   21
+    8   23   25
+    9   10    9
+    9   21    9
+   10   11   11
+   10   19   15
+   11   12    6
+   12   13    3
+   12   14    6
+   14   15   11
+   15   16    8
+   15   19   15
+   16   17    2
+   16   18    2
+   19   20    9
+   20   21    9
+   21   22    3
+   23   24   19
+   23   26   25
+   24   25    1
+   26   27   19
+   27   28   27
+# NBA
+   47
+#  IB   JB   KB  MCB
+    0    1    2   13
+    0    1    3   13
+    0    1    4    4
+    2    1    3   28
+    2    1    4   13
+    3    1    4   13
+    1    4    5   25
+    4    5    6    8
+    5    6    7    8
+    5    6   26    7
+    7    6   26    8
+    6    7    8    9
+    7    8    9    8
+    7    8   23    8
+    9    8   23    8
+    8    9   10   36
+    8    9   21   36
+   10    9   21    6
+    9   10   11   38
+    9   10   19    6
+   11   10   19   26
+   10   11   12   26
+   11   12   13   24
+   11   12   14   26
+   13   12   14   24
+   12   14   15   26
+   14   15   16   26
+   14   15   19   26
+   16   15   19   26
+   15   16   17   22
+   15   16   18   22
+   17   16   18   23
+   10   19   15   26
+   10   19   20    6
+   15   19   20   38
+   19   20   21    6
+    9   21   20    6
+    9   21   22   35
+   20   21   22   35
+    8   23   24    8
+    8   23   26    7
+   24   23   26    8
+   23   24   25   11
+    6   26   23    7
+    6   26   27    8
+   23   26   27    8
+   26   27   28   25
+# NIDA
+   22
+#  IB   JB   KB   LB  MCB
+    8   10   21    9    1
+    9   10   19   20    1
+   10    9   11   19    1
+   10    9   21   20    1
+   10   11   12   14    1
+   10   19   20   21    1
+   11   10   19   15    1
+   11   12   14   15    1
+   12   11   13   14    1
+   12   14   15   19    1
+   14   15   19   10    1
+   16   14   19   15    1
+   16   17   18   15    1
+   19   10   11   12    1
+   19   15   20   10    1
+   19   20   21    9    1
+   21    9   10   19    1
+   21    9   20   22    1
+   23    7    9    8    2
+   23   24   26    8    2
+   26    5    7    6    2
+   26   23   27    6    2
+# NDA
+   28
+#  IB   JB   KB   LB  MCB
+   -1    0    1    4   24
+   -1    0    1    4   25
+    0    1    4    5   24
+    0    1    4    5   25
+    1    4    5    6   26
+    1    4    5    6   11
+    4    5    6    7   22
+    4    5    6    7   23
+    4    5    6   26    7
+    4    5    6   26   17
+   26    6    7    8   14
+    5    6   26   23   17
+    5    6   26   27    7
+    7    6   26   23    7
+    7    6   26   27    8
+    6    7    8   23   14
+    7    8    9   10    6
+    7    8   23   24    8
+    7    8   23   26    7
+    7    8   23   26   17
+    9    8   23   24    7
+   19   15   16   17    4
+    8   23   24   25   12
+    8   23   26    6   17
+    8   23   26   27    7
+   24   23   26    6    7
+   24   23   26   27    8
+    6   26   27   28   14
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK GUA SOL TYPE RNUC NAME guanosine 5-phosphoric acid (RNA, charge -e)
+# building block (residue, nucleotide, etc.)
+# RNME
+GUA
+# NMAT NLIN
+    28     2
+#ATOM                               MAE MSAE
+   -1                                 2    0    1
+    0                                 4    1    2    3    4
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1    P   27   31       1.44   0   4    2    3    4    5
+    2  O1P    2   16     -0.360   0   2    3    4
+    3  O2P    2   16     -0.360   0   1    4
+    4  O5*    3   16      -0.36   1   2    5    6
+    5  C5*   13    4          0   1   3    6    7   27
+    6  C4*   12    3       0.16   0   5    7    8   24   27   28
+    7  O4*    3   16      -0.36   0   4    8    9   24   27
+    8  C1*   12    3        0.2   1  10    9   10   11   20   21   22
+                                          23   24   25   27
+    9   N9    8   14       -0.2   0   9   10   11   12   18   20   21
+                                          22   23   24
+   10   C4   11   12        0.2   1  10   11   12   13   16   18   19
+                                          20   21   22   23
+   11   N3    8   14      -0.54   0   8   12   13   16   17   18   20
+                                          21   22
+   12   C2   11   12       0.54   1   8   13   14   15   16   17   18
+                                          19   20
+   13   N2    6   14      -0.83   0   5   14   15   16   17   18
+   14  H21   18    1      0.415   0   1   15
+   15  H22   18    1      0.415   1   0
+   16   N1    8   14      -0.31   0   5   17   18   19   20   21
+   17   H1   18    1       0.31   1   3   18   19   20
+   18   C6   11   12       0.45   0   4   19   20   21   22
+   19   O6    1   16      -0.45   1   2   20   21
+   20   C5   11   12          0   0   3   21   22   23
+   21   N7    8   14      -0.54   0   2   22   23
+   22   C8   11   12       0.44   0   1   23
+   23   H8   17    1        0.1   1   0
+   24  C2*   12    3       0.15   0   4   25   26   27   28
+   25  O2*    3   16     -0.548   0   2   26   27
+   26  H2*   18    1      0.398   1   0
+   27  C3*   12    3          0   1
+   28  O3*    3   16      -0.36   0
+#  NB
+   31
+#  IB   JB  MCB
+    1    2   23
+    1    3   23
+    1    4   27
+    4    5   19
+    5    6   25
+    6    7   19
+    6   27   25
+    7    8   19
+    8    9   21
+    8   24   25
+    9   10    9
+    9   22    9
+   10   11   11
+   10   20   15
+   11   12   11
+   12   13    8
+   12   16   16
+   13   14    2
+   13   15    2
+   16   17    2
+   16   18   16
+   18   19    4
+   18   20   15
+   20   21    9
+   21   22    9
+   22   23    3
+   24   25   19
+   24   27   25
+   25   26    1
+   27   28   19
+   28   29   27
+# NBA
+   49
+#  IB   JB   KB  MCB
+    0    1    2   13
+    0    1    3   13
+    0    1    4    4
+    2    1    3   28
+    2    1    4   13
+    3    1    4   13
+    1    4    5   25
+    4    5    6    8
+    5    6    7    8
+    5    6   27    7
+    7    6   27    8
+    6    7    8    9
+    7    8    9    8
+    7    8   24    8
+    9    8   24    8
+    8    9   10   36
+    8    9   22   36
+   10    9   22    6
+    9   10   11   38
+    9   10   20    6
+   11   10   20   26
+   10   11   12   26
+   11   12   13   26
+   11   12   16   26
+   13   12   16   26
+   12   13   14   22
+   12   13   15   22
+   14   13   15   23
+   12   16   17   24
+   12   16   18   26
+   17   16   18   24
+   16   18   19   26
+   16   18   20   26
+   19   18   20   26
+   10   20   18   26
+   10   20   21    6
+   18   20   21   38
+   20   21   22    6
+    9   22   21    6
+    9   22   23   35
+   21   22   23   35
+    8   24   25    8
+    8   24   27    7
+   25   24   27    8
+   24   25   26   11
+    6   27   24    7
+    6   27   28    8
+   24   27   28    8
+   27   28   29   25
+# NIDA
+   23
+#  IB   JB   KB   LB  MCB
+    8   10   22    9    1
+    9   10   20   21    1
+   10    9   11   20    1
+   10    9   22   21    1
+   10   11   12   16    1
+   10   20   21   22    1
+   11   10   20   18    1
+   11   12   16   18    1
+   12   16   18   20    1
+   13   11   16   12    1
+   13   14   15   12    1
+   16   18   20   10    1
+   17   12   18   16    1
+   19   16   20   18    1
+   20   10   11   12    1
+   20   18   21   10    1
+   20   21   22    9    1
+   22    9   10   20    1
+   22    9   21   23    1
+   24    7    9    8    2
+   24   25   27    8    2
+   27    5    7    6    2
+   27   24   28    6    2
+# NDA
+   28
+#  IB   JB   KB   LB  MCB
+   -1    0    1    4   24
+   -1    0    1    4   25
+    0    1    4    5   24
+    0    1    4    5   25
+    1    4    5    6   26
+    1    4    5    6   11
+    4    5    6    7   22
+    4    5    6    7   23
+    4    5    6   27    7
+    4    5    6   27   17
+   27    6    7    8   14
+    5    6   27   24   17
+    5    6   27   28    7
+    7    6   27   24    7
+    7    6   27   28    8
+    6    7    8   24   14
+    7    8    9   10    6
+    7    8   24   25    8
+    7    8   24   27    7
+    7    8   24   27   17
+    9    8   24   25    7
+   11   12   13   14    4
+    8   24   25   26   12
+    8   24   27    6   17
+    8   24   27   28    7
+   25   24   27    6    7
+   25   24   27   28    8
+    6   27   28   29   14
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK CYT SOL TYPE RNUC NAME cytidine 5-phosphoric acid (RNA, charge -e)
+# building block (residue, nucleotide, etc.)
+# RNME
+CYT
+# NMAT NLIN
+    25     2
+#ATOM                               MAE MSAE
+   -1                                 2    0    1
+    0                                 4    1    2    3    4
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1    P   27   31       1.44   0   4    2    3    4    5
+    2  O1P    2   16     -0.360   0   2    3    4
+    3  O2P    2   16     -0.360   0   1    4
+    4  O5*    3   16      -0.36   1   2    5    6
+    5  C5*   13    4          0   1   3    6    7   24
+    6  C4*   12    3       0.16   0   5    7    8   21   24   25
+    7  O4*    3   16      -0.36   0   4    8    9   21   24
+    8  C1*   12    3        0.2   1  10    9   10   11   12   13   14
+                                          19   21   22   24
+    9   N1    8   14       -0.2   0   9   10   11   12   13   14   15
+                                          19   20   21
+   10   C6   11   12        0.1   0   8   11   12   13   14   15   16
+                                          19   20
+   11   H6   17    1        0.1   1   4   12   15   19   20
+   12   C2   11   12       0.45   0   5   13   14   15   16   19
+   13   O2    1   16      -0.45   1   2   14   15
+   14   N3    8   14      -0.54   0   4   15   16   19   20
+   15   C4   11   12       0.54   1   5   16   17   18   19   20
+   16   N4    6   14      -0.83   0   4   17   18   19   20
+   17  H41   18    1      0.415   0   1   18
+   18  H42   18    1      0.415   1   0
+   19   C5   11   12       -0.1   0   1   20
+   20   H5   17    1        0.1   1   0
+   21  C2*   12    3       0.15   0   4   22   23   24   25
+   22  O2*    3   16     -0.548   0   2   23   24
+   23  H2*   18    1      0.398   1   0
+   24  C3*   12    3          0   1
+   25  O3*    3   16      -0.36   0
+#  NB
+   27
+#  IB   JB  MCB
+    1    2   23
+    1    3   23
+    1    4   27
+    4    5   19
+    5    6   25
+    6    7   19
+    6   24   25
+    7    8   19
+    8    9   22
+    8   21   25
+    9   10   16
+    9   12   16
+   10   11    3
+   10   19   15
+   12   13    4
+   12   14   11
+   14   15   11
+   15   16    8
+   15   19   15
+   16   17    2
+   16   18    2
+   19   20    3
+   21   22   19
+   21   24   25
+   22   23    1
+   24   25   19
+   25   26   27
+# NBA
+   42
+#  IB   JB   KB  MCB
+    0    1    2   13
+    0    1    3   13
+    0    1    4    4
+    2    1    3   28
+    2    1    4   13
+    3    1    4   13
+    1    4    5   25
+    4    5    6    8
+    5    6    7    8
+    5    6   24    7
+    7    6   24    8
+    6    7    8    9
+    7    8    9    8
+    7    8   21    8
+    9    8   21    7
+    8    9   10   26
+    8    9   12   26
+   10    9   12   26
+    9   10   11   24
+    9   10   19   26
+   11   10   19   24
+    9   12   13   26
+    9   12   14   26
+   13   12   14   26
+   12   14   15   26
+   14   15   16   26
+   14   15   19   26
+   16   15   19   26
+   15   16   17   22
+   15   16   18   22
+   17   16   18   23
+   10   19   15   26
+   10   19   20   24
+   15   19   20   24
+    8   21   22    8
+    8   21   24    7
+   22   21   24    8
+   21   22   23   11
+    6   24   21    7
+    6   24   25    8
+   21   24   25    8
+   24   25   26   25
+# NIDA
+   16
+#  IB   JB   KB   LB  MCB
+    9   10   12    8    1
+    9   10   19   15    1
+    9   12   14   15    1
+   10    9   12   14    1
+   10    9   19   11    1
+   12    9   10   19    1
+   12   14   15   19    1
+   13    9   14   12    1
+   14   15   19   10    1
+   16   14   19   15    1
+   16   17   18   15    1
+   19   10   15   20    1
+   21    7    9    8    2
+   21   22   24    8    2
+   24    5    7    6    2
+   24   21   25    6    2
+# NDA
+   28
+#  IB   JB   KB   LB  MCB
+   -1    0    1    4   24
+   -1    0    1    4   25
+    0    1    4    5   24
+    0    1    4    5   25
+    1    4    5    6   26
+    1    4    5    6   11
+    4    5    6    7   22
+    4    5    6    7   23
+    4    5    6   24    7
+    4    5    6   24   17
+   24    6    7    8   14
+    5    6   24   21   17
+    5    6   24   25    7
+    7    6   24   21    7
+    7    6   24   25    8
+    6    7    8   21   14
+    7    8    9   12    6
+    7    8   21   22    8
+    7    8   21   24    7
+    7    8   21   24   17
+    9    8   21   22    7
+   14   15   16   17    4
+    8   21   22   23   12
+    8   21   24    6   17
+    8   21   24   25    7
+   22   21   24    6    7
+   22   21   24   25    8
+    6   24   25   26   14
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK URA SOL TYPE RNUC NAME uridine 5-phosphoric acid (RNA, charge -e)
+# building block (residue, nucleotide, etc.)
+# RNME
+URA
+# NMAT NLIN
+    24     2
+#ATOM                               MAE MSAE
+   -1                                 2    0    1
+    0                                 4    1    2    3    4
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1    P   27   31       1.44   0   4    2    3    4    5
+    2  O1P    2   16     -0.360   0   2    3    4
+    3  O2P    2   16     -0.360   0   1    4
+    4  O5*    3   16      -0.36   1   2    5    6
+    5  C5*   13    4          0   1   3    6    7   23
+    6  C4*   12    3       0.16   0   5    7    8   20   23   24
+    7  O4*    3   16      -0.36   0   4    8    9   20   23
+    8  C1*   12    3        0.2   1  10    9   10   11   12   13   14
+                                          18   20   21  23
+    9   N1    8   14       -0.2   0  10   10   11   12   13   14   15
+                                          16   18   19   20
+   10   C6   11   12        0.1   0   8   11   12   13   14   16   17
+                                          18   19
+   11   H6   17    1        0.1   1   4   12   16   18   19
+   12   C2   11   12       0.45   0   6   13   14   15   16   17   18
+   13   O2    1   16      -0.45   1   3   14   15   16
+   14   N3    8   14      -0.31   0   5   15   16   17   18   19
+   15   H3   18    1       0.31   1   3   16   17   18
+   16   C4   11   12       0.45   0   3   17   18   19
+   17   O4    1   16      -0.45   1   2   18   19
+   18   C5   11   12       -0.1   0   1   19
+   19   H5   17    1        0.1   1   0
+   20  C2*   12    3       0.15   0   4   21   22   23   24
+   21  O2*    3   16     -0.548   0   2   22   23
+   22  H2*   18    1      0.398   1   0
+   23  C3*   12    3          0   1
+   24  O3*    3   16      -0.36   0
+#  NB
+   26
+#  IB   JB  MCB
+    1    2   23
+    1    3   23
+    1    4   27
+    4    5   19
+    5    6   25
+    6    7   19
+    6   23   25
+    7    8   19
+    8    9   22
+    8   20   25
+    9   10   16
+    9   12   16
+   10   11    3
+   10   18   15
+   12   13    4
+   12   14   16
+   14   15    2
+   14   16   16
+   16   17    4
+   16   18   15
+   18   19    3
+   20   21   19
+   20   23   25
+   21   22    1
+   23   24   19
+   24   25   27
+# NBA
+   41
+#  IB   JB   KB  MCB
+    0    1    2   13
+    0    1    3   13
+    0    1    4    4
+    2    1    3   28
+    2    1    4   13
+    3    1    4   13
+    1    4    5   25
+    4    5    6    8
+    5    6    7    8
+    5    6   23    7
+    7    6   23    8
+    6    7    8    9
+    7    8    9    8
+    7    8   20    8
+    9    8   20    7
+    8    9   10   26
+    8    9   12   26
+   10    9   12   26
+    9   10   11   24
+    9   10   18   26
+   11   10   18   24
+    9   12   13   26
+    9   12   14   26
+   13   12   14   26
+   12   14   15   24
+   12   14   16   26
+   15   14   16   24
+   14   16   17   26
+   14   16   18   26
+   17   16   18   26
+   10   18   16   26
+   10   18   19   24
+   16   18   19   24
+    8   20   21    8
+    8   20   23    7
+   21   20   23    8
+   20   21   22   11
+    6   23   20    7
+    6   23   24    8
+   20   23   24    8
+   23   24   25   25
+# NIDA
+   16
+#  IB   JB   KB   LB  MCB
+    9   10   12    8    1
+    9   10   18   16    1
+    9   12   14   16    1
+   10    9   12   14    1
+   10    9   18   11    1
+   12    9   10   18    1
+   12   14   16   18    1
+   13    9   14   12    1
+   14   16   18   10    1
+   15   12   16   14    1
+   17   14   18   16    1
+   18   10   16   19    1
+   20    7    9    8    2
+   20   21   23    8    2
+   23    5    7    6    2
+   23   20   24    6    2
+# NDA
+   27
+#  IB   JB   KB   LB  MCB
+   -1    0    1    4   24
+   -1    0    1    4   25
+    0    1    4    5   24
+    0    1    4    5   25
+    1    4    5    6   26
+    1    4    5    6   11
+    4    5    6    7   22
+    4    5    6    7   23
+    4    5    6   23    7
+    4    5    6   23   17
+   23    6    7    8   14
+    5    6   23   20   17
+    5    6   23   24    7
+    7    6   23   20    7
+    7    6   23   24    8
+    6    7    8   20   14
+    7    8    9   12    6
+    7    8   20   21    8
+    7    8   20   23    7
+    7    8   20   23   17
+    9    8   20   21    7
+    8   20   21   22   12
+    8   20   23    6   17
+    8   20   23   24    7
+   21   20   23    6    7
+   21   20   23   24    8
+    6   23   24   25   14
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK DPPC SOL TYPE MOLE NAME dipalmitoylphosphatidylcholine
+# building block (residue, nucleotide, etc.)
+# RNME
+DPPC
+# Dipalmitoylphosphatidylcholine
+#
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+   50    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C33    14    5    0.00000   0   4    2    3    4    5
+    2 C34    14    5    0.00000   0   3    3    4    5
+    3 C35    14    5    0.00000   0   2    4    5
+    4 N       7   14    0.00000   0   2    5    6
+    5 C32    13    4    0.00000   1   2    6    7
+    6 C31    13    4    0.00000   1   2    7    8
+    7 O32     3   16   -0.36000   0   4    8    9   10   11
+    8 P      27   31    1.44000   0   4    9   10   11   12
+    9 O33     2   16   -0.36000   0   2   10   11
+   10 O34     2   16   -0.36000   0   1   11
+   11 O31     3   16   -0.36000   1   2   12   13
+   12 C3     13    4    0.00000   1   3   13   14   32
+   13 C2     12    3    0.16000   0   4   14   15   32   33
+   14 O21     3   16   -0.36000   0   4   15   16   17   32
+   15 C21    11   12    0.58000   0   3   16   17   18
+   16 O22     1   16   -0.38000   1   1   17
+   17 C22    13    4    0.00000   0   2   18   19
+   18 C23    13    4    0.00000   1   2   19   20
+   19 C24    13    4    0.00000   0   2   20   21
+   20 C25    13    4    0.00000   1   2   21   22
+   21 C26    13    4    0.00000   0   2   22   23
+   22 C27    13    4    0.00000   1   2   23   24
+   23 C28    13    4    0.00000   0   2   24   25
+   24 C29    13    4    0.00000   1   2   25   26
+   25 C210   13    4    0.00000   0   2   26   27
+   26 C211   13    4    0.00000   1   2   27   28
+   27 C212   13    4    0.00000   0   2   28   29
+   28 C213   13    4    0.00000   1   2   29   30
+   29 C214   13    4    0.00000   0   2   30   31
+   30 C215   13    4    0.00000   1   1   31
+   31 C216   14    5    0.00000   1   0
+   32 C1     13    4    0.16000   0   2   33   34
+   33 O11     3   16   -0.36000   0   3   34   35   36
+   34 C11    11   12    0.58000   0   3   35   36   37
+   35 O12     1   16   -0.38000   1   1   36
+   36 C12    13    4    0.00000   0   2   37   38
+   37 C13    13    4    0.00000   1   2   38   39
+   38 C14    13    4    0.00000   0   2   39   40
+   39 C15    13    4    0.00000   1   2   40   41
+   40 C16    13    4    0.00000   0   2   41   42
+   41 C17    13    4    0.00000   1   2   42   43
+   42 C18    13    4    0.00000   0   2   43   44
+   43 C19    13    4    0.00000   1   2   44   45
+   44 C110   13    4    0.00000   0   2   45   46
+   45 C111   13    4    0.00000   1   2   46   47
+   46 C112   13    4    0.00000   0   2   47   48
+   47 C113   13    4    0.00000   1   2   48   49
+   48 C114   13    4    0.00000   0   2   49   50
+   49 C115   13    4    0.00000   1   1   50
+   50 C116   14    5    0.00000   1   0
+# bonds
+#  NB
+   49
+#  IB   JB  MCB
+    1    4   20
+    2    4   20
+    3    4   20
+    4    5   20
+    5    6   26
+    6    7   17
+    7    8   27
+    8    9   23
+    8   10   23
+    8   11   27
+   11   12   17
+   12   13   26
+   13   14   17
+   13   32   26
+   14   15    9
+   15   16    4
+   15   17   22
+   17   18   26
+   18   19   26
+   19   20   26
+   20   21   26
+   21   22   26
+   22   23   26
+   23   24   26
+   24   25   26
+   25   26   26
+   26   27   26
+   27   28   26
+   28   29   26
+   29   30   26
+   30   31   26
+   32   33   17
+   33   34    9
+   34   35    4
+   34   36   22
+   36   37   26
+   37   38   26
+   38   39   26
+   39   40   26
+   40   41   26
+   41   42   26
+   42   43   26
+   43   44   26
+   44   45   26
+   45   46   26
+   46   47   26
+   47   48   26
+   48   49   26
+   49   50   26
+# bond angles
+# NBA
+   57
+#  IB   JB   KB  MCB
+    1    4    2   12
+    1    4    3   12
+    1    4    5   12
+    2    4    3   12
+    2    4    5   12
+    3    4    5   12
+    4    5    6   14
+    5    6    7   14
+    6    7    8   25
+    7    8    9   13
+    7    8   10   13
+    7    8   11    4
+    9    8   10   28
+    9    8   11   13
+   10    8   11   13
+    8   11   12   25
+   11   12   13   14
+   12   13   14   12
+   12   13   32   12
+   14   13   32   12
+   13   14   15   21
+   14   15   16   30
+   14   15   17   15
+   16   15   17   34
+   15   17   18   14
+   17   18   19   14
+   18   19   20   14
+   19   20   21   14
+   20   21   22   14
+   21   22   23   14
+   22   23   24   14
+   23   24   25   14
+   24   25   26   14
+   25   26   27   14
+   26   27   28   14
+   27   28   29   14
+   28   29   30   14
+   29   30   31   14
+   13   32   33   14
+   32   33   34   21
+   33   34   35   30
+   33   34   36   15
+   35   34   36   34
+   34   36   37   14
+   36   37   38   14
+   37   38   39   14
+   38   39   40   14
+   39   40   41   14
+   40   41   42   14
+   41   42   43   14
+   42   43   44   14
+   43   44   45   14
+   44   45   46   14
+   45   46   47   14
+   46   47   48   14
+   47   48   49   14
+   48   49   50   14
+# improper dihedrals
+# NIDA
+    3
+#  IB   JB   KB   LB  MCB
+   14   12   32   13    2
+   15   14   17   16    1
+   34   33   36   35    1
+# dihedrals
+# NDA
+   43
+#  IB   JB   KB   LB  MCB
+    1    4    5    6   14
+    4    5    6    7   27
+    4    5    6    7   28
+    5    6    7    8   14
+    6    7    8   11   24
+    6    7    8   11   25
+    7    8   11   12   24
+    7    8   11   12   25
+    8   11   12   13   14
+   11   12   13   32   17
+   12   13   14   15   14
+   12   13   32   33   17
+   13   14   15   17   29
+   14   15   17   18   20
+   15   17   18   19   17
+   17   18   19   20   17
+   18   19   20   21   17
+   19   20   21   22   17
+   20   21   22   23   17
+   21   22   23   24   17
+   22   23   24   25   17
+   23   24   25   26   17
+   24   25   26   27   17
+   25   26   27   28   17
+   26   27   28   29   17
+   27   28   29   30   17
+   28   29   30   31   17
+   13   32   33   34   14
+   32   33   34   36   29
+   33   34   36   37   20
+   34   36   37   38   17
+   36   37   38   39   17
+   37   38   39   40   17
+   38   39   40   41   17
+   39   40   41   42   17
+   40   41   42   43   17
+   41   42   43   44   17
+   42   43   44   45   17
+   43   44   45   46   17
+   44   45   46   47   17
+   45   46   47   48   17
+   46   47   48   49   17
+   47   48   49   50   17
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK CH4 SOL TYPE MOLE NAME methane (united atom)
+# building block (residue, nucleotide, etc.)
+# RNME
+CH4
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    1    0
+# atoms
+#ATOM ANM  IACM MASS        CGM ICGM  MAE MSAE
+    1 CM     15    6    0.00000    1    0
+# bonds
+#  NB
+    0
+#  IB   JB  MCB
+# bond angles
+# NBA
+    0
+#  IB   JB   KB  MCB
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK AR SOL TYPE MOLE NAME argon
+# building block (residue, nucleotide, etc.)
+# RNME
+AR
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    1    0
+# atoms
+#ATOM ANM  IACM MASS        CGM ICGM  MAE MSAE
+    1 AR     28   39    0.00000    1    0
+# bonds
+#  NB
+    0
+#  IB   JB  MCB
+# bond angles
+# NBA
+    0
+#  IB   JB   KB  MCB
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK SO42- SOL TYPE MOLE NAME SO_4^-- ion (charge -2e)
+# building block (residue, nucleotide, etc.)
+# RNME
+SO42-
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    5    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 IS     20   32    1.44000   0   4    2    3    4    5
+    2 IO1     2   16   -0.36000   0   3    3    4    5
+    3 IO2     2   16   -0.36000   0   2    4    5
+    4 IO3     2   16   -0.36000   0   1    5
+    5 IO4     2   16   -0.36000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+# bonds
+#  NB
+    4
+#  IB   JB  MCB
+    1    2   24
+    1    3   24
+    1    4   24
+    1    5   24
+# bond angles
+# NBA
+    6
+#  IB   JB   KB  MCB
+    2    1    3   12
+    2    1    4   12
+    2    1    5   12
+    3    1    4   12
+    3    1    5   12
+    4    1    5   12
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK ZN2+ SOL TYPE MOLE NAME zinc ion (charge +2e)
+# building block (residue, nucleotide, etc.)
+# RNME
+ZN2+
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    1    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 ZN     24   65    2.00000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+# bonds
+#  NB
+    0
+#  IB   JB  MCB
+# bond angles
+# NBA
+    0
+#  IB   JB   KB  MCB
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK NA+ SOL TYPE MOLE NAME sodium ion (charge +e)
+# building block (residue, nucleotide, etc.)
+# RNME
+NA+
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    1    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 NA     34   23    1.00000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+# bonds
+#  NB
+    0
+#  IB   JB  MCB
+# bond angles
+# NBA
+    0
+#  IB   JB   KB  MCB
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK CL- SOL TYPE MOLE NAME chlorine ion (charge -e)
+# building block (residue, nucleotide, etc.)
+# RNME
+CL-
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    1    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 CL     35   35   -1.00000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+# bonds
+#  NB
+    0
+#  IB   JB  MCB
+# bond angles
+# NBA
+    0
+#  IB   JB   KB  MCB
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK CA2+ SOL TYPE MOLE NAME calcium ion (charge +2e)
+# building block (residue, nucleotide, etc.)
+# RNME
+CA2+
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    1    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 CA     26   40    2.00000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+# bonds
+#  NB
+    0
+#  IB   JB  MCB
+# bond angles
+# NBA
+    0
+#  IB   JB   KB  MCB
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK MG2+ SOL TYPE MOLE NAME magnesium ion (charge +2e)
+# building block (residue, nucleotide, etc.)
+# RNME
+MG2+
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    1    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 MG     25   24    2.00000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+# bonds
+#  NB
+    0
+#  IB   JB  MCB
+# bond angles
+# NBA
+    0
+#  IB   JB   KB  MCB
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK CU1+ SOL TYPE MOLE NAME copper ion (charge +e)
+# building block (residue, nucleotide, etc.)
+# RNME
+CU1+
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    1    0
+# atoms
+#ATOM ANM  IACM MASS        CGM ICGM  MAE MSAE
+    1 CU     21   63    1.00000    1    0
+# bonds
+#  NB
+    0
+#  IB   JB  MCB
+# bond angles
+# NBA
+    0
+#  IB   JB   KB  MCB
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK CU2+ SOL TYPE MOLE NAME copper ion (charge +2e)
+# building block (residue, nucleotide, etc.)
+# RNME
+CU2+
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    1    0
+# atoms
+#ATOM ANM  IACM MASS        CGM ICGM  MAE MSAE
+    1 CU     22   63    2.00000    1    0
+# bonds
+#  NB
+    0
+#  IB   JB  MCB
+# bond angles
+# NBA
+    0
+#  IB   JB   KB  MCB
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK H2O SOL TYPE MOLE NAME water (SPC model)
+# building block (residue, nucleotide, etc.)
+# RNME
+H2O
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    3    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 OW      4   16   -0.82000   0   2    2    3
+    2 HW1    18    1    0.41000   0   1    3
+    3 HW2    18    1    0.41000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+# bonds
+#  NB
+    3
+#  IB   JB  MCB
+    1    2   35
+    1    3   35
+    2    3   41
+# bond angles
+# NBA
+    0
+#  IB   JB   KB  MCB
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK H2OE SOL TYPE MOLE NAME water (SPC-E model)
+# building block (residue, nucleotide, etc.)
+# RNME
+H2OE
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    3    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 OW      4   16   -0.84760   0   2    2    3
+    2 HW1    18    1    0.42380   0   1    3
+    3 HW2    18    1    0.42380   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+# bonds
+#  NB
+    3
+#  IB   JB  MCB
+    1    2   35
+    1    3   35
+    2    3   41
+# bond angles
+# NBA
+    0
+#  IB   JB   KB  MCB
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK CHCL3 SOL TYPE MOLE NAME chloroform
+# building block (residue, nucleotide, etc.)
+# RNME
+CHCL3
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    5    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 CChl   36   12    0.17900   0   4    2    3    4    5
+    2 HChl   38    1    0.08200   0   3    3    4    5
+    3 CLCh1  37   35   -0.08700   0   2    4    5
+    4 CLCh2  37   35   -0.08700   0   1    5
+    5 CLCh3  37   35   -0.08700   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+# bonds
+#  NB
+    9
+#  IB   JB  MCB
+    1    3   37
+    1    4   37
+    1    5   37
+    2    3   42
+    2    4   42
+    2    5   42
+    3    4   43
+    3    5   43
+    4    5   43
+# bond angles
+# NBA
+    0
+#  IB   JB   KB  MCB
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK DMSO SOL TYPE MOLE NAME dimethylsulfoxide
+# building block (residue, nucleotide, etc.)
+# RNME
+DMSO
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    4    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 SDmso  39   32    0.13900   0   3    2    3    4
+    2 ODmso  41   16   -0.45900   0   2    3    4
+    3 CDms1  40    5    0.16000   0   1    4
+    4 CDms2  40    5    0.16000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+# bonds
+#  NB
+    6
+#  IB   JB  MCB
+    1    2   38
+    1    3   39
+    1    4   39
+    2    3   44
+    2    4   44
+    3    4   45
+# bond angles
+# NBA
+    0
+#  IB   JB   KB  MCB
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK CH3OH SOL TYPE MOLE NAME methanol
+# building block (residue, nucleotide, etc.)
+# RNME
+CH3OH
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    3    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 Omet   33   16   -0.57400   0   2    2    3
+    2 HMet   18    1    0.39800   0   1    3
+    3 CMet   32    5    0.17600   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+# bonds
+#  NB
+    3
+#  IB   JB  MCB
+    1    2    1
+    1    3   17
+    2    3   46
+# bond angles
+# NBA
+    0
+#  IB   JB   KB  MCB
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 45b4.mtb BLK CCL4 SOL TYPE MOLE NAME carbontetrachloride
+# building block (residue, nucleotide, etc.)
+# RNME
+CCL4
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    5    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 CCl4   42   12    0.00000   0   4    2    3    4    5
+    2 CLCl1  43   35    0.00000   0   3    3    4    5
+    3 CLCl2  43   35    0.00000   0   2    4    5
+    4 CLCl3  43   35    0.00000   0   1    5
+    5 CLCl4  43   35    0.00000   1   0
+# trailing atoms
+#ATOM ANM  IACM MASS        CGMICGM
+# bonds
+#  NB
+    9
+#  IB   JB  MCB
+    1    2   40
+    1    3   40
+    1    4   40
+    1    5   40
+    2    3   47
+    2    4   47
+    2    5   47
+    3    4   47
+    3    5   47
+# bond angles
+# NBA
+    0
+#  IB   JB   KB  MCB
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLSOLVENT
+#@BLOCKTYPE 45b4.mtb BLK H2O SVT TYPE MOLE NAME water (SPC model)
+#solvent name
+#RNMES
+H2O
+#number of atoms
+    3
+#atoms
+#ATOM ANM   IAC MASS    CG
+    1 OW      4   16  -.82
+    2 HW1    18    1   .41
+    3 HW2    18    1   .41
+#constraints
+#number
+    3
+#  IB   JB  LENGTH
+    1    2    0.1
+    1    3    0.1
+    2    3    0.163299
+#@FREELINE
+END
+MTBUILDBLSOLVENT
+#@BLOCKTYPE 45b4.mtb BLK H2OE SVT TYPE MOLE NAME water (SPC-E model)
+#solvent name
+#RNMES
+H2OE
+#number of atoms
+    3
+#atoms
+#ATOM ANM   IAC MASS    CG
+    1 OW      4   16  -.8476
+    2 HW1    18    1   .4238
+    3 HW2    18    1   .4238
+#constraints
+#number
+    3
+#  IB   JB  LENGTH
+    1    2    0.1
+    1    3    0.1
+    2    3    0.163299
+#@FREELINE
+END
+MTBUILDBLSOLVENT
+#@BLOCKTYPE 45b4.mtb BLK CHCL3 SVT TYPE MOLE NAME chloroform
+#solvent name
+#RNMES
+CHCL3
+#number of atoms
+    5
+#atoms
+#ATOM ANM   IAC MASS    CG
+    1 CChl   36   12   .179
+    2 HChl   38    1   .082
+    3 CLCh1  37   35  -.087
+    4 CLCh2  37   35  -.087
+    5 CLCh3  37   35  -.087
+#constraints
+#number
+    9
+#  IB   JB  LENGTH
+    1    3    0.1758
+    1    4    0.1758
+    1    5    0.1758
+    2    3    0.233839
+    2    4    0.233839
+    2    5    0.233839
+    3    4    0.290283
+    3    5    0.290283
+    4    5    0.290283
+#@FREELINE
+END
+MTBUILDBLSOLVENT
+#@BLOCKTYPE 45b4.mtb BLK DMSO SVT TYPE MOLE NAME dimethylsulfoxide
+#solvent name
+#RNMES
+DMSO
+#number of atoms
+    4
+#atoms
+#ATOM ANM   IAC MASS    CG
+    1 SDmso  39   32   .139
+    2 ODmso  41   16  -.459
+    3 CDms1  40    5   .16
+    4 CDms2  40    5   .16
+#constraints
+#number
+    6
+#  IB   JB  LENGTH
+    1    2    0.153
+    1    3    0.195
+    1    4    0.195
+    2    3    0.280412
+    2    4    0.280412
+    3    4    0.292993
+#@FREELINE
+END
+MTBUILDBLSOLVENT
+#@BLOCKTYPE 45b4.mtb BLK CH3OH SVT TYPE MOLE NAME methanol
+#solvent name
+#RNMES
+CH3OH
+#number of atoms
+    3
+#atoms
+#ATOM ANM   IAC MASS    CG
+    1 OMet   33   16  -.574
+    2 HMet   18    1   .398
+    3 CMet   32    5   .176
+#constraints
+#number
+    3
+#  IB   JB  LENGTH
+    1    2    0.1000
+    1    3    0.1430
+    2    3    0.198842
+#@FREELINE
+END
+MTBUILDBLSOLVENT
+#@BLOCKTYPE 45b4.mtb BLK CCL4 SVT TYPE MOLE NAME carbontetrachloride
+#solvent name
+#RNMES
+CCL4
+#number of atoms
+    5
+#atoms
+#ATOM ANM   IAC MASS    CG
+    1 CCl4   42   12   .0
+    2 CLCl1  43   35   .0
+    3 CLCl2  43   35   .0
+    4 CLCl3  43   35   .0
+    5 CLCl4  43   35   .0
+#constraints
+#number
+    9
+#  IB   JB  LENGTH
+    1    2    0.176
+    1    3    0.176
+    1    4    0.176
+    1    5    0.176
+    2    3    0.287407
+    2    4    0.287407
+    2    5    0.287407
+    3    4    0.287407
+    3    5    0.287407
+#@FREELINE
+END
+MTBUILDBLEND
+#@BLOCKTYPE 45b4.mtb BLK GH3+ INI TYPE APEP NAME N-terminal peptide end-group (protonated, charge +e, preceding a CH2)
+# building block (residue, nucleotide, etc.)
+# RNME
+GH3+
+# number of atoms, number of atoms to be replaced
+# NMAT NREP
+    5    3
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 H1     18    1    0.24800   0   4    2    3    4    5
+    2 H2     18    1    0.24800   0   3    3    4    5
+#replacing atoms
+    3 N       7   14   -0.74400   0
+    4 H3     18    1    0.24800   0
+    5 CA     13    4    0.00000   1
+# bonds
+#  NB
+    2
+#  IB   JB  MCB
+    1    3    2
+    2    3    2
+# bond angles
+# NBA
+    6
+#  IB   JB   KB  MCB
+    1    3    2    9
+    1    3    4    9
+    1    3    5   10
+    2    3    4    9
+    2    3    5   10
+    4    3    5   10
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    1
+#  IB   JB   KB   LB  MCB
+    2    3    5    6   14
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLEND
+#@BLOCKTYPE 45b4.mtb BLK GH2 INI TYPE APEP NAME N-terminal peptide end-group (deprotonated, neutral, preceding a CH2)
+# building block (residue, nucleotide, etc.)
+# RNME
+GH2
+# number of atoms, number of atoms to be replaced
+# NMAT NREP
+    3    2
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 H1     18    1    0.41500   0   3    2    3    4
+#replacing atoms
+    2 N       6   14   -0.83000   0
+    3 H2     18    1    0.41500   1
+# bonds
+#  NB
+    1
+#  IB   JB  MCB
+    1    2    2
+# bond angles
+# NBA
+    3
+#  IB   JB   KB  MCB
+    1    2    3    9
+    1    2    4   10
+    3    2    4   10
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    1
+#  IB   JB   KB   LB  MCB
+    1    2    4    5   14
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLEND
+#@BLOCKTYPE 45b4.mtb BLK NH3+ INI TYPE APEP NAME N-terminal peptide end-group (protonated, charge +e, preceding a CH1)
+# building block (residue, nucleotide, etc.)
+# RNME
+NH3+
+# number of atoms, number of atoms to be replaced
+# NMAT NREP
+    5    3
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 H1     18    1    0.24800   0   4    2    3    4    5
+    2 H2     18    1    0.24800   0   3    3    4    5
+#replacing atoms
+    3 N       7   14   -0.74400   0
+    4 H3     18    1    0.24800   0
+    5 CA     12    3    0.00000   1
+# bonds
+#  NB
+    2
+#  IB   JB  MCB
+    1    3    2
+    2    3    2
+# bond angles
+# NBA
+    6
+#  IB   JB   KB  MCB
+    1    3    2    9
+    1    3    4    9
+    1    3    5   10
+    2    3    4    9
+    2    3    5   10
+    4    3    5   10
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    1
+#  IB   JB   KB   LB  MCB
+    2    3    5    6   14
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLEND
+#@BLOCKTYPE 45b4.mtb BLK NH2 INI TYPE APEP NAME N-terminal peptide end-group (deprotonated, neutral, preceding a CH1)
+# building block (residue, nucleotide, etc.)
+# RNME
+NH2
+# number of atoms, number of atoms to be replaced
+# NMAT NREP
+    3    2
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 H1     18    1    0.41500   0   3    2    3    4
+#replacing atoms
+    2 N       6   14   -0.83000   0
+    3 H2     18    1    0.41500   1
+# bonds
+#  NB
+    1
+#  IB   JB  MCB
+    1    2    2
+# bond angles
+# NBA
+    3
+#  IB   JB   KB  MCB
+    1    2    3    9
+    1    2    4   10
+    3    2    4   10
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    1
+#  IB   JB   KB   LB  MCB
+    1    2    4    5   14
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLEND
+#@BLOCKTYPE 45b4.mtb BLK NPRO INI TYPE APEP NAME N-terminal peptide end-group for proline or hydroxy proline (protonated, charge +e)
+# building block (residue, nucleotide, etc.)
+# RNME
+NPRO
+# number of atoms, number of atoms to be replaced
+# NMAT NREP
+    7     5
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 H1     18    1    0.41500   0   4    2    3    4    7
+    2 H2     18    1    0.41500   0   3    3    4    7
+#replacing atoms
+    3 N       7   14   -0.83000   0
+    4 CA     12    3    0.00000   0
+    5 CB     13    4    0.00000   0
+    6 CG     13    4    0.00000   0
+    7 CD     13    4    0.00000   1
+# bonds
+#  NB
+    7
+#  IB   JB  MCB
+    1    3    2
+    2    3    2
+    3    4   20
+    3    7   20
+    4    5   26
+    5    6   26
+    6    7   26
+# bond angles
+# NBA
+   10
+#  IB   JB   KB  MCB
+    1    3    2    9
+    1    3    4   10
+    1    3    7   10
+    2    3    4   10
+    2    3    7   10
+    4    3    7   20
+    3    4    5   12
+    4    5    6   12
+    5    6    7   12
+    3    7    6   12
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    1
+#  IB   JB   KB   LB  MCB
+    2    3    4    8   14
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLEND
+#@BLOCKTYPE 45b4.mtb BLK COO- TER TYPE APEP NAME C-terminal peptide end-group (deprotonated, charge -e)
+# building block (residue, nucleotide, etc.)
+# RNME
+COO-
+# number of atoms, number of preceding exclusions
+# NMAT NREP
+    3   -2
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C      11   12    0.72000   0   2    2    3
+    2 O1      2   16   -0.36000   0   1    3
+    3 O2      2   16   -0.36000   1   0
+# bonds
+#  NB
+    2
+#  IB   JB  MCB
+    1    2    5
+    1    3    5
+# bond angles
+# NBA
+    3
+#  IB   JB   KB  MCB
+    0    1    2   21
+    0    1    3   21
+    2    1    3   37
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLEND
+#@BLOCKTYPE 45b4.mtb BLK COOH TER TYPE APEP NAME C-terminal peptide end-group (protonated, neutral)
+# building block (residue, nucleotide, etc.)
+# RNME
+COOH
+# number of atoms, number of preceding exclusions
+# NMAT NREP
+    4   -2
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C      11   12    0.53000   0   3    2    3    4
+    2 O1      1   16   -0.38000   0   1    3
+    3 O2      3   16   -0.54800   0   1    4
+    4 H      18    1    0.39800   1   0
+# bonds
+#  NB
+    3
+#  IB   JB  MCB
+    1    2    4
+    1    3   12
+    3    4    1
+# bond angles
+# NBA
+    1
+#  IB   JB   KB  MCB
+    1    3    4   11
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    1
+#  IB   JB   KB   LB  MCB
+    0    1    3    4    3
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLEND
+#@BLOCKTYPE 45b4.mtb BLK D5OH INI TYPE DNUC NAME 5-terminal DNA end-group
+# building block (residue, nucleotide, etc.)
+# RNME
+D5OH
+# number of atoms, number of atoms to be replaced
+# NMAT NREP
+    5    5
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 H5*    18    1    0.398    0
+    2 O1P    -1    1    0.0      0
+    3 O2P    -1    1    0.0      0
+    4 O5*     3   16   -0.548    0
+    5 C5*    13    4    0.150    1
+# bonds
+#  NB
+    2
+#  IB   JB  MCB
+    1    4    1
+    4    5   19
+# bond angles
+# NBA
+    1
+#  IB   JB   KB  MCB
+    1    4    5   11
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    1
+#  IB   JB   KB   LB  MCB
+    1    4    5    6   12
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLEND
+#@BLOCKTYPE 45b4.mtb BLK 5OH INI TYPE RNUC NAME 5-terminal RNA end-group
+# building block (residue, nucleotide, etc.)
+# RNME
+5OH
+# number of atoms, number of atoms to be replaced
+# NMAT NREP
+    5    5
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 H5*    18    1    0.398    0
+    2 O1P    -1    1    0.0      0
+    3 O2P    -1    1    0.0      0
+    4 O5*     3   16   -0.548    0
+    5 C5*    13    4    0.150    1
+# bonds
+#  NB
+    2
+#  IB   JB  MCB
+    1    4    1
+    4    5   19
+# bond angles
+# NBA
+    1
+#  IB   JB   KB  MCB
+    1    4    5   11
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    1
+#  IB   JB   KB   LB  MCB
+    1    4    5    6   12
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLEND
+#@BLOCKTYPE 45b4.mtb BLK D3OH TER TYPE DNUC NAME 3-terminal DNA end-group
+# building block (residue, nucleotide, etc.)
+# RNME
+D3OH
+# number of atoms, number of preceding exclusions
+# NMAT NREP
+    4   -3
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C2*    44    4    0.00000   1   2    2    3
+    2 C3*    12    3    0.15000   0   2    3    4
+    3 O3*     3   16   -0.54800   0   1    4
+    4 H3*    18    1    0.39800   1   0
+# bonds
+#  NB
+    2
+#  IB   JB  MCB
+    2    3   19
+    3    4    1
+# bond angles
+# NBA
+    1
+#  IB   JB   KB  MCB
+    2    3    4   11
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    1
+#  IB   JB   KB   LB  MCB
+    0    2    3    4   12
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END
+MTBUILDBLEND
+#@BLOCKTYPE 45b4.mtb BLK 3OH TER TYPE RNUC NAME 3-terminal RNA end-group
+# building block (residue, nucleotide, etc.)
+# RNME
+3OH
+# number of atoms, number of preceding exclusions
+# NMAT NREP
+    6   -5
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C2*    12    3       0.15   0   4    2    3    4    5
+    2 O2*     3   16     -0.548   0   2    3    4
+    3 H2*    18    1      0.398   1   0
+    4 C3*    12    3    0.15000   0   2    5    6
+    5 O3*     3   16   -0.54800   0   1    6
+    6 H3*    18    1    0.39800   1   0
+# bonds
+#  NB
+    5
+#  IB   JB  MCB
+    1    2   19
+    1    4   25
+    2    3    1
+    4    5   19
+    5    6    1
+# bond angles
+# NBA
+    4
+#  IB   JB   KB  MCB
+    1    2    3   11
+    2    1    4    8
+    1    4    5    8
+    4    5    6   11
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    1
+#  IB   JB   KB   LB  MCB
+    0    4    5    6   14
+#@FREELINE
+# LJ exceptions
+# NEX
+    0
+END

@@ -1,0 +1,1090 @@
+TITLE
+File          : 56a6@CARBO.ifp
+Force field   : 56A6@CARBO (condensed-phase simulations)
+Reference     : Hansen & Hunenberger. J. Comput. Chem. 2011, 32, 998-1032
+File content  : Interaction function parameters
+Format        : GROMOS11
+Initial file  : PHH, HSH Zuerich, Oct. 2011
+Time stamp    : PHH, Wed May  8 21:23:38 CEST 2013
+Remark        : ********************************************************************************
+                **** topologies must be built using a make_top version of June 2012 or later ***
+                ********************************************************************************
+                Reason: make_top must recognize negative dihedral-angle type codes in patches, 
+                which indicate that, if present, an existing dihedral angle with the given type 
+                code must be removed (used in HO2C, HO3C, HO4C, HO6C and C1OH patches for
+                carbohydrates to delete existing T2 or T6/T7 dihedrals assuming a OC instead of 
+                a OH) 
+Remark        : Change from 53A(B)6 involves a reparametrization of the carbohydrates. There are
+                three new atom types (Or, CH0r, CH1r) and the parameters of an existing atom 
+                type (CH2r) are slightly altered. Besides the latter (slight) change, the force 
+                field can be used with 53A(B)6 for other biomolecules
+Remark        : This file only differs from the 53A6 file in the VdW parameters of atom types
+                CH2r, in the three additional atom types Or, CH0r and CH1r, and in additional
+                carbohydrate-specific dihedral angles
+Remark        : There is no B force-field version for this set (use 54B7 instead)
+Remark        : Versions beyond 54A(B)7 [including 54C(D)7, 53A(B)6@OXY, 56A(B)6@CARBO]
+                are only available in GROMOS11 format (i.e. all after the release of May 2011)
+Remark        : PHH, Nov 2011
+                - finalized GROMOS11 files for local usage only (no web distribution yet)
+Modifications : [list below changes after Nov 2011 - with initials, location and date - and update time stamp]
+PHH, 09.11.2011: Renamed 56A6_CARBO to 56A6@CARBO (@: force-field variant; _: auxiliary mtb).
+PHH, 09.11.2011: Reintroduced a FORCEFIELD block in all GROMOS11 files.
+PHH, 26.06.2012: Introduced MAKETOPVERSION blocks in all GROMOS11 files
+PHH, 08.04.2013: Upon conversion of 45A4 to 53A5, which involved a renumbering of the
+                 dihedral-angle types, type 37 was mapped to renumbered dihedral type 3 
+                 (sugar: O5-C5-C6-O6, omega-tilde dihedral, for residue with syn C4,C5 
+                 like Gal, 1-fold term), but with an incorrect force constant of 4.97 
+                 instead of 6.66; this is now corrected in the ifp files of 53A5 and 
+                 later versions (dihedral type 3 is not used in any other residue; 
+                 this problem does not affect the new carbohydrate force field 
+                 56A6@CARBO, which does not use this dihedral)
+END
+FORCEFIELD
+56A6@CARBO
+END
+MAKETOPVERSION
+1.1
+END
+MASSATOMTYPECODE
+#   NRMATY    NMATY
+       21     80
+#       Table 2.4.1
+#       GROMOS mass atom type codes, masses and names
+#
+# mass atom type code
+# mass
+# mass atom name
+#
+#
+# N     ATMAS   ATMASN
+1       1.008   H
+3       13.019  CH1
+4       14.027  CH2
+5       15.035  CH3
+6       16.043  CH4
+12      12.011  C
+14      14.0067 N
+16      15.9994 O
+19      18.9984 F
+23      22.9898 NA
+24      24.305  MG
+28      28.08   SI
+31      30.9738 P
+32      32.06   S
+35      35.453  CL
+39      39.948  AR
+40      40.08   CA
+56      55.847  FE
+63      63.546  CU
+65      65.37   ZN
+80      79.904  BR
+END
+BONDSTRETCHTYPECODE
+#   NRBTY    NBTY
+       52      52
+#       GROMOS bond-stretching parameters
+#
+#
+#     Bond type code
+#       Quartic bond-stretch force constant
+#       Harmonic bond-stretch force constant
+#     Ideal bond length
+#     Examples of usage in terms of non-bonded atom types
+#
+#
+#     ICB(H)[N]    CB[N]  HB[N]   B0[N]
+#
+   1   1.5700000e+07   3.1400000e+05   1.0000000e-01
+# H  -  OA      750
+#
+   2   1.8700000e+07   3.7400000e+05   1.0000000e-01
+# H  -  N (all) 895
+#
+   3   1.2300000e+07   2.9227260e+05   1.0900000e-01
+# HC  -  C      700
+#
+   4   3.7000000e+07   9.2825600e+05   1.1200000e-01
+# C - O (CO in heme)  2220
+#
+   5   1.6600000e+07   5.0228280e+05   1.2300000e-01
+# C  - O        1200
+#
+   6   1.3400000e+07   4.1875000e+05   1.2500000e-01
+# C  - OM       1000
+#
+   7   1.2000000e+07   4.1817600e+05   1.3200000e-01
+# CR1  -  NR (6-ring)   1000
+#
+   8   8.8700000e+06   3.1380286e+05   1.3300000e-01
+# H  -  S       750
+#
+   9   1.0600000e+07   3.7500680e+05   1.3300000e-01
+# C  -  NT, NL  900
+#
+  10   1.1800000e+07   4.1746040e+05   1.3300000e-01
+# C, CR1  -  N, NR, CR1, C (peptide, 5-ring)       1000
+#
+  11   1.0500000e+07   3.7707600e+05   1.3400000e-01
+# C  -  N, NZ, NE       900
+#
+  12   1.1700000e+07   4.2017040e+05   1.3400000e-01
+# C  -  NR (no H) (6-ring)      1000
+#
+  13   1.0200000e+07   3.7731840e+05   1.3600000e-01
+# C  -  OA      900
+#
+  14   1.1000000e+07   4.1896800e+05   1.3800000e-01
+# C  -  NR (heme)       1000
+#
+  15   8.6600000e+06   3.3463972e+05   1.3900000e-01
+# CH2  -  C, CR1 (6-ring)       800
+#
+  16   1.0800000e+07   4.1733360e+05   1.3900000e-01
+# C, CR1  -  CH2, C, CR1 (6-ring)       1000
+#
+  17   8.5400000e+06   3.3476800e+05   1.4000000e-01
+# C, CR1, CH2  -  NR (6-ring)   800
+#
+  18   8.1800000e+06   3.3454564e+05   1.4300000e-01
+# CHn  -  OA    800
+#
+  19   9.2100000e+06   3.7667058e+05   1.4300000e-01
+# CHn  -  OM    900
+#
+  20   6.1000000e+06   2.5122545e+05   1.4350000e-01
+# CHn  -  OA (sugar)    600
+#
+  21   8.7100000e+06   3.7642878e+05   1.4700000e-01
+# CHn  -  N, NT, NL, NZ, NE     900
+#
+  22   5.7300000e+06   2.5101984e+05   1.4800000e-01
+# CHn  -  NR (5-ring)   600
+#
+  23   7.6400000e+06   3.3469312e+05   1.4800000e-01
+# CHn  -   NR (6-ring)  800
+#
+  24   8.6000000e+06   3.7674880e+05   1.4800000e-01
+# O, OM  -   P     900
+#
+  25   8.3700000e+06   3.7665000e+05   1.5000000e-01
+# O  -  S       900
+#
+  26   5.4300000e+06   2.5090944e+05   1.5200000e-01
+# CHn  -   CHn (sugar)  600
+#
+  27   7.1500000e+06   3.3474870e+05   1.5300000e-01
+# C, CHn  -   C, CHn    800
+#
+  28   4.8400000e+06   2.5091528e+05   1.6100000e-01
+# OA  -   P     600
+#
+  29   4.7200000e+06   2.5081136e+05   1.6300000e-01
+# OA  -   SI    600
+#
+  30   2.7200000e+06   1.7236096e+05   1.7800000e-01
+# FE  -  C (Heme)
+#
+  31   5.9400000e+06   3.7640592e+05   1.7800000e-01
+# CH3  -   S    900
+#
+  32   5.6200000e+06   3.7641636e+05   1.8300000e-01
+# CH2  -   S    900
+#
+  33   3.5900000e+06   2.5107742e+05   1.8700000e-01
+# CH1  -   SI   600
+#
+  34   6.4000000e+05   5.0181120e+04   1.9800000e-01
+# NR  -   FE    120
+#
+  35   6.2800000e+05   5.0240000e+04   2.0000000e-01
+# NR (heme)  -  FE   120
+#
+  36   5.0300000e+06   4.1865696e+05   2.0400000e-01
+# S  -   S      1000
+#
+  37   5.4000000e+05   5.2748280e+04   2.2100000e-01
+# NR  -  FE     126
+#
+  38   2.3200000e+07   4.6400000e+05   1.0000000e-01
+# HWat  -   OWat        1110
+#
+  39   1.2100000e+07   2.9282000e+05   1.1000000e-01
+# HChl  -   CChl        700
+#
+  40   8.1200000e+06   5.0190759e+05   1.7580000e-01
+# CChl  -   CLChl       1200
+#
+  41   8.0400000e+06   3.7641672e+05   1.5300000e-01
+# ODmso  -   SDmso      900
+#
+  42   4.9500000e+06   3.7182472e+05   1.9379900e-01
+# SDmso  -   CDmso      890
+#
+  43   8.1000000e+06   5.0181120e+05   1.7600000e-01
+# CCl4  -   CLCl4       1200
+#
+  44   1.3100000e+07   4.1925895e+05   1.2650000e-01
+# CUrea  -  OUrea       1000
+#
+  45   1.0300000e+07   3.7543500e+05   1.3500000e-01
+# CUrea  -  NUrea       900
+#
+  46   8.7100000e+06   4.6453153e+05   1.6329900e-01
+# HWat  -   HWat        1110
+#
+  47   2.6800000e+06   2.9308843e+05   2.3383900e-01
+# HChl  -   CLChl        700
+#
+  48   2.9800000e+06   5.0221475e+05   2.9028300e-01
+# CLChl -   CLChl       1200
+#
+  49   2.3900000e+06   3.7311559e+05   2.7938800e-01
+# ODmso -   CDmso        890
+#
+  50   2.1900000e+06   3.7138473e+05   2.9118900e-01
+# CDmso -   CDmso        890
+#
+  51   3.9700000e+06   3.4252596e+05   2.0770000e-01
+# HMet  -   CMet         820
+#
+  52   3.0400000e+06   5.0222492e+05   2.8740700e-01
+# CLCl4 -   CLCl4       1200
+#
+END
+BONDANGLEBENDTYPECODE
+#   NRTTY    NTTY
+       54      54
+#       GROMOS bond-angle bending parameters
+#
+#
+# Bond-angle type code
+# Non-harmonic force constant
+# Harmonic force constant
+# Ideal bond angle
+# Example of usage in terms of non-bonded atom types
+#
+#
+#  ICT(H)[N]  CT[N]  CHT[N]  (T0[N])
+#
+   1   3.8000000e+02   1.1550101e-01   9.0000000e+01
+# NR(heme)  -  FE  -  C          90
+#
+   2   4.2000000e+02   1.2768574e-01   9.0000000e+01
+# NR(heme)  -  FE  -  NR(heme)  100
+#
+   3   4.0500000e+02   1.2177061e-01   9.6000000e+01
+# H  -  S  -  CH2       95
+#
+   4   4.7500000e+02   1.4008261e-01   1.0000000e+02
+# CH2  -  S  -  CH3     110
+#
+   5   4.2000000e+02   1.2122177e-01   1.0300000e+02
+# OA  -  P  -  OA       95
+#
+   6   4.9000000e+02   1.4028506e-01   1.0400000e+02
+# CH2  -  S  -  S       110
+#
+   7   4.6500000e+02   1.2788754e-01   1.0800000e+02
+# NR, C, CR1(5-ring)    100
+#
+   8   2.8500000e+02   7.6912479e-02   1.0950000e+02
+# CHn  - CHn - CHn, NR(6-ring) (sugar)  60
+#
+   9   3.2000000e+02   8.6386140e-02   1.0950000e+02
+# CHn, OA  - CHn  - OA, NR(ring) (sugar)        68
+#
+  10   3.8000000e+02   1.0262668e-01   1.0950000e+02
+# H -  NL, NT  -  H, CHn  - OA  - CHn(sugar)    80
+#
+  11   4.2500000e+02   1.1480708e-01   1.0950000e+02
+# H  -  NL  -  C, CHn          H  -  NT  -  CHn 90
+#
+  12   4.5000000e+02   1.2157397e-01   1.0950000e+02
+# X  -  OA, SI  -  X    95
+#
+  13   5.2000000e+02   1.4052124e-01   1.0950000e+02
+# CHn,C  -  CHn  -  C, CHn, OA, OM, N, NE       110
+#
+  14   4.5000000e+02   1.2142334e-01   1.0960000e+02
+# OM  -  P  -  OA       95
+#
+  15   5.3000000e+02   1.4048747e-01   1.1100000e+02
+# CHn  -  CHn  -  C, CHn, OA, NR, NT, NL        110
+#
+  16   5.4500000e+02   1.4045138e-01   1.1300000e+02
+# CHn  -  CH2  -  S     110
+#
+  17   5.0000000e+01   1.2296570e-02   1.1500000e+02
+# NR(heme)  -  FE  - NR 10
+#
+  18   4.6000000e+02   1.1488482e-01   1.1500000e+02
+# H  -  N  -  CHn       90
+#
+  19   6.1000000e+02   1.5241650e-01   1.1500000e+02
+# CHn, C  -  C  -  OA, N, NT, NL        120
+#
+  20   4.6500000e+02   1.1421859e-01   1.1600000e+02
+# H  -  NE  -  CH2      90
+#
+  21   6.2000000e+02   1.5236094e-01   1.1600000e+02
+# CH2  -  N  -  CH1     120
+#
+  22   6.3500000e+02   1.5336019e-01   1.1700000e+02
+# CH3 -  N  -  C, CHn  - C  - OM        120
+#
+  23   3.9000000e+02   8.8910434e-02   1.2000000e+02
+# H  -  NT, NZ, NE  -  C        70
+#
+  24   4.4500000e+02   1.0147593e-01   1.2000000e+02
+# H  -  NT, NZ  -  H    80
+#
+  25   5.0500000e+02   1.1518373e-01   1.2000000e+02
+# H - N - CH3, H, HC - 6-ring, H - NT - CHn     90
+#
+  26   5.3000000e+02   1.2089532e-01   1.2000000e+02
+# P, SI  -  OA  -  CHn, P       95
+#
+  27   5.6000000e+02   1.2774922e-01   1.2000000e+02
+# N, C, CR1 (6-ring, no H)      100
+#
+  28   6.7000000e+02   1.5288018e-01   1.2000000e+02
+# NZ  -  C  -  NZ, NE   120
+#
+  29   7.8000000e+02   1.7801113e-01   1.2000000e+02
+# OM  - P  -  OM        140
+#
+  30   6.8500000e+02   1.5312732e-01   1.2100000e+02
+# O  -  C  -  CHn, C          CH3  -  N  -  CHn 120
+#
+  31   7.0000000e+02   1.5317431e-01   1.2200000e+02
+# CH1, CH2  -  N  -  C  120
+#
+  32   4.1500000e+02   8.8743846e-02   1.2300000e+02
+# H  - N  - C   70
+#
+  33   7.3000000e+02   1.5266919e-01   1.2400000e+02
+# O  - C  - OA, N, NT, NL   C - NE - CH2        120
+#
+  34   3.7500000e+02   7.6490216e-02   1.2500000e+02
+# FE  - NR  - CR1 (5-ring)      60
+#
+  35   7.5000000e+02   1.5314080e-01   1.2500000e+02
+# -     120
+#
+  36   5.7500000e+02   1.1448735e-01   1.2600000e+02
+# H, HC  - 5-ring       90
+#
+  37   6.4000000e+02   1.2744672e-01   1.2600000e+02
+# X(noH)  - 5-ring      100
+#
+  38   7.7000000e+02   1.5336544e-01   1.2600000e+02
+# OM  - C  - OM 120
+#
+  39   7.6000000e+02   1.2775497e-01   1.3200000e+02
+# 5, 6 ring connnection 100
+#
+  40   2.2150000e+03   1.2112698e-01   1.5500000e+02
+# SI  - OA  - SI        95
+#
+  41   9.1350000e+04   7.2640156e-02   1.8000000e+02
+# Fe  -  C  -  O (heme) 57
+#
+  42   4.3400000e+02   1.1724316e-01   1.0950000e+02
+# HWat  - OWat  - HWat  92
+#
+  43   4.8400000e+02   1.3376523e-01   1.0757000e+02
+# HChl  - CChl  - CLChl 105
+#
+  44   6.3200000e+02   1.6689058e-01   1.1130000e+02
+# CLChl  - CChl  - CLChl        131
+#
+  45   4.6900000e+02   1.4024534e-01   9.7400000e+01
+# CDmso  - SDmso  - CDmso       110
+#
+  46   5.0300000e+02   1.4026005e-01   1.0675000e+02
+# CDmso  - SDmso  -  ODmso      110
+#
+  47   4.4300000e+02   1.2108416e-01   1.0853000e+02
+# HMet  - OMet  - CMet  95
+#
+  48   6.1800000e+02   1.6704740e-01   1.0950000e+02
+# CLCl4  - CCl4  - CLCl4        131
+#
+  49   5.0700000e+02   1.4008648e-01   1.0760000e+02
+# FTFE  -  CTFE  -  FTFE        100
+#
+  50   4.4800000e+02   1.2103261e-01   1.0950000e+02
+# HTFE  -  OTFE  -  CHTFE        85
+#
+  51   5.2400000e+02   1.4017954e-01   1.1030000e+02
+# OTFE  -  CHTFE  -  CTFE        97
+#
+  52   5.3200000e+02   1.4025677e-01   1.1140000e+02
+# CHTFE  -  CTFE  -  FTFE        95
+#
+  53   6.3600000e+02   1.5305438e-01   1.1720000e+02
+# NUrea  -  CUrea  -  NUrea     120
+#
+  54   6.9000000e+02   1.5294820e-01   1.2140000e+02
+# OUrea  -  CUrea  -  NUrea     120
+#
+END
+IMPDIHEDRALTYPECODE
+#   NRQTY    NQTY
+        3       3
+#       GROMOS improper (harmonic) dihedral angle parameters
+#
+#
+# Improper dihedral-angle type code
+# Force constant
+# Ideal improper dihedral angle
+# Example of usage
+#
+#
+# ICQ(H)[N] CQ[N] (Q0[N])
+#
+1               0.0510          0.0
+# planar groups 40
+#
+2               0.102           35.26439
+# tetrahedral centres   80
+#
+3               0.204           0.0
+# heme iron     160
+#
+END
+TORSDIHEDRALTYPECODE
+#   NRPTY    NPTY
+       53      53
+#       GROMOS (trigonometric) dihedral torsional angle parameters
+#
+#
+# Dihedral-angle type code
+# Force constant
+# Phase shift
+# Multiplicity
+# Example of usage in terms of non-bonded atom types
+#
+#
+# ICP(H)[N]  CP[N] PD[N] NP[N]
+#
+   1    2.670    180.0       1
+# CHn-CHn-CHn-OA (sugar)  0.6
+# (sugar: [prior to 56A6_CARBO] C4-C5-C6-O6, omega dihedral, specific to residue with syn C4,C5 like Gal, 1-fold term)
+#
+   2    3.410    180.0       1
+# OA-CHn-OA-CHn,H (beta sugar) 0.8
+# (sugar: [prior to 56A6_CARBO] O5-C1-O1-CX_next, glycosidic phi dihedral, for beta anomer, 1-fold term)
+#
+   3    6.660    180.0       1
+# OA-CHn-CHn-OA (sugar)     1.2
+# (sugar: [prior to 56A6_CARBO] O5-C5-C6-O6, omega-tilde dihedral, for residue with syn C4,C5 like Gal, 1-fold term)
+#
+   4    5.860    180.0       1
+# N-CHn-CHn-OA (lipid)     1.4
+#
+   5    9.350    180.0       1
+# OA-CHn-CHn-OA (sugar)     2.2
+# (sugar: [prior to 56A6_CARBO] O5-C5-C6-O6, omega-tilde dihedral, for residue with anti C4,C5 like Glc, 1-fold term)
+#
+   6    9.450    180.0       1
+# OA-CHn-OA-CHn,H (alpha sugar)  2.3
+# (sugar: [prior to 56A6_CARBO] O5-C1-O1-CX_next, glycosidic phi dihedral, for alpha anomer, 1-fold term)
+#
+   7    2.790      0.0       1
+# P-O5*-C5*-C4* (dna)     0.7
+#
+   8    5.350      0.0       1
+# O5*-C5*-C4*-O4* (dna)     1.3
+#
+   9    1.530    180.0       2
+# C1-C2-CAB-CBB     (heme)     0.4
+#
+  10    5.860    180.0       2
+# -C-C-     1.4
+#
+  11    7.110    180.0       2
+# -C-OA,OE- (at ring)     1.7
+#
+  12   16.700    180.0       2
+# -C-OA,OE- (carboxyl)     4.0
+#
+  13   24.000    180.0       2
+# CHn-OE-C-CHn (ester lipid)     5.7
+#
+  14   33.500    180.0       2
+# -C-N,NT,NE,NZ,NR-     8.0
+#
+  15   41.800    180.0       2
+# -C-CR1- (6-ring)     10.0
+#
+  16    0.000      0.0       2
+# -CH1(sugar)-NR(base)     0.0
+#
+  17    0.418      0.0       2
+# O-CH1-CHn-no O     0.1
+#
+  18    2.090      0.0       2
+# O-CH1-CHn-O     0.5
+#
+  19    3.140      0.0       2
+# -OA-P-     0.75
+#
+  20    5.090      0.0       2
+# O-P-O- (dna, lipids)     1.2
+#
+  21   16.700      0.0       2
+# -S-S-     4.0
+#
+  22    1.050      0.0       3
+# -OA-P-     0.25
+#
+  23    1.260      0.0       3
+# -CHn-OA(no sugar)- 0.3
+#
+  24    1.300      0.0       3
+# HTFE-OTFE-CHTFE-CTFE     0.3
+#
+  25    2.530      0.0       3
+# O5*-C5*-C4*-O4* (dna)     0.6
+#
+  26    2.930      0.0       3
+# -CH2-S-     0.7
+#
+  27    3.190      0.0       3
+# O-P-O- (dna, lipids)     0.8
+#
+  28    3.650      0.0       3
+# OA-CHn-OA-CHn,H (alpha sugar)     0.9
+# (sugar: [prior to 56A6_CARBO] O5-C1-O1-CX_next, glycosidic phi dihedral, for alpha anomer, 3-fold term)
+#
+  29    3.770      0.0       3
+# -C,CHn,SI-     0.9
+#
+  30    3.900      0.0       3
+# CHn-CHn-OA-H (sugar)     0.9
+# (sugar: [prior to 56A6_CARBO] C(n-1)-Cn-On-Hn with n=2,3,4,6, chi dihedrals, including glycosidic psi dihedral)
+#
+  31    4.180      0.0       3
+# HC-C-S-     1.0
+#
+  32    4.690      0.0       3
+# AO-CHn-OA-CHn,H (beta sugar)
+# (sugar: [prior to 56A6_CARBO]  O5-C1-O1-CX_next, glycosidic phi dihedral, for beta anomer, 3-fold term)
+#
+  33    5.440      0.0       3
+# HC-C-C-     1.3
+#
+  34    5.920      0.0       3
+# -CHn,SI-CHn-     1.4
+#
+  35    7.690      0.0       3
+# OA-CHn-CHn-OA (sugar)     1.8
+# (sugar: [prior to 56A6_CARBO] O5-C5-C6-O6, omega-tilde dihedral, for residue with syn C4,C5 like Gal, 3-fold term)
+#
+  36    8.620      0.0       3
+# N-CHn-CHn-OA (lipid)     2.1
+#
+  37    9.500      0.0       3
+# OA-CHn-CHn-OA (sugar)     2.3
+# (sugar: [prior to 56A6_CARBO] O5-C5-C6-O6, omega-tilde dihedral, for residue with anti C4,C5 like Glc, 3-fold term)
+#
+  38    0.000      0.0       4
+# -NR-FE-     0.0
+#
+  39    1.000    180.0       6
+# -CHn-N,NE-     0.24
+#
+  40    1.000      0.0       6
+# -CHn-C,NR(ring), CR1-     0.24
+#
+  41    3.770      0.0       6
+# -CHn-NT-     0.9
+#
+# NEW - FOR THE 56A6_CARBO
+#
+# T-index refers to Table 6 of Hansen & Hunenberger, J. Comput. Chem. 2011, 32, 998-1032
+#
+# ICP(H)[N]  CP[N] PD[N] NP[N]
+#
+# T1: 56A6_CARBO X-C-C-X; X not H (generic CC - unaltered from 53A6) -> is type 34
+#
+  42    4.900      0.0       3
+# T2: 56A6_CARBO X-C-O-X; X not H (generic CO)
+#
+  43    2.400      0.0       3
+# T3: 56A6_CARBO X-C-O-H (generic hydroxyl)
+#
+  44    7.000    180.0       1
+# T4: 56A6_CARBO Or-CH*r-O-X (exo-anomeric)
+#
+  45    2.000    180.0       1
+# T5: 56A6_CARBO CH*r-Or-CH*r-O (anomeric)
+#
+  46    2.500    60.0       1
+# T6: 56A6_CARBO Xr-CH*r-O-CH* (exocyclic methoxyl)
+#
+  47    2.500   -60.0       1
+# T7: 56A6_CARBO Xr-CH*r-O-CH* (exocyclic methoxyl)
+#
+  48    1.500    60.0       1
+# T8: 56A6_CARBO Xr-CH*r-CH*-CH*' (exocyclic ethyl)
+#
+  49    1.500   -60.0       1
+# T9: 56A6_CARBO Xr-CH*r-CH*-CH*' (exocyclic ethyl)
+#
+  50    1.000    60.0       1
+# T10: 56A6_CARBO Xr-CH*r-CH*-O (exocyclic oxymethyl)
+#
+  51    1.000   -60.0       1
+# T11: 56A6_CARBO Xr-CH*r-CH*-O (exocyclic oxymethyl)
+#
+  52    4.500   180.0       1
+# T12: 56A6_CARBO Ox-X-X-Ox; not type T13 (oxygen-oxygen gauche)
+#
+  53    1.000   180.0       1
+# T13: 56A6_CARBO Ox-X-X-Or (oxygen-oxygen intracyclic)
+#
+END
+SINGLEATOMLJPAIR
+#
+#     normal van der Waals parameters
+#     third neighbour van der Waals parameters
+#     selection of van der Waals (repulsive) parameters
+#
+#number of atom types
+#       NRATT
+        56
+#
+#       IAC     TYPE    SQRT(C6)   SQRT(C12(1))  SQRT(C12(2)) SQRT(C12(3))
+#---
+        1       O       0.04756 1.000E-3       1.130E-3        0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.04756          0.8611E-3
+   1   1   2   1   2   2   2   2   2   2   2   1   1   1   1   1   1   1   1   1
+   1   1   1   2   2   2   2   2   2   2   1   1   1   1   1   2   2   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   2   1   1   1
+#---
+        2      OM     0.04756     0.8611E-3     1.841E-3     3.068E-3
+#CS6 CS12 parameters LJ14PAIR
+     0.04756          0.8611E-3
+   1   1   2   1   2   2   2   3   2   3   3   1   1   1   1   1   1   1   1   1
+   1   1   1   3   3   3   3   3   3   3   1   1   1   1   1   2   3   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   2   1   1   1
+#---
+        3      OA     0.04756     1.100E-3     1.227E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.04756          1.125E-3
+   2   2   2   2   2   2   2   2   2   2   2   1   1   1   1   1   1   1   1   1
+   1   1   1   2   2   2   2   2   2   2   1   2   2   2   1   2   2   2   1   1
+   1   1   1   2   1   1   2   1   1   2   1   2   2   2   1   1
+#---
+        4      OE     0.04756     1.100E-3     1.227E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.04756          1.125E-3
+   1   1   2   1   2   2   2   2   2   2   2   1   1   1   1   1   1   1   1   1
+   1   1   1   2   2   2   2   2   2   2   1   1   1   1   1   2   2   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   2   1   1   1
+#---
+        5      OW     0.05116     1.623E-3     1.623E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.05116          1.623E-3
+   2   2   2   2   2   2   2   2   2   2   2   1   1   1   1   1   1   1   1   1
+   1   1   1   2   2   2   2   2   2   2   1   2   2   2   1   2   2   2   1   1
+   1   1   1   2   1   1   2   1   1   2   1   2   2   2   1   1
+#---
+        6       N     0.04936     1.523E-3     1.943E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.04936          1.301E-3
+   2   2   2   2   2   1   2   1   2   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   2   2   2   1   2   1   2   1   1
+   1   1   1   2   1   1   2   1   1   1   1   2   2   2   1   1
+#---
+        7      NT     0.04936     1.523E-3     2.250E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.04936          1.301E-3
+   2   2   2   2   2   2   2   2   2   2   2   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   2   2   2   1   2   1   2   1   1
+   1   1   1   2   1   1   2   1   1   2   1   2   2   2   1   1
+#---
+        8      NL     0.04936     1.523E-3     3.068E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.04936          1.301E-3
+   2   2   2   2   2   1   2   1   2   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   2   2   2   1   2   1   2   1   1
+   1   1   1   2   1   1   2   1   1   1   1   2   2   2   1   1
+#---
+        9      NR     0.04936     1.523E-3     1.841E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.04936          1.301E-3
+   2   2   2   2   2   2   2   2   2   2   2   1   1   1   1   1   1   1   1   1
+   1   1   1   2   2   2   2   2   2   2   1   2   2   2   1   2   2   2   1   1
+   1   1   1   2   1   1   2   1   1   2   1   2   2   2   1   1
+#---
+       10      NZ     0.04936     1.523E-3     2.148E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.04936          1.301E-3
+   2   2   2   2   2   1   2   1   2   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   2   2   2   1   2   1   2   1   1
+   1   1   1   2   1   1   2   1   1   1   1   2   2   2   1   1
+#---
+       11      NE     0.04936     1.523E-3     1.984E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.04936          1.301E-3
+   2   2   2   2   2   1   2   1   2   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   2   2   2   1   2   1   2   1   1
+   1   1   1   2   1   1   2   1   1   1   1   2   2   2   1   1
+#---
+       12     C     0.04838     2.222E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.04838          1.837E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       13     CH0     0.04896     14.330E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.04838          1.837E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       14     CH1     0.07790     9.850E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.05396          1.933E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       15     CH2     0.08642     5.828E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.06873          2.1775964E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       16     CH3     0.09805     5.162E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.08278          2.455782E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       17     CH4     0.1148     5.862E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.1148          5.862E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       18     CH2r     0.08564     5.297E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.06873         1.36E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       19     CR1     0.07425     3.888E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.07435          2.886E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       20     HC     0.0092     0.123E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.0092          0.123E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       21     H     0.0     0.0          0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.0          0.0
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       22     DUM     0.0     0.0          0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.0          0.0
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       23     S     0.09992     3.616E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.09992          3.616E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       24    CU1+     0.02045     0.07159E-3     0.2250E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.02045          0.07159E-3
+   2   2   2   2   2   1   1   1   2   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   2   2   2   1   2   1   2   1   1
+   1   1   1   2   1   1   2   1   1   1   1   2   1   2   1   1
+#---
+       25    CU2+     0.02045     0.07159E-3     0.4091E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.02045          0.07159E-3
+   2   2   2   2   2   1   1   1   2   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   2   2   2   1   2   1   2   1   1
+   1   1   1   2   1   1   2   1   1   1   1   2   1   2   1   1
+#---
+       26      FE     0.0     0.0          0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.0          0.0
+   2   2   2   2   2   1   1   1   2   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   2   2   2   1   2   1   2   1   1
+   1   1   1   2   1   1   2   1   1   1   1   2   1   2   1   1
+#---
+       27    ZN2+     0.02045     0.09716E-3     0.09716E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.02045          0.09716E-3
+   2   2   2   2   2   1   1   1   2   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   2   2   2   1   2   1   2   1   1
+   1   1   1   2   1   1   2   1   1   1   1   2   1   2   1   1
+#---
+       28    MG2+    0.008080     0.05838E-3     0.05838E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.008080          0.05838E-3
+   2   2   2   2   2   1   1   1   2   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   2   2   2   1   2   1   2   1   1
+   1   1   1   2   1   1   2   1   1   1   1   2   1   2   1   1
+#---
+       29    CA2+     0.03170     0.7057E-3     0.7057E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.03170          0.7057E-3
+   2   2   2   2   2   1   1   1   2   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   2   2   2   1   2   1   2   1   1
+   1   1   1   2   1   1   2   1   1   1   1   2   1   2   1   1
+#---
+       30    P,SI     0.1214     4.711E-3     4.711E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.1214          4.711E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       31     AR     0.07915     3.138E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.07915          3.138E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       32       F     0.03432     0.8722E-3     1.227E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.03432          0.8722E-3
+   1   1   2   1   2   2   2   2   2   2   2   1   1   1   1   1   1   1   1   1
+   1   1   1   2   2   2   2   2   2   2   1   1   1   1   1   2   2   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   2   1   1   1
+#---
+       33      CL     0.09362     3.911E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.09362          3.911E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       34      BR     0.16630     8.092E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.16630          8.092E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       35     CMet     0.09421     4.400E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.09421          4.400E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       36    OMet     0.04756     1.525E-3     1.525E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.04756          1.525E-3
+   2   2   2   2   2   2   2   2   2   2   2   1   1   1   1   1   1   1   1   1
+   1   1   1   2   2   2   2   2   2   2   1   2   2   2   1   2   2   2   1   1
+   1   1   1   2   1   1   2   1   1   2   1   2   2   2   1   1
+#---
+       37     NA+      0.008489     0.1450E-3     0.1450E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.008489          0.1450E-3
+   2   2   2   2   2   1   1   1   2   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   2   2   2   1   2   1   2   1   1
+   1   1   1   2   1   1   2   1   1   1   1   2   1   2   1   1
+#---
+       38     CL-     0.1175     10.340E-3     10.340E-3     10.340E-3
+#CS6 CS12 parameters LJ14PAIR
+     0.1175          10.340E-3
+   1   1   2   1   2   2   2   3   2   3   3   1   1   1   1   1   1   1   1   1
+   1   1   1   3   3   3   3   3   3   3   1   1   1   1   1   2   3   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   2   1   1   1
+#---
+       39     CChl   0.051292     2.0160E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.051292          2.0160E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       40     CLChl  0.091141     3.7101E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.091141          3.7101E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       41     HChl     0.00614     0.065574E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.00614          0.065574E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       42     SDmso     0.10277     4.6366E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.10277          4.6366E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       43     CDmso  0.09805     5.1620E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.09805          5.1620E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       44   ODmso     0.047652     0.86686E-3     1.125E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.047652          0.86686E-3
+   1   1   2   1   2   2   2   2   2   2   2   1   1   1   1   1   1   1   1   1
+   1   1   1   2   2   2   2   2   2   2   1   1   1   1   1   2   2   1   1   1
+   1   1   1   1   1   1   1   1   1   2   1   1   2   1   1   1
+#---
+       45   CCl4      0.051292     2.7568E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.051292          2.7568E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       46   CLCl4     0.087201     3.5732E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.087201          3.5732E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       47   FTFE     0.03432     1.000E-3     1.000E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.03432          1.000E-3
+   1   1   2   1   2   2   2   2   2   2   2   1   1   1   1   1   1   1   1   1
+   1   1   1   2   2   2   2   2   2   2   1   1   1   1   1   2   2   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   2   1   1   1
+#---
+       48   CTFE     0.04838     1.837E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.04838          1.837E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       49   CHTFE     0.08429     5.077E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.08429          5.077E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       50    OTFE     0.04756     1.227E-3     1.227E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.04756          1.227E-3
+   1   1   2   1   2   1   2   1   2   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   2   1   1   1   1
+   1   1   1   2   1   1   1   1   1   2   1   2   2   1   1   1
+#---
+       51   CUrea      0.069906     3.6864E-3     0.0          0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.069906          3.6864E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       52   OUrea     0.04862     1.2609E-3     1.2609E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.04862          1.2609E-3
+   1   1   2   1   2   2   2   2   2   2   2   1   1   1   1   1   1   1   1   1
+   1   1   1   2   2   2   2   2   2   2   1   1   1   1   1   2   2   1   1   1
+   1   1   1   1   1   1   1   1   1   2   1   1   2   1   1   1
+#---
+       53   NUrea     0.057903 1.9877E-3     1.9877E-3     0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.057903     1.9877E-3
+   2   2   2   2   2   2   2   2   2   2   2   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   2   2   2   1   2   1   2   1   1
+   1   1   1   2   1   1   2   1   1   2   1   2   2   2   1   1
+#---
+       54      Or       0.04756 1.100E-3        1.227E-3        0.0
+#CS6 CS12 parameters LJ14PAIR
+     0.04756         0.685E-3
+   1   1   2   1   2   2   2   2   2   2   2   1   1   1   1   1   1   1   1   1
+   1   1   1   2   2   2   2   2   2   2   1   1   1   1   1   2   2   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   2   1   1   1
+#---
+       55       CH0r     0.04896 14.330E-3       0.0             0.0
+#CS6 CS12 parameters LJ14PAIR for now using 1-4 params as for CH2r
+     0.06873         1.36E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+       56       CH1r     0.07790 9.850E-3        0.0             0.0
+#CS6 CS12 parameters LJ14PAIR for now using 1-4 params as for CH2r
+     0.06873         1.36E-3
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1   1
+#---
+END
+MIXEDATOMLJPAIR
+#
+#     normal van der Waals parameters for mixed atom type pairs (I,J)
+#
+   39   40      4.6754E-3       7.4813E-6     4.6754E-3       7.4813E-6
+   39   41      0.3622E-3       0.1745E-6     0.3622E-3       0.1745E-6
+   40   41      0.6493E-3       0.3266E-6     0.6493E-3       0.3266E-6
+END
+SPECATOMLJPAIR
+#
+# NEW - FOR THE 56A6_CARBO
+#
+# N-index refers to Table 5 of Hansen & Hunenberger, J. Comput. Chem. 2011, 32, 998-1032
+#
+# TYPE  C12  C6
+#
+# N1: 56A6_CARBO H-O-X-Or (lactol)
+#
+  1   0.70E-6     0.0
+#
+# N2: 56A6_CARBO H-O-Xr-Xr-Xr (hydroxyl)
+#
+  2   0.35E-6     0.0
+#
+# N3: 56A6_CARBO CH*-Xr-Xr-CH*r (substituent to ring)
+#
+  3   3.33986E-6  5.689469E-3
+#
+# N4: 56A6_CARBO O-Xr-Xr-CH*r (substituent to ring)
+#
+  4   2.5E-6      3.268799E-3
+#
+# N5: 56A6_CARBO O-Xr-Xr-Xr-CH*r (Hassel-Ottar)
+#
+  5   8.4108E-6   4.110135E-3
+#
+END

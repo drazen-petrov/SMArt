@@ -1,0 +1,6 @@
+numpy>=1.11.0
+pandas
+scipy
+matplotlib>=1.5.1
+setuptools>=20.7.0
+pymbar

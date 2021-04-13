@@ -1,0 +1,22 @@
+name: smart
+channels:
+  - conda-forge
+  - defaults
+  - bioconda
+  - plip
+  - tpeulen
+dependencies:
+  - numpy
+  - pandas
+  - matplotlib
+  - setuptools
+  - pymbar
+#  - six
+#  - Bio
+  - pyyaml
+  - pymol-open-source 
+  - scikit-build
+  - pip
+#  - pocl
+
+

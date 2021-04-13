@@ -1,0 +1,18 @@
+TITLE
+PERTURBATION TOPOLOGY BASED ON N = 2 STATES
+
+	from /mnt/c/Users/draze/poso_local/coding/clean_smart/smart/doc/examples/some_data/gromos/villin/wt.top (GROMOS)
+
+	from /mnt/c/Users/draze/poso_local/coding/clean_smart/smart/doc/examples/some_data/gromos/villin/mut.top (GROMOS)
+
+END
+PERTATOMPARAM
+4
+    70    7    CZ  12   12.01100   -0.14000  12   12.01100    0.20300        0        0
+    71    7    HZ  20    1.00800    0.14000  22    1.00800    0.00000     1.00     1.00
+    72    7    OH  22   15.99940    0.00000   3   15.99940   -0.61100     1.00     1.00
+    73    7    HH  22    1.00800    0.00000  21    1.00800    0.40800     1.00     1.00
+END
+PERTATOMPAIR
+0
+END

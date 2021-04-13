@@ -1,0 +1,1975 @@
+TITLE
+File          : 53a6@OXY_small.mtb
+Force field   : 53A6@OXY (condensed-phase simulations)
+Reference     : Horta et al. J. Chem. Theory Comput. 2011, 7, 1016-1031
+File content  : Molecular topology building blocks (small organic molecules)
+Format        : GROMOS11
+Initial file  : PHH, BACH, Zuerich, Dec. 2010
+Time stamp    : PHH, Thu Sep 27 12:35:03 CEST 2012
+Remark        : ***warning*** this file is an auxiliary mtb file - since Nov 2011, these
+                files no longer contain blocks that were redundant with those of the
+                corresponding main mtb file. As a result, make_top must always be called
+                with inclusion of the main mtb file in addition to possible auxiliary ones.
+Remark        : ***warning*** 53A(B)6_OXY is not a slight variant of 53A(B)6, it is really a different 
+                force field (intermediate step to a new version, tentatively 61A8, 
+                to be released soon)
+Remark        : Change from 53A(B)6 involves different Lennard-Jones parameters for the atom 
+                types O, OA and OE, and different charges for the oxygen-containing chemical functions
+Remark        : Parameterization against pure-liquid and solvation (water, cyclohexane)
+                properties of model oxygen-containing organic compounds
+Remark        : information on the compound namings can be found just below the TITLE block
+Remark        : There is no B force-field version for this set (use 54B7 instead)
+Remark        : Versions beyond 54A(B)7 [including 54C(D)7, 53A(B)6@OXY, 56A(B)6@CARBO]
+                are only available in GROMOS11 format (i.e. all after the release of May 2011)
+Remark        : PHH, May 2011
+                - finalized GROMOS11 file distribution
+                - enforced sequential ordering by (central) atom numbers in covalent terms
+                  for all files (no effect on GROMOS11 make_top; make_top enforced it anyway,
+                  but now, we avoid the big list of warnings)
+Modifications : [list below changes after May 2011 - with initials, location and date - and update time stamp]
+PHH, 09.11.2011: Renamed 53A6_OXY to 53A6@OXY (@: force-field variant; _: auxiliary mtb).
+PHH, 09.11.2011: Reintroduced a FORCEFIELD block in all GROMOS11 files.
+PHH, 09.11.2011: Removed all MTBUILDBLSOLVENT blocks from all auxiliary mtb files (now only
+                 included in the main mtb file). As a result, make_top must now always be called
+                 with inclusion of the main mtb file (in addition to the possible auxiliary ones).
+PHH, 22.11.2011: Finalized the #@BLOCKTYPE comments in mtb files listing file name, residue
+                 code (BLK=...), function (SOL,INI,TER,SVT), type (TYPE=APEP,BPEP,DNUC,RNUC,
+                 HEXP,HEXU,MOLE), and full name (NAME=...): intended for later use by make_top.
+PHH, 26.06.2012: Introduced MAKETOPVERSION blocks in all GROMOS11 files
+PHH, 12.07.2012: Removed all LINKEXCLUSIONS and PHYSICALCONSTANTS blocks from GROMOS11 
+                 auxiliary mtb files (now only included in the main mtb file). As a result 
+                 (and also since MTBUILBLSOLVENT is only to be found there), make_top must
+                 always be called with inclusion of the main mtb file (in addition to 
+                 the possible auxiliary ones).
+END
+FORCEFIELD
+53A6@OXY
+END
+MAKETOPVERSION
+1.0
+END
+#
+# Nomenclature of the building blocks:
+# ====================================
+#
+# ALCOHOLS:
+#  MTL  - methanol
+#  ETL  - ethanol
+#  1PL  - 1-propanol
+#  2PL  - 2-propanol
+#  BTL  - 1-butanol
+#  PTL  - 1-pentanol
+#  HXL  - 1-hexanol
+#  HPL  - 1-heptanol
+#  OTL  - 1-octanol
+#  2BTL - 2-butanol
+#  2PTL - 2-pentanol
+#  3PTL - 3-pentanol
+#  CHXL - cyclohexanol
+#  2M2P - 2-methyl-2-propanol
+#  2M2B - 2-methyl-2-butanol
+# ETHERS:
+#  DME  - dimethylether
+#  DEE  - diethylether
+#  MPH  - methylpropylether
+#  DXE  - 1,2-dimethoxiethane
+# ALDEHYDES:
+#  EAL  - ethanal
+#  PAL  - propanal
+#  BAL  - butanal
+# KETONES:
+#  PPN  - propanone
+#  BTN  - butanone
+#  2PN  - 2-pentanone
+#  3PN  - 3-pentanone
+#  2HN  - 2-hexanone
+#  3HN  - 3-hexanone
+# ESTERS:
+#  EAE  - ethylacetate
+#  MPE  - methylpropanoate
+#  PAE  - propylacetate
+#  BAE  - butylacetate
+# ACIDS:
+#  ACA  - acetic acid
+#  PPA  - propanoic acid
+#  BTA  - butanoic acid
+# OTHERS:
+#  CHE  - cyclohexane
+#
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK MTL SOL TYPE MOLE NAME methanol
+# building block (residue, nucleotide, etc.)
+# RNME
+MTL
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    3    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 H1     21    1    0.41000   0   2    2    3
+    2 O1      3   16   -0.70000   0   1    3
+    3 C1     16    5    0.29000   1   0
+# bonds
+#  NB
+    2
+#  IB   JB  MCB
+    1    2    1
+    2    3   18
+# bond angles
+# NBA
+    1
+#  IB   JB   KB  MCB
+    1    2    3   12
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK ETL SOL TYPE MOLE NAME ethanol
+# building block (residue, nucleotide, etc.)
+# RNME
+ETL
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    4    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 H1     21    1    0.41000   0   2    2    3
+    2 O1      3   16   -0.70000   0   2    3    4
+    3 C1     15    4    0.29000   1   1    4
+    4 C2     16    5    0.00000   1   0
+# bonds
+#  NB
+    3
+#  IB   JB  MCB
+    1    2    1
+    2    3   18
+    3    4   27
+# bond angles
+# NBA
+    2
+#  IB   JB   KB  MCB
+    1    2    3   12
+    2    3    4   15
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    1
+#  IB   JB   KB   LB  MCB
+    1    2    3    4   23
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK 1PL SOL TYPE MOLE NAME 1-propanol
+# building block (residue, nucleotide, etc.)
+# RNME
+1PL
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    5    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 H1     21    1    0.41000   0   2    2    3
+    2 O1      3   16   -0.70000   0   2    3    4
+    3 C1     15    4    0.29000   1   2    4    5
+    4 C2     15    4    0.00000   0   1    5
+    5 C3     16    5    0.00000   1   0
+# bonds
+#  NB
+    4
+#  IB   JB  MCB
+    1    2    1
+    2    3   18
+    3    4   27
+    4    5   27
+# bond angles
+# NBA
+    3
+#  IB   JB   KB  MCB
+    1    2    3   12
+    2    3    4   15
+    3    4    5   15
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    2
+#  IB   JB   KB   LB  MCB
+    1    2    3    4   23
+    2    3    4    5   34
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK 2PL SOL TYPE MOLE NAME 2-propanol
+# building block (residue, nucleotide, etc.)
+# RNME
+2PL
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    5    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     16    5    0.00000   1   3    2    4    5
+    2 O1      3   16   -0.70000   0   3    3    4    5
+    3 H1     21    1    0.41000   0   1    4
+    4 C2     14    3    0.29000   1   1    5
+    5 C3     16    5    0.00000   1   0
+# bonds
+#  NB
+    4
+#  IB   JB  MCB
+    1    4   27
+    2    3    1
+    2    4   18
+    4    5   27
+# bond angles
+# NBA
+    4
+#  IB   JB   KB  MCB
+    3    2    4   12
+    1    4    2   15
+    1    4    5   15
+    2    4    5   15
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    4    1    2    5    2
+# dihedrals
+# NDA
+    1
+#  IB   JB   KB   LB  MCB
+    3    2    4    1   23
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK BTL SOL TYPE MOLE NAME 1-butanol
+# building block (residue, nucleotide, etc.)
+# RNME
+BTL
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    6    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 H1     21    1    0.41000   0   2    2    3
+    2 O1      3   16   -0.70000   0   2    3    4
+    3 C1     15    4    0.29000   1   2    4    5
+    4 C2     15    4    0.00000   0   2    5    6
+    5 C3     15    4    0.00000   0   1    6
+    6 C4     16    5    0.00000   1   0
+# bonds
+#  NB
+    5
+#  IB   JB  MCB
+    1    2    1
+    2    3   18
+    3    4   27
+    4    5   27
+    5    6   27
+# bond angles
+# NBA
+    4
+#  IB   JB   KB  MCB
+    1    2    3   12
+    2    3    4   15
+    3    4    5   15
+    4    5    6   15
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    3
+#  IB   JB   KB   LB  MCB
+    1    2    3    4   23
+    2    3    4    5   34
+    3    4    5    6   34
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK PTL SOL TYPE MOLE NAME 1-pentanol
+# building block (residue, nucleotide, etc.)
+# RNME
+PTL
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    7    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 H1     21    1    0.41000   0   2    2    3
+    2 O1      3   16   -0.70000   0   2    3    4
+    3 C1     15    4    0.29000   1   2    4    5
+    4 C2     15    4    0.00000   0   2    5    6
+    5 C3     15    4    0.00000   1   2    6    7
+    6 C4     15    4    0.00000   0   1    7
+    7 C5     16    5    0.00000   1   0
+# bonds
+#  NB
+    6
+#  IB   JB  MCB
+    1    2    1
+    2    3   18
+    3    4   27
+    4    5   27
+    5    6   27
+    6    7   27
+# bond angles
+# NBA
+    5
+#  IB   JB   KB  MCB
+    1    2    3   12
+    2    3    4   15
+    3    4    5   15
+    4    5    6   15
+    5    6    7   15
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    4
+#  IB   JB   KB   LB  MCB
+    1    2    3    4   23
+    2    3    4    5   34
+    3    4    5    6   34
+    4    5    6    7   34
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK HXL SOL TYPE MOLE NAME 1-hexanol
+# building block (residue, nucleotide, etc.)
+# RNME
+HXL
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    8    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 H1     21    1    0.41000   0   2    2    3
+    2 O1      3   16   -0.70000   0   2    3    4
+    3 C1     15    4    0.29000   1   2    4    5
+    4 C2     15    4    0.00000   0   2    5    6
+    5 C3     15    4    0.00000   0   2    6    7
+    6 C4     15    4    0.00000   1   2    7    8
+    7 C5     15    4    0.00000   0   1    8
+    8 C6     16    5    0.00000   1   0
+# bonds
+#  NB
+    7
+#  IB   JB  MCB
+    1    2    1
+    2    3   18
+    3    4   27
+    4    5   27
+    5    6   27
+    6    7   27
+    7    8   27
+# bond angles
+# NBA
+    6
+#  IB   JB   KB  MCB
+    1    2    3   12
+    2    3    4   15
+    3    4    5   15
+    4    5    6   15
+    5    6    7   15
+    6    7    8   15
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    5
+#  IB   JB   KB   LB  MCB
+    1    2    3    4   23
+    2    3    4    5   34
+    3    4    5    6   34
+    4    5    6    7   34
+    5    6    7    8   34
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK HPL SOL TYPE MOLE NAME 1-heptanol
+# building block (residue, nucleotide, etc.)
+# RNME
+HPL
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    9    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 H1     21    1    0.41000   0   2    2    3
+    2 O1      3   16   -0.70000   0   2    3    4
+    3 C1     15    4    0.29000   1   2    4    5
+    4 C2     15    4    0.00000   0   2    5    6
+    5 C3     15    4    0.00000   1   2    6    7
+    6 C4     15    4    0.00000   0   2    7    8
+    7 C5     15    4    0.00000   1   2    8    9
+    8 C6     15    4    0.00000   0   1    9
+    9 C7     16    5    0.00000   1   0
+# bonds
+#  NB
+    8
+#  IB   JB  MCB
+    1    2    1
+    2    3   18
+    3    4   27
+    4    5   27
+    5    6   27
+    6    7   27
+    7    8   27
+    8    9   27
+# bond angles
+# NBA
+    7
+#  IB   JB   KB  MCB
+    1    2    3   12
+    2    3    4   15
+    3    4    5   15
+    4    5    6   15
+    5    6    7   15
+    6    7    8   15
+    7    8    9   15
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    6
+#  IB   JB   KB   LB  MCB
+    1    2    3    4   23
+    2    3    4    5   34
+    3    4    5    6   34
+    4    5    6    7   34
+    5    6    7    8   34
+    6    7    8    9   34
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK OTL SOL TYPE MOLE NAME 1-octanol
+# building block (residue, nucleotide, etc.)
+# RNME
+OTL
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+   10    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 H1     21    1    0.41000   0   2    2    3
+    2 O1      3   16   -0.70000   0   2    3    4
+    3 C1     15    4    0.29000   1   2    4    5
+    4 C2     15    4    0.00000   0   2    5    6
+    5 C3     15    4    0.00000   0   2    6    7
+    6 C4     15    4    0.00000   1   2    7    8
+    7 C5     15    4    0.00000   0   2    8    9
+    8 C6     15    4    0.00000   1   2    9   10
+    9 C7     15    4    0.00000   0   1   10
+   10 C8     16    5    0.00000   1   0
+# bonds
+#  NB
+    9
+#  IB   JB  MCB
+    1    2    1
+    2    3   18
+    3    4   27
+    4    5   27
+    5    6   27
+    6    7   27
+    7    8   27
+    8    9   27
+    9   10   27
+# bond angles
+# NBA
+    8
+#  IB   JB   KB  MCB
+    1    2    3   12
+    2    3    4   15
+    3    4    5   15
+    4    5    6   15
+    5    6    7   15
+    6    7    8   15
+    7    8    9   15
+    8    9   10   15
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    7
+#  IB   JB   KB   LB  MCB
+    1    2    3    4   23
+    2    3    4    5   34
+    3    4    5    6   34
+    4    5    6    7   34
+    5    6    7    8   34
+    6    7    8    9   34
+    7    8    9   10   34
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK 2BTL SOL TYPE MOLE NAME 2-butanol
+# building block (residue, nucleotide, etc.)
+# RNME
+2BTL
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    6    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     16    5    0.00000   1   3    2    3    5
+    2 C2     14    3    0.29000   0   4    3    4    5    6
+    3 O1      3   16   -0.70000   0   2    4    5
+    4 H1     21    1    0.41000   1   0
+    5 C3     15    4    0.00000   0   1    6
+    6 C4     16    5    0.00000   1   0
+# bonds
+#  NB
+    5
+#  IB   JB  MCB
+    1    2   27
+    2    3   18
+    2    5   27
+    3    4    1
+    5    6   27
+# bond angles
+# NBA
+    5
+#  IB   JB   KB  MCB
+    1    2    3   15
+    1    2    5   15
+    3    2    5   15
+    2    3    4   12
+    2    5    6   15
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    2    1    3    5    2
+# dihedrals
+# NDA
+    2
+#  IB   JB   KB   LB  MCB
+    1    2    3    4   23
+    1    2    5    6   34
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK 2PTL SOL TYPE MOLE NAME 2-pentanol
+# building block (residue, nucleotide, etc.)
+# RNME
+2PTL
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    7    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     16    5    0.00000   1   3    2    3    5
+    2 C2     14    3    0.29000   0   4    3    4    5    6
+    3 O1      3   16   -0.70000   0   2    4    5
+    4 H1     21    1    0.41000   1   0
+    5 C3     15    4    0.00000   0   2    6    7
+    6 C4     15    4    0.00000   0   1    7
+    7 C5     16    5    0.00000   1   0
+# bonds
+#  NB
+    6
+#  IB   JB  MCB
+    1    2   27
+    2    3   18
+    2    5   27
+    3    4    1
+    5    6   27
+    6    7   27
+# bond angles
+# NBA
+    6
+#  IB   JB   KB  MCB
+    1    2    3   15
+    1    2    5   15
+    3    2    5   15
+    2    3    4   12
+    2    5    6   15
+    5    6    7   15
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    2    1    3    5    2
+# dihedrals
+# NDA
+    3
+#  IB   JB   KB   LB  MCB
+    1    2    3    4   23
+    1    2    5    6   34
+    2    5    6    7   34
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK 3PTL SOL TYPE MOLE NAME 3-pentanol
+# building block (residue, nucleotide, etc.)
+# RNME
+3PTL
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    7    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     16    5    0.00000   0   2    2    3
+    2 C2     15    4    0.00000   1   3    3    4    6
+    3 C3     14    3    0.29000   0   4    4    5    6    7
+    4 O1      3   16   -0.70000   0   2    5    6
+    5 H1     21    1    0.41000   1   0
+    6 C4     15    4    0.00000   0   1    7
+    7 C5     16    5    0.00000   1   0
+# bonds
+#  NB
+    6
+#  IB   JB  MCB
+    1    2   27
+    2    3   27
+    3    4   18
+    3    6   27
+    4    5    1
+    6    7   27
+# bond angles
+# NBA
+    6
+#  IB   JB   KB  MCB
+    1    2    3   15
+    2    3    4   15
+    2    3    6   15
+    4    3    6   15
+    3    4    5   12
+    3    6    7   15
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    6    2    4    3    2
+# dihedrals
+# NDA
+    3
+#  IB   JB   KB   LB  MCB
+    1    2    3    4   34
+    2    3    4    5   23
+    2    3    6    7   34
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK CHXL SOL TYPE MOLE NAME cyclohexanol
+# building block (residue, nucleotide, etc.)
+# RNME
+CHXL
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    8    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     14    3    0.29000   0   6    2    3    4    5    7    8
+    2 O1      3   16   -0.70000   0   3    3    4    8
+    3 H1     21    1    0.41000   1   0
+    4 C2     18    4    0.00000   0   3    5    6    8
+    5 C3     18    4    0.00000   1   2    6    7
+    6 C4     18    4    0.00000   1   2    7    8
+    7 C5     18    4    0.00000   0   1    8
+    8 C6     18    4    0.00000   1   0
+# bonds
+#  NB
+    8
+#  IB   JB  MCB
+    1    2   18
+    1    4   27
+    1    8   27
+    2    3    1
+    4    5   27
+    5    6   27
+    6    7   27
+    7    8   27
+# bond angles
+# NBA
+    9
+#  IB   JB   KB  MCB
+    2    1    4   15
+    2    1    8   15
+    4    1    8    8
+    1    2    3   12
+    1    4    5    8
+    4    5    6    8
+    5    6    7    8
+    6    7    8    8
+    1    8    7    8
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    8    2    4    1    2
+# dihedrals
+# NDA
+    7
+#  IB   JB   KB   LB  MCB
+    4    1    2    3   23
+    2    1    4    5   34
+    2    1    8    7   34
+    1    4    5    6   34
+    4    5    6    7   34
+    5    6    7    8   34
+    6    7    8    1   34
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK 2M2P SOL TYPE MOLE NAME 2-methyl-2-propanol
+# building block (residue, nucleotide, etc.)
+# RNME
+2M2P
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    6    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     13   12    0.29000   0   5    2    3    4    5    6
+    2 O1      3   16   -0.70000   0   4    3    4    5    6
+    3 H1     21    1    0.41000   1   0
+    4 C2     16    5    0.00000   1   2    5    6
+    5 C3     16    5    0.00000   1   1    6
+    6 C4     16    5    0.00000   1   0
+# bonds
+#  NB
+    5
+#  IB   JB  MCB
+    1    2   18
+    1    4   27
+    1    5   27
+    1    6   27
+    2    3    1
+# bond angles
+# NBA
+    7
+#  IB   JB   KB  MCB
+    2    1    4   15
+    2    1    5   15
+    2    1    6   15
+    4    1    5   15
+    4    1    6   15
+    5    1    6   15
+    1    2    3   12
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    1
+#  IB   JB   KB   LB  MCB
+    4    1    2    3   23
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK 2M2B SOL TYPE MOLE NAME 2-methyl-2-butanol
+# building block (residue, nucleotide, etc.)
+# RNME
+2M2B
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    7    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     13   12    0.29000   0   6    2    3    4    5    6    7
+    2 O1      3   16   -0.70000   0   4    3    4    5    6
+    3 H1     21    1    0.41000   1   0
+    4 C2     16    5    0.00000   1   2    5    6
+    5 C3     16    5    0.00000   1   1    6
+    6 C4     15    4    0.00000   0   1    7
+    7 C5     16    5    0.00000   1   0
+# bonds
+#  NB
+    6
+#  IB   JB  MCB
+    1    2   18
+    1    4   27
+    1    5   27
+    1    6   27
+    2    3    1
+    6    7   27
+# bond angles
+# NBA
+    8
+#  IB   JB   KB  MCB
+    2    1    4   15
+    2    1    5   15
+    2    1    6   15
+    4    1    5   15
+    4    1    6   15
+    5    1    6   15
+    1    2    3   12
+    1    6    7   15
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    2
+#  IB   JB   KB   LB  MCB
+    4    1    2    3   23
+    2    1    6    7   34
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK DME SOL TYPE MOLE NAME dimethylether
+# building block (residue, nucleotide, etc.)
+# RNME
+DME
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    3    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C2     16    5    0.29000   0   2    2    3
+    2 O1      4   16   -0.58000   0   1    3
+    3 C3     16    5    0.29000   1   0
+# bonds
+#  NB
+    2
+#  IB   JB  MCB
+    1    2   18
+    2    3   18
+# bond angles
+# NBA
+    1
+#  IB   JB   KB  MCB
+    1    2    3   15
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK DEE SOL TYPE MOLE NAME diethylether
+# building block (residue, nucleotide, etc.)
+# RNME
+DEE
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    5    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     16    5    0.00000   1   2    2    3
+    2 C2     15    4    0.29000   0   2    3    4
+    3 O1      4   16   -0.58000   0   2    4    5
+    4 C3     15    4    0.29000   1   1    5
+    5 C4     16    5    0.00000   1   0
+# bonds
+#  NB
+    4
+#  IB   JB  MCB
+    1    2   27
+    2    3   18
+    3    4   18
+    4    5   27
+# bond angles
+# NBA
+    3
+#  IB   JB   KB  MCB
+    1    2    3   15
+    2    3    4   15
+    3    4    5   15
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    2
+#  IB   JB   KB   LB  MCB
+    1    2    3    4   23
+    2    3    4    5   23
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK MPH SOL TYPE MOLE NAME methylpropylether
+# building block (residue, nucleotide, etc.)
+# RNME
+MPH
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    5    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     16    5    0.29000   0   2    2    3
+    2 O1      4   16   -0.58000   0   2    3    4
+    3 C2     15    4    0.29000   1   2    4    5
+    4 C3     15    4    0.00000   0   1    5
+    5 C4     16    5    0.00000   1   0
+# bonds
+#  NB
+    4
+#  IB   JB  MCB
+    1    2   18
+    2    3   18
+    3    4   27
+    4    5   27
+# bond angles
+# NBA
+    3
+#  IB   JB   KB  MCB
+    1    2    3   15
+    2    3    4   15
+    3    4    5   15
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    2
+#  IB   JB   KB   LB  MCB
+    1    2    3    4   23
+    2    3    4    5   34
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK DXE SOL TYPE MOLE NAME 1,2-dimethoxyethane(OXY)
+# building block (residue, nucleotide, etc.)
+# RNME
+DXE
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    6    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     16    5    0.29000   0   2    2    3
+    2 O1      4   16   -0.58000   0   2    3    4
+    3 C2     15    4    0.29000   1   2    4    5
+    4 C3     15    4    0.29000   0   2    5    6
+    5 O2      4   16   -0.58000   0   1    6
+    6 C4     16    5    0.29000   1   0
+# bonds
+#  NB
+    5
+#  IB   JB  MCB
+    1    2   18
+    2    3   18
+    3    4   27
+    4    5   18
+    5    6   18
+# bond angles
+# NBA
+    4
+#  IB   JB   KB  MCB
+    1    2    3   15
+    2    3    4   15
+    3    4    5   15
+    4    5    6   15
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    3
+#  IB   JB   KB   LB  MCB
+    1    2    3    4   23
+    2    3    4    5   34
+    3    4    5    6   23
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK EAL SOL TYPE MOLE NAME ethanal
+# building block (residue, nucleotide, etc.)
+# RNME
+EAL
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    4    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     12   12    0.37500   0   3    2    3    4
+    2 O1      1   16   -0.47500   0   2    3    4
+    3 H1     20    1    0.10000   0   1    4
+    4 C2     16    5    0.00000   1   0
+# bonds
+#  NB
+    3
+#  IB   JB  MCB
+    1    2    5
+    1    3    3
+    1    4   27
+# bond angles
+# NBA
+    3
+#  IB   JB   KB  MCB
+    2    1    3   25
+    2    1    4   33
+    3    1    4   21
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    1    2    3    4    1
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK PAL SOL TYPE MOLE NAME propanal
+# building block (residue, nucleotide, etc.)
+# RNME
+PAL
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    5    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     12   12    0.37500   0   4    2    3    4    5
+    2 O1      1   16   -0.47500   0   2    3    4
+    3 H1     20    1    0.10000   1   1    4
+    4 C2     15    4    0.00000   0   1    5
+    5 C3     16    5    0.00000   1   0
+# bonds
+#  NB
+    4
+#  IB   JB  MCB
+    1    2    5
+    1    3    3
+    1    4   27
+    4    5   27
+# bond angles
+# NBA
+    4
+#  IB   JB   KB  MCB
+    2    1    3   25
+    2    1    4   33
+    3    1    4   21
+    1    4    5   15
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    1    2    3    4    1
+# dihedrals
+# NDA
+    1
+#  IB   JB   KB   LB  MCB
+    2    1    4    5   40
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK BAL SOL TYPE MOLE NAME butanal
+# building block (residue, nucleotide, etc.)
+# RNME
+BAL
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    6    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     12   12    0.37500   0   4    2    3    4    5
+    2 O1      1   16   -0.47500   0   2    3    4
+    3 H1     20    1    0.10000   1   1    4
+    4 C2     15    4    0.00000   0   2    5    6
+    5 C3     15    4    0.00000   0   1    6
+    6 C4     16    5    0.00000   1   0
+# bonds
+#  NB
+    5
+#  IB   JB  MCB
+    1    2    5
+    1    3    3
+    1    4   27
+    4    5   27
+    5    6   27
+# bond angles
+# NBA
+    5
+#  IB   JB   KB  MCB
+    2    1    3   25
+    2    1    4   33
+    3    1    4   21
+    1    4    5   15
+    4    5    6   15
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    1    2    3    4    1
+# dihedrals
+# NDA
+    2
+#  IB   JB   KB   LB  MCB
+    2    1    4    5   40
+    1    4    5    6   34
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK PPN SOL TYPE MOLE NAME propanone
+# building block (residue, nucleotide, etc.)
+# RNME
+PPN
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    4    0 # preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     16    5    0.00000   1   3    2    3    4
+    2 C2     12   12    0.54000   0   2    3    4
+    3 O1      1   16   -0.54000   1   1    4
+    4 C3     16    5    0.00000   1   0
+# bonds
+#  NB
+    3
+#  IB   JB  MCB
+    1    2   27
+    2    3    5
+    2    4   27
+# bond angles
+# NBA
+    3
+#  IB   JB   KB  MCB
+    1    2    3   31
+    1    2    4   21
+    3    2    4   31
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    2    1    3    4    1
+# dihedrals
+# NDA
+    0
+#  IB   JB   KB   LB  MCB
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK BTN SOL TYPE MOLE NAME butanone
+# building block (residue, nucleotide, etc.)
+# RNME
+BTN
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    5    0 # preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     16    5    0.00000   1   3    2    3    4
+    2 C2     12   12    0.54000   0   3    3    4    5
+    3 O1      1   16   -0.54000   1   1    4
+    4 C3     15    4    0.00000   0   1    5
+    5 C4     16    5    0.00000   1   0
+# bonds
+#  NB
+    4
+#  IB   JB  MCB
+    1    2   27
+    2    3    5
+    2    4   27
+    4    5   27
+# bond angles
+# NBA
+    4
+#  IB   JB   KB  MCB
+    1    2    3   31
+    1    2    4   21
+    3    2    4   31
+    2    4    5   15
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    2    1    3    4    1
+# dihedrals
+# NDA
+    1
+#  IB   JB   KB   LB  MCB
+    1    2    4    5   40
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK 2PN SOL TYPE MOLE NAME 2-pentanone
+# building block (residue, nucleotide, etc.)
+# RNME
+2PN
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    6    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     16    5    0.00000   1   3    2    3    4
+    2 C2     12   12    0.54000   0   3    3    4    5
+    3 O1      1   16   -0.54000   1   1    4
+    4 C3     15    4    0.00000   0   2    5    6
+    5 C4     15    4    0.00000   0   1    6
+    6 C5     16    5    0.00000   1   0
+# bonds
+#  NB
+    5
+#  IB   JB  MCB
+    1    2   27
+    2    3    5
+    2    4   27
+    4    5   27
+    5    6   27
+# bond angles
+# NBA
+    5
+#  IB   JB   KB  MCB
+    1    2    3   31
+    1    2    4   21
+    3    2    4   31
+    2    4    5   15
+    4    5    6   15
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    2    1    3    4    1
+# dihedrals
+# NDA
+    2
+#  IB   JB   KB   LB  MCB
+    1    2    4    5   40
+    2    4    5    6   34
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK 3PN SOL TYPE MOLE NAME 3-pentanone
+# building block (residue, nucleotide, etc.)
+# RNME
+3PN
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    6    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     16    5    0.00000   0   2    2    3
+    2 C2     15    4    0.00000   1   3    3    4    5
+    3 C3     12   12    0.54000   0   3    4    5    6
+    4 O1      1   16   -0.54000   1   1    5
+    5 C4     15    4    0.00000   0   1    6
+    6 C5     16    5    0.00000   1   0
+# bonds
+#  NB
+    5
+#  IB   JB  MCB
+    1    2   27
+    2    3   27
+    3    4    5
+    3    5   27
+    5    6   27
+# bond angles
+# NBA
+    5
+#  IB   JB   KB  MCB
+    1    2    3   15
+    2    3    4   31
+    2    3    5   21
+    4    3    5   31
+    3    5    6   15
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    3    2    4    5    1
+# dihedrals
+# NDA
+    2
+#  IB   JB   KB   LB  MCB
+    1    2    3    4   40
+    2    3    5    6   40
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK 2HN SOL TYPE MOLE NAME 2-hexanone
+# building block (residue, nucleotide, etc.)
+# RNME
+2HN
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    7    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     16    5    0.00000   1   3    2    3    4
+    2 C2     12   12    0.54000   0   3    3    4    5
+    3 O1      1   16   -0.54000   1   1    4
+    4 C3     15    4    0.00000   0   2    5    6
+    5 C4     15    4    0.00000   1   2    6    7
+    6 C5     15    4    0.00000   0   1    7
+    7 C6     16    5    0.00000   1   0
+# bonds
+#  NB
+    6
+#  IB   JB  MCB
+    1    2   27
+    2    3    5
+    2    4   27
+    4    5   27
+    5    6   27
+    6    7   27
+# bond angles
+# NBA
+    6
+#  IB   JB   KB  MCB
+    1    2    3   31
+    1    2    4   21
+    3    2    4   31
+    2    4    5   15
+    4    5    6   15
+    5    6    7   15
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    2    1    3    4    1
+# dihedrals
+# NDA
+    3
+#  IB   JB   KB   LB  MCB
+    1    2    4    5   40
+    2    4    5    6   34
+    4    5    6    7   34
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK 3HN SOL TYPE MOLE NAME 3-hexanone
+# building block (residue, nucleotide, etc.)
+# RNME
+3HN
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    7    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     16    5    0.00000   0   2    2    3
+    2 C2     15    4    0.00000   1   3    3    4    5
+    3 C3     12   12    0.54000   0   3    4    5    6
+    4 O1      1   16   -0.54000   1   1    5
+    5 C4     15    4    0.00000   0   2    6    7
+    6 C5     15    4    0.00000   0   1    7
+    7 C6     16    5    0.00000   1   0
+# bonds
+#  NB
+    6
+#  IB   JB  MCB
+    1    2   27
+    2    3   27
+    3    4    5
+    3    5   27
+    5    6   27
+    6    7   27
+# bond angles
+# NBA
+    6
+#  IB   JB   KB  MCB
+    1    2    3   15
+    2    3    4   31
+    2    3    5   21
+    4    3    5   31
+    3    5    6   15
+    5    6    7   15
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    3    2    4    5    1
+# dihedrals
+# NDA
+    3
+#  IB   JB   KB   LB  MCB
+    1    2    3    4   40
+    2    3    5    6   40
+    3    5    6    7   34
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK ACA SOL TYPE MOLE NAME acetic acid
+# building block (residue, nucleotide, etc.)
+# RNME
+ACA
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    5    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     16    5    0.00000   1   3    2    3    4
+    2 C2     12   12    0.55000   0   3    3    4    5
+    3 O1      1   16   -0.55000   1   1    4
+    4 O2      3   16   -0.41000   0   1    5
+    5 H1     21    1    0.41000   1   0
+# bonds
+#  NB
+    4
+#  IB   JB  MCB
+    1    2   27
+    2    3    5
+    2    4   13
+    4    5    1
+# bond angles
+# NBA
+    4
+#  IB   JB   KB  MCB
+    1    2    3   35
+    1    2    4   16
+    3    2    4   31
+    2    4    5   12
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    2    1    3    4    1
+# dihedrals
+# NDA
+    1
+#  IB   JB   KB   LB  MCB
+    1    2    4    5   12
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK PPA SOL TYPE MOLE NAME propanoic acid
+# building block (residue, nucleotide, etc.)
+# RNME
+PPA
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    6    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     12   12    0.55000   0   5    2    3    4    5    6
+    2 O1      1   16   -0.55000   1   2    3    5
+    3 O2      3   16   -0.41000   0   2    4    5
+    4 H1     21    1    0.41000   1   0
+    5 C2     15    4    0.00000   0   1    6
+    6 C3     16    5    0.00000   1   0
+# bonds
+#  NB
+    5
+#  IB   JB  MCB
+    1    2    5
+    1    3   13
+    1    5   27
+    3    4    1
+    5    6   27
+# bond angles
+# NBA
+    5
+#  IB   JB   KB  MCB
+    2    1    3   31
+    2    1    5   35
+    3    1    5   16
+    1    3    4   12
+    1    5    6   15
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    1    2    3    5    1
+# dihedrals
+# NDA
+    2
+#  IB   JB   KB   LB  MCB
+    2    1    3    4   12
+    2    1    5    6   40
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK BTA SOL TYPE MOLE NAME butanoic acid
+# building block (residue, nucleotide, etc.)
+# RNME
+BTA
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    7    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     12   12    0.55000   0   5    2    3    4    5    6
+    2 O1      1   16   -0.55000   1   2    3    5
+    3 O2      3   16   -0.41000   0   2    4    5
+    4 H1     21    1    0.41000   1   0
+    5 C2     15    4    0.00000   0   2    6    7
+    6 C3     15    4    0.00000   0   1    7
+    7 C4     16    5    0.00000   1   0
+# bonds
+#  NB
+    6
+#  IB   JB  MCB
+    1    2    5
+    1    3   13
+    1    5   27
+    3    4    1
+    5    6   27
+    6    7   27
+# bond angles
+# NBA
+    6
+#  IB   JB   KB  MCB
+    2    1    3   31
+    2    1    5   35
+    3    1    5   16
+    1    3    4   12
+    1    5    6   15
+    5    6    7   15
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    1    2    3    5    1
+# dihedrals
+# NDA
+    3
+#  IB   JB   KB   LB  MCB
+    2    1    3    4   12
+    2    1    5    6   40
+    1    5    6    7   34
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK EAE SOL TYPE MOLE NAME ethylacetate
+# building block (residue, nucleotide, etc.)
+# RNME
+EAE
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    6    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     16    5    0.00000   1   3    2    3    4
+    2 O1      1   16   -0.55000   0   2    3    4
+    3 O2      4   16   -0.37000   0   3    4    5    6
+    4 C2     12   12    0.63000   0   1    5
+    5 C3     15    4    0.29000   1   1    6
+    6 C4     16    5    0.00000   1   0
+# bonds
+#  NB
+    5
+#  IB   JB  MCB
+    1    4   27
+    2    4    5
+    3    4   13
+    3    5   18
+    5    6   27
+# bond angles
+# NBA
+    5
+#  IB   JB   KB  MCB
+    4    3    5   22
+    1    4    2   35
+    1    4    3   16
+    2    4    3   31
+    3    5    6   15
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    4    1    2    3    1
+# dihedrals
+# NDA
+    2
+#  IB   JB   KB   LB  MCB
+    5    3    4    1   12
+    4    3    5    6   29
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK MPE SOL TYPE MOLE NAME methylpropanoate
+# building block (residue, nucleotide, etc.)
+# RNME
+MPE
+# Methylpropanoate
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+   6    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1  C1   16    5     0.29000  0  2     2     3
+    2  O11   4   16    -0.37000  0  3     3     4     5
+    3  C11  12   12     0.63000  0  3     4     5     6
+    4  O12   1   16    -0.55000  1  1     5
+    5  C12  15    4     0.00000  1  1     6
+    6  C13  16    5     0.00000  1  0
+# bonds
+#  NB
+   5
+#  IB   JB  MCB
+    1    2   18
+    2    3   13
+    3    4    5
+    3    5   27
+    5    6   27
+# bond angles
+# NBA
+   5
+#  IB   JB   KB  MCB
+    1    2    3   22
+    2    3    4   31
+    2    3    5   16
+    4    3    5   35
+    3    5    6   15
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    3    2    5    4    1
+# dihedrals
+# NDA
+   2
+#  IB   JB   KB   LB  MCB
+    1    2    3    5   12
+    2    3    5    6   40
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK PAE SOL TYPE MOLE NAME propylacetate
+# building block (residue, nucleotide, etc.)
+# RNME
+PAE
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    7    0
+# preceding exclusions
+#ATOM                               MAE MSAE # atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C12    16    5    0.00000   1   3    2    3    4
+    2 C11    12   12    0.63000   0   3    3    4    5
+    3 O12     1   16   -0.55000   0   1    4
+    4 O11     4   16   -0.37000   0   2    5    6
+    5 C1     15    4    0.29000   1   2    6    7
+    6 C2     15    4    0.00000   0   1    7
+    7 C3     16    5    0.00000   1   0
+# bonds
+#  NB
+    6
+#  IB   JB  MCB
+    1    2   27
+    2    3    5
+    2    4   13
+    4    5   18
+    5    6   27
+    6    7   27
+# bond angles
+# NBA
+    6
+#  IB   JB   KB  MCB
+    1    2    3   35
+    1    2    4   16
+    3    2    4   31
+    2    4    5   22
+    4    5    6   15
+    5    6    7   15
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    2    1    3    4    1
+# dihedrals
+# NDA
+    3
+#  IB   JB   KB   LB  MCB
+    1    2    4    5   12
+    2    4    5    6   29
+    4    5    6    7   34
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK BAE SOL TYPE MOLE NAME butylacetate
+# building block (residue, nucleotide, etc.)
+# RNME
+BAE
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    8    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C12    16    5    0.00000   1   3    2    3    4
+    2 C11    12   12    0.63000   0   3    3    4    5
+    3 O12     1   16   -0.55000   0   1    4
+    4 O11     4   16   -0.37000   0   2    5    6
+    5 C1     15    4    0.29000   1   2    6    7
+    6 C2     15    4    0.00000   0   2    7    8
+    7 C3     15    4    0.00000   0   1    8
+    8 C4     16    5    0.00000   1   0
+# bonds
+#  NB
+    7
+#  IB   JB  MCB
+    1    2   27
+    2    3    5
+    2    4   13
+    4    5   18
+    5    6   27
+    6    7   27
+    7    8   27
+# bond angles
+# NBA
+    7
+#  IB   JB   KB  MCB
+    1    2    3   35
+    1    2    4   16
+    3    2    4   31
+    2    4    5   22
+    4    5    6   15
+    5    6    7   15
+    6    7    8   15
+# improper dihedrals
+# NIDA
+    1
+#  IB   JB   KB   LB  MCB
+    2    1    3    4    1
+# dihedrals
+# NDA
+    4
+#  IB   JB   KB   LB  MCB
+    1    2    4    5   12
+    2    4    5    6   29
+    4    5    6    7   34
+    5    6    7    8   34
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END
+MTBUILDBLSOLUTE
+#@BLOCKTYPE 53a6@OXY_small.mtb BLK CHE SOL TYPE MOLE NAME cyclohexane
+# building block (residue, nucleotide, etc.)
+# RNME
+CHE
+# number of atoms, number of preceding exclusions
+# NMAT NLIN
+    6    0
+# preceding exclusions
+#ATOM                               MAE MSAE
+# atoms
+#ATOM ANM  IACM MASS        CGMICGM MAE MSAE
+    1 C1     18    4    0.00000   0   4    2    3   5   6
+    2 C2     18    4    0.00000   1   3    3    4   6
+    3 C3     18    4    0.00000   0   2    4    5
+    4 C4     18    4    0.00000   1   2    5    6
+    5 C5     18    4    0.00000   0   1    6
+    6 C6     18    4    0.00000   1   0
+# bonds
+#  NB
+    6
+#  IB   JB  MCB
+    1    2   27
+    1    6   27
+    2    3   27
+    3    4   27
+    4    5   27
+    5    6   27
+# bond angles
+# NBA
+    6
+#  IB   JB   KB  MCB
+    1    2    3    8
+    2    3    4    8
+    3    4    5    8
+    4    5    6    8
+    1    6    5    8
+    2    1    6    8
+# improper dihedrals
+# NIDA
+    0
+#  IB   JB   KB   LB  MCB
+# dihedrals
+# NDA
+    6
+#  IB   JB   KB   LB  MCB
+    1    2    3    4   34
+    2    3    4    5   34
+    3    4    5    6   34
+    4    5    6    1   34
+    2    1    6    5   34
+    6    1    2    3   34
+# LJ exceptions
+# NEX
+    0
+#@FREELINE
+END

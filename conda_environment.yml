@@ -1,22 +1,24 @@
 name: smart
 channels:
   - conda-forge
-  - defaults
-  - bioconda
-  - plip
   - tpeulen
 dependencies:
   - numpy
   - pandas
   - matplotlib
+  - scipy
+  - pyyaml
+  - jupyter
+  - jupyterlab
+  - scikit-build
   - setuptools
   - pymbar
-#  - six
-#  - Bio
-  - pyyaml
-  - pymol-open-source 
-  - scikit-build
+  - mdtraj
+  - pymol-open-source
+  - pytest
+  - sphinx
+  - nbsphinx
   - pip
-#  - pocl
-
-
+  - pip:
+    - sphinx-rtd-theme
+    - sphinx-argparse

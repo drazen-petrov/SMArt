@@ -4,13 +4,15 @@ from SMArt.incl import GeneralContainer
 from SMArt.md.incl import *
 from SMArt.geometry import rot
 from SMArt.graph.incl import GraphDirected
-from SMArt.md.gro2gro.g2g import FFg2g, Top_g2g, MolType_g2g
+from SMArt.md.gro2gro.g2g import FFg2g, Top_g2g, MolType_g2g, \
+                _atomtype_name__element_map, _element__AtomicNum_map, _AtomicNum__element_map
 from .gromos.incl import GromosBlockNames, GromosDefaults
-from .gromos.io.incl import GromosFile, GromosString, GromosWriter, IFPBlocksParser, IFPBlocksWriter,\
+from .gromos.io.incl import GromosFile, GromosString, GromosParser, GromosWriter, IFPBlocksParser, IFPBlocksWriter,\
                             BBParsing, grBBAtomWriting, BBWriting, MTBBlocksParser, topBlocksParser, topBlocksWriter, \
                             grTOPAtomWriting, PTP_EDS_BlocksParser, cnfBlocksParser, cnfBlocksWriter,\
                             TrjCnfBlocksParser, TrjCnfBlocksWriter
-from .gromacs.io.incl import gmFFParser, gmFFWriter, gmFragmentMoleculeIO, gmTopologyIO
+from .gromacs.io.incl import gmFFParser, gmFFWriter, gmFragmentMoleculeIO, gmTopologyIO, gmConfigurationIO
+
 
 
 class FF(AvailableInteractionTypes, DataDumping, IFPBlocksParser, IFPBlocksWriter, gmFFParser, gmFFWriter, FFg2g):
@@ -296,28 +298,33 @@ rules - [1,2,3] for every atom type
                         self.get_intDB().imp_flat_pair[imp_p[0]] = imp_p[1]
                         self.get_intDB().imp_flat_pair[imp_p[1]] = imp_p[0]
 
-    def __check_atom_int_types_match_pert(self, atoms, int_type, perturbation):
+    def __check_atom_int_types_match_pert(self, atoms, int_type_atoms, perturbation):
         flag = False
         if hasattr(self.get_intDB(), 'b_a_type'):
             flag = True
             for i in range(len(atoms)):
-                if int_type.atoms[i]!=self._b_a_atom_wildcard and atoms[perturbation[i]].b_id != int_type.atoms[i]:
+                if int_type_atoms[i]!=self._b_a_atom_wildcard and atoms[perturbation[i]].b_id != int_type_atoms[i]:
                     flag = False
         if flag:
             return True
         for i in range(len(atoms)):
-            if int_type.atoms[i] != self._b_a_atom_wildcard and atoms[perturbation[i]] != int_type.atoms[i]:
+            if int_type_atoms[i] != self._b_a_atom_wildcard and atoms[perturbation[i]] != int_type_atoms[i]:
                 return False
         return True
 
     def __check_atom_int_types_match(self, atoms, int_type, allowed_perturbations, atoms_reversed, **kwargs):
-        if len(atoms)!=len(int_type.atoms) and len(int_type.atoms)!=int_type.na:return False
+        int_type_atoms = list(int_type.atoms)
+        if kwargs.get('flag_dih_2_atoms', True):
+            if isinstance(int_type, DihedralType) and len(int_type.atoms)==int_type.na - 2:
+                int_type_atoms.insert(0, self._b_a_atom_wildcard)
+                int_type_atoms.append(self._b_a_atom_wildcard)
+        if len(atoms)!=len(int_type_atoms) and len(int_type_atoms)!=int_type.na:return False
         if allowed_perturbations is None:
             allowed_perturbations = [list(range(int_type.na))]
         if atoms_reversed:
             allowed_perturbations.append(list(reversed(range(int_type.na))))
         for at_pert in allowed_perturbations:
-            if self.__check_atom_int_types_match_pert(atoms, int_type, at_pert):
+            if self.__check_atom_int_types_match_pert(atoms, int_type_atoms, at_pert):
                 return True
         return False
 
@@ -471,6 +478,15 @@ class GeneralAtom(GeneralContainer):
     def __init__(self, atom_id=None, **kwargs):
         self.id = atom_id
         self.name = kwargs.get('name', 'ANN')
+
+    def gr_get_element(self):
+        if self.a_type.name == 'P,SI':
+            if round(self.m_type.m) == 31:
+                return _atomtype_name__element_map['P']
+            else:
+                return _atomtype_name__element_map['SI']
+        else:
+            return _atomtype_name__element_map[self.a_type.name]
 
     @property
     def __prf(self):
@@ -648,9 +664,13 @@ class GeneralTopology(DataDumping, InteractionContainer, GraphDirected):
             return getattr(at_int, state_attr)
         return self.get_state(getattr(at_int, states_attr), **kwargs)
 
+    @staticmethod
+    def _check_if_physical_state(state):
+        return state not in (None, Dummy)
+
     def get_state(self, states, top_state = None, other_state = None, find_other_state = False, **kwargs):
         """
-        :param states: list of n-states
+        :param states: list of n-states (e.g. at.m_states or interaction.states)
         :param top_state: state to get (by default 0)
         :param other_state: the other state for ptp
         :param find_other_state: find the other state for ptp or EDS ('any', 1, -1)
@@ -661,42 +681,43 @@ class GeneralTopology(DataDumping, InteractionContainer, GraphDirected):
         if top_state is None:
             top_state = getattr(self, 'top_state', 0)
         res_state = states[top_state]
-        if res_state is not None:
+        if self._check_if_physical_state(res_state):
             return res_state
-        elif other_state is not None:
-            res_state = states[other_state]
-        if res_state is not None:
-            return res_state
+        elif self._check_if_physical_state(other_state):
+            return states[other_state]
         if find_other_state:
             assert find_other_state in ('any', 1, -1)
             if find_other_state == 'any':
                 for st in states:
-                    if st is not None:
+                    if self._check_if_physical_state(st):
                         return st
             if find_other_state == 1:
                 for st_i in range(top_state + 1, top_state + len(states)):
                     st = states[st_i % len(states)]
-                    if st is not None:
+                    if self._check_if_physical_state(st):
                         return st
             if find_other_state == -1:
                 for st_i in range(top_state - 1, -1, -1):
                     st = states[st_i]
-                    if st is not None:
+                    if self._check_if_physical_state(st):
                         return st
                 for st_i in range(top_state + 1, len(states)):
                     st = states[st_i]
-                    if st is not None:
+                    if self._check_if_physical_state(st):
                         return st
+        return res_state
 
     def set_top_state(self, top_state = 0, **kwargs):
         """
         :param top_state:
         :param kwargs:
             flag_EDS_mass will set the mass as the average of all matched atoms
-            otherwise - see  get_state function
+            otherwise - see  get_state function (e.g. other_state)
         :return:
         """
         self.top_state = top_state
+        if kwargs.get('other_state'):
+            self.other_state = kwargs['other_state']
         for at in self.get_atoms():
             try:
                 if kwargs.get('flag_EDS_mass'):
@@ -859,7 +880,7 @@ class GeneralTopology(DataDumping, InteractionContainer, GraphDirected):
                     temp_pair = frozenset({at, at2})
                     if temp_pair in excl_pair:
                         del(excl_pair[temp_pair])
-            del(new_obj.EP_l[at])
+                del(new_obj.EP_l[at])
         # EP_l of atoms to keep
         for at in new_obj.get_atoms():
             if at in new_obj.EP_l:
@@ -984,7 +1005,7 @@ class BuildingBlock(BBParsing, BBWriting, GeneralTopology):
             self.parse_bb(parse_from, ff, **kwargs)
 
     def parse_bb(self, parse_from, parse_from_file=True, ff = None):
-        self.parse_gro(parse_from, parse_from_file=parse_from_file, ff = ff)
+        self._parse_gr(parse_from, parse_from_file=parse_from_file, ff = ff)
 
     def write_bb(self, gs = None, get_str = False):
         if gs is None:
@@ -1010,9 +1031,9 @@ class BBdb(TopBBdb, FF, MTBBlocksParser, GromosWriter):
         if int_db is not None:
             self._int_db = int_db
         if ifp_file:
-            self.parse_gro(ifp_file)
+            self._parse_gr(ifp_file)
         if mtb_file:
-            self.parse_gro(mtb_file)
+            self._parse_gr(mtb_file)
 
     def add_bb(self, bb_id=None, parse_from = None, parse_from_file = True, **kwargs):
         """adds building blocks to the MTB; see add2container for the variables"""
@@ -1069,6 +1090,45 @@ class MolTop(GeneralTopology):
     def add_interactions(self, int_type, **kwargs):
         return self.get_item(item_id=None, klass = int_type, create=True, db_type = list, **kwargs)
 
+    def generate_constraints(self, constraints='bonds', excl_bonds=None, flag_check_form=True, **kwargs):
+        in_kwargs = dict(kwargs)
+        if excl_bonds is None:
+            excl_bonds = []
+        for bond in self.get_container(constraints):
+            flag = True
+            for excl_bond in excl_bonds:
+                if hasattr(excl_bond, 'atoms'):
+                    excl_bond = excl_bond.atoms
+                if excl_bond[0] in bond.atoms and excl_bond[1] in bond.atoms:
+                    flag = False
+                    break
+            if flag:
+                temp_const = Interaction(ConstraintType, **in_kwargs)
+                temp_const.add_atom(*bond.atoms)
+                for state in bond.states:
+                    if state and state != Dummy:
+                        bond_k = state.get_gr_gm_params()[0]
+                        if flag_check_form:
+                            temp_form = state.get_form()
+                            if temp_form == 'gr':
+                                fnc_type = 'gr_fnc'
+                            elif temp_form == 'gm':
+                                fnc_type = '1'
+                        temp_const.add_state(params = bond_k, fnc_type=fnc_type, int_code=state.id)
+                    else:
+                        temp_const.states.append(state)
+                self.add2container(temp_const, db_type=list, create=True)
+
+    def get_HH(self):
+        """get hydrogen and heavy atoms"""
+        HH = ([], [])
+        for at in self.get_atoms():
+            if at.m > 1.5:
+                HH[1].append(at)
+            else:
+                HH[0].append(at)
+        return HH
+
 
 class MoleculeType(MolTop, gmFragmentMoleculeIO, MolType_g2g):
     container2write = 'molecule_types'
@@ -1095,8 +1155,13 @@ class MoleculeType(MolTop, gmFragmentMoleculeIO, MolType_g2g):
 
     def _gm_generate_excl_pairs(self, **kwargs):
         e_l, p_l = self._generate_atom_excl_pair_list(**kwargs)
-        if kwargs.get('reset'):
+        if kwargs.get('reset', True):
             db = self.get_container(PairType, flag_class=True, create=True, db_type=list)
+            try:
+                db.clear()
+            except:
+                del db[:]
+            db = self.get_container(ExclusionType, flag_class=True, create=True, db_type=list)
             try:
                 db.clear()
             except:
@@ -1164,6 +1229,19 @@ class Topology(Top_g2g, TopBBdb, MolTop, FF, topBlocksParser, topBlocksWriter, P
         assert format_type in fnc2call
         fnc2call[format_type](f_path = f_path, **kwargs)
 
+    '''
+    # still missing - waiting to be implemented...
+    def parse_ptp(self, parse_from, parse_from_file = True, **kwargs):
+        """
+        parse ptp state
+        :param parse_from:
+        :param parse_from_file:
+        :param kwargs:
+        :return:
+        """
+        self._parse_gr(parse_from, parse_from_file, **kwargs)
+    '''
+
     def parse_eds(self, parse_from, parse_from_file = True, **kwargs):
         """
         parse eds states
@@ -1172,7 +1250,7 @@ class Topology(Top_g2g, TopBBdb, MolTop, FF, topBlocksParser, topBlocksWriter, P
         :param kwargs:
         :return:
         """
-        self.parse_gro(parse_from, parse_from_file, **kwargs)
+        self._parse_gr(parse_from, parse_from_file, **kwargs)
 
     def add_molecule(self, mol_type=None, num_mols=None, create = True, create_container = True, **kwargs):
         kwargs['create'] = kwargs.get('create', True)
@@ -1342,36 +1420,6 @@ class Topology(Top_g2g, TopBBdb, MolTop, FF, topBlocksParser, topBlocksWriter, P
         return bond_c
     """
 
-    def generate_constraints(self, constraints='bonds', excl_bonds=None, **kwargs):
-        if excl_bonds is None:
-            excl_bonds = []
-        for bond in self.get_container(constraints):
-            flag = True
-            for excl_bond in excl_bonds:
-                if excl_bond[0] in bond.atoms and excl_bond[1] in bond.atoms:
-                    flag = False
-                    break
-            if flag:
-                temp_const = Interaction(ConstraintType, **kwargs)
-                temp_const.add_atom(*bond.atoms)
-                for state in bond.states:
-                    if state:
-                        bond_k = state.get_khm()[0]
-                        temp_const.add_state(params = bond_k)
-                    else:
-                        temp_const.states.append(state)
-                self.add2container(temp_const, db_type=list, create=True)
-
-    def get_HH(self):
-        """get hydrogen and heavy atoms"""
-        HH = ([], [])
-        for at_id in self.atoms:
-            if self.atoms[at_id].m > 1.5:
-                HH[1].append(at_id)
-            else:
-                HH[0].append(at_id)
-        return HH
-
     def _check_interaction_atoms(self, bi, atom_ids):
         flag = True
         for at in bi.atoms:
@@ -1400,16 +1448,28 @@ class ConfAtom():
 
 
 class Box():
-    def __init__(self, a = None, b = None, c = None, **kwargs):
+    def __init__(self, a = None, b = None, c = None, vec = None, **kwargs):
         self.euler_angles = np.zeros(3)
         self.origin =  np.zeros(3)
         if a is None:
-            self.gr_box_type = 0
-            self.abc = np.zeros(3)
-            self.angles = np.zeros(3)
-            self.euler_angles = np.zeros(3)
-            self.origin =  np.zeros(3)
-            self.vec = np.zeros((3,3))
+            if vec is None:
+                self.gr_box_type = 0
+                self.abc = np.zeros(3)
+                self.angles = np.zeros(3)
+                self.euler_angles = np.zeros(3)
+                self.origin =  np.zeros(3)
+                self.vec = np.zeros((3,3))
+            else:
+                self.vec = np.zeros((3,3))
+                if len(vec) == 3:
+                    for i in range(3):
+                        self.vec[i,i] = vec[i]
+                elif len(vec) == 9:
+                    self.vec = np.array(vec).reshape(3,3)
+                else:
+                    self.vec = vec
+                self._gm_vec = vec
+                    ######### there are more cases... make sure to 
         else:
             self.gr_box_type = int(kwargs.get('gr_box_type', 1))
             self.euler_angles = kwargs.get('euler_angles', np.zeros(3))
@@ -1452,14 +1512,33 @@ class Box():
         self.vec = np.array([v1, v2, [x3, y3, z3]])
 
 
-class Configuration(cnfBlocksParser, cnfBlocksWriter):
-
-    def __init__(self):
-#        self.time_step = (0, 0)
-        pass
-
+class Configuration(cnfBlocksParser, cnfBlocksWriter, gmConfigurationIO):
+    """
+    Configuration class
+        main container: atoms
+        _N_dim (usually 3)
+        _coord - np.array to store coordinate
+        _vel - np.array to store velocities
+    """
     Atom = ConfAtom
     Box = Box
+
+    def __init__(self, f_path = None, N_dim=3, **kwargs):
+        self._N_dim = N_dim
+        if f_path and f_path.endswith('cnf'):
+            self.parse_cnf(f_path, **kwargs)
+            self._generate_coord()
+        if f_path and f_path.endswith('gro'):
+            self.parse_gro(f_path)
+
+    def _generate_coord(self):
+        """
+        generate self._coord and link to each atom object
+        """
+        self._coord = np.empty((len(self.atoms), self._N_dim))
+        for i, at in enumerate(self.atoms):
+            self._coord[i] = at.coord
+            at.coord = self._coord[i]
 
     def _d2(self, c1, c2):
         temp_d2 = c1 - c2
@@ -1535,7 +1614,7 @@ class Configuration(cnfBlocksParser, cnfBlocksWriter):
         return cog / n_at
 
     def parse_cnf(self, f_path):
-        self.parse_gro(f_path)
+        self._parse_gr(f_path)
 
     def write_cnf(self, f_path):
         temp_f = GromosFile(f_path, write=True)
@@ -1577,7 +1656,6 @@ class Configuration(cnfBlocksParser, cnfBlocksWriter):
                 new_cnf.add2container(new_at, db_type=list)
                 new_at.id = str(len(new_cnf.atoms))
         return new_cnf
-
 
 class Trajectory(TrjCnfBlocksParser, TrjCnfBlocksWriter):
     def __init__(self, f_path = None, N_atoms = None, int_num_dtype = np.int32, real_num_dtype = np.float32, **kwargs):
@@ -1631,9 +1709,9 @@ class Trajectory(TrjCnfBlocksParser, TrjCnfBlocksWriter):
 
     def parse_trc(self, f_path, **kwargs):
         if f_path.endswith('.gz'):
-            self.parse_gro(f_path, fnc2open = gzip.open)
+            self._parse_gr(f_path, fnc2open = gzip.open)
         else:
-            self.parse_gro(f_path, **kwargs)
+            self._parse_gr(f_path, **kwargs)
         if not self._trj:
             self.N_atoms = 0
             self.get_frame_dtype()
@@ -1644,3 +1722,86 @@ class Trajectory(TrjCnfBlocksParser, TrjCnfBlocksWriter):
 class MolSystem(Topology, Configuration):
     def __init__(self):
         self.atoms = OrderedDict()
+
+from SMArt.md.ana.incl import get_lset
+
+class MD_Parameters(GromosParser, GromosWriter):
+    def __init__(self, template_md_in):
+        self.md_in = template_md_in
+        if self.md_in.endswith('imd'):
+            self._parse_gr(self.md_in)
+    
+    def change_md_in(self, **kwargs):
+        if self.md_in.endswith('mdp'):
+            return self.change_mdp(**kwargs)
+
+    def change_mdp(self, md_kw, **kwargs):
+        s = ''
+        mdp_in = self.md_in
+        f = open(mdp_in)
+        for l in f:
+            temp = l.strip().lower().split()
+            if temp:
+                temp = temp[0]
+            else:continue
+            if temp in md_kw:
+                s += '{:<25}= {:}\n'.format(temp, md_kw.pop(temp))
+            else:
+                s += l
+        for temp in md_kw:
+            s += '{:<25}= {:}\n'.format(temp, md_kw[temp])
+        mdp_out = kwargs.get('mdp_out')
+        if mdp_out:
+            f=open(mdp_out, 'w')
+            f.write(s)
+            f.close()
+        else:
+            return s
+
+    def __get_bl_params(self, bl):
+        params = []
+        params_per_line = []
+        for l in self.undefined_bl[bl]:
+            temp = l.split()
+            params_per_line.append(len(temp))
+            params.extend(temp)
+        return params, params_per_line
+
+    def __generate_bl_txt(self, bl, params, params_per_line):
+        bl_lines = []
+        bl_txt = ''
+        c_param = 0
+        for N_params in params_per_line:
+            line = ''
+            for i in range(N_params):
+                line += '{:>9} '.format(params[i + c_param])
+            bl_lines.append(line[:-1] + '\n')
+            c_param += N_params
+        self.undefined_bl[bl] = bl_lines
+
+    def change_imd(self, md_kw, **kwargs):
+        for bl in md_kw:
+            bl_params, bl_params_per_line = self.__get_bl_params(bl)
+            for param, value in md_kw[bl].items():
+                bl_params[param] = value
+            self.__generate_bl_txt(bl, bl_params, bl_params_per_line)
+
+    def get_LPs_pred(self):
+        if self.md_in.endswith('mdp'):
+            mdp_in = self.md_in
+            f = open(mdp_in)
+            for l in f:
+                if l.startswith('fep-lambdas'):
+                    temp = l.split('=')[1]
+                    LPs_pred = get_lset(temp.split())
+            return LPs_pred
+    
+    def write_imd(self, f_path = None, **kwargs):
+        gs = self._get_grs_from_fpaht(f_path)
+        self.write_gromos_format(gs, 'TITLE')
+        blocks2write = list(self.undefined_bl)
+        self.write_gromos_format(gs, *blocks2write, **kwargs)
+        if f_path and kwargs.get('flag_close', True):
+            gs.f.close()
+
+

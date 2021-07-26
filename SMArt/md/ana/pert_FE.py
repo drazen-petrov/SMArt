@@ -505,6 +505,18 @@ class dG_err_tols(Defaults):
         return tols
 
     @staticmethod
+    def _convert_dG_err2keys(dg_err):
+        dG_err_keys = []
+        if 'full' in dg_err:
+            for dg_err_meth in dg_err['full']:
+                dG_err_keys.append(('full', 'segment', dg_err_meth))
+        if 'BS' in dg_err:
+            for BS_steps in dg_err['BS']:
+                for dg_meth in dg_err['BS'][BS_steps]:
+                    dG_err_keys.append(('BS', BS_steps, 'segment', dg_meth))
+        return dG_err_keys
+
+    @staticmethod
     def _get_dg_methods_data_frac(dg_err):
         dg_methods = set()
         for temp_data in dg_err['data_frac'].values():
@@ -613,6 +625,9 @@ def _get_dG_from_dG_full(dG_full, segs2calc_LPs_maps):
     return dG
 
 def calc_seg_props(LPs_map, Es, dEs, nfr_mul, si_skips=None, T=300, **kwargs):
+    """
+    flag_calc_full_seg_props - include full segment in calc_props
+    """
     segs2calc_LPs_maps = kwargs.get('segs2calc_LPs_maps', {})
     if not segs2calc_LPs_maps:
         if 'segs2calc' in kwargs:
@@ -622,6 +637,9 @@ def calc_seg_props(LPs_map, Es, dEs, nfr_mul, si_skips=None, T=300, **kwargs):
         else:
             segs2calc = [(LPs_map.l0, LPs_map.l1)]
             segs2calc_LPs_maps[(LPs_map.l0, LPs_map.l1)] = LPs_map
+    if kwargs.get('flag_calc_full_seg_props'):
+        segs2calc_LPs_maps[(LPs_map.l0, LPs_map.l1)] = LPs_map
+         # this is nice if seg = (0., 1.) - which gives than the full dG and dG_err
     dg_methods = kwargs.get('dg', {'mbar'})
     dg_err_estimators = kwargs.get('dg_err', dG_err_tols.get_default_dg_err_tols())
     dg_methods |= dG_err_tols._get_dg_methods_data_frac(dg_err_estimators)
@@ -800,11 +818,13 @@ def get_segments2test(LPs, LPs_allowed, seg_width_slide = [(0.3, 0.1), (0.2, 0.2
     for i in range(len(LPs_allowed) - 1):
         segs2check.add((LPs_allowed[i], LPs_allowed[i+1]))
     segs2calc = {}
+    segs2calc_dG = []
     for seg_width, seg_slide_step in seg_width_slide:
-        temp_LPs = get_lset(np.arange(0., 1.0001 - seg_width, seg_slide_step))
+        temp_start_LPs = get_lset(np.arange(0., 1.0001 - seg_width, seg_slide_step))
         lim_val = (seg_width - seg_slide_step) / 2 # lim value added on both sides of the segment
         cp_segs2check = set(segs2check)
-        for l in temp_LPs:
+        temp_segscalc_dG = {}
+        for l in temp_start_LPs:
             temp_seg = (l, Real.fix_float(l + seg_width))
             if l==0.:
                 temp_seg_lim = [l]
@@ -814,11 +834,16 @@ def get_segments2test(LPs, LPs_allowed, seg_width_slide = [(0.3, 0.1), (0.2, 0.2
                 temp_seg_lim.append(1.)
             else:
                 temp_seg_lim.append(Real.fix_float(temp_seg[1] - lim_val))
+            temp_seg_lim = tuple(temp_seg_lim)
             segs2calc[temp_seg] = []
             for temp_seg2check in segs2check:
                 if temp_seg2check[0] >= temp_seg_lim[0] and temp_seg2check[1] <= temp_seg_lim[1]:
                     segs2calc[temp_seg].append(temp_seg2check)
             segs2check -= set(segs2calc[temp_seg])
+            # save the temp_seg_lim for each temp_LPs (to calculate full dG from the segments)
+            temp_LPs = _get_LPs_in_seg(LPs, temp_seg)
+            temp_segscalc_dG[temp_LPs] = temp_seg_lim
+        segs2calc_dG.append(temp_segscalc_dG)
     assert temp_seg[1] == 1.
     assert len(segs2check) == 0
     segs2calc_LPs = {}
@@ -829,7 +854,19 @@ def get_segments2test(LPs, LPs_allowed, seg_width_slide = [(0.3, 0.1), (0.2, 0.2
                 segs2calc_LPs[temp_LPs] = segs2calc[temp_seg]
             else:
                 segs2calc_LPs[temp_LPs].extend(segs2calc[temp_seg])
-    return segs2calc_LPs
+    return segs2calc_LPs, segs2calc_dG
+
+def __get_dG_err_data_from_keys(dG_err, dG_err_keys, temp_seg):
+    flag_OI = False
+    temp_data = dG_err
+    while dG_err_keys:
+        temp_key = dG_err_keys.pop()
+        if temp_key == 'segment':
+            temp_key = temp_seg
+        if temp_key == 'OI':
+            flag_OI = True
+        temp_data = temp_data[temp_key]
+    return temp_data, flag_OI
 
 def seg_check_conv_calc_score(temp_seg, dG_err, tols, fnc_OI=min):
     score = []
@@ -838,14 +875,7 @@ def seg_check_conv_calc_score(temp_seg, dG_err, tols, fnc_OI=min):
     for tol in tols:
         flag_OI = False
         tol_keys = list(reversed(tol))
-        temp_data = dG_err
-        while tol_keys:
-            temp_key = tol_keys.pop()
-            if temp_key == 'segment':
-                temp_key = temp_seg
-            if temp_key == 'OI':
-                flag_OI = True
-            temp_data = temp_data[temp_key]
+        temp_data, flag_OI = __get_dG_err_data_from_keys(dG_err, tol_keys, temp_seg)
         if flag_OI:
             temp_data = fnc_OI(temp_data)
             score.append(1 - temp_data)
@@ -923,7 +953,7 @@ def update_LPs_times(data_bar_sys, data_dhdl_sys=None, T=300, **kwargs):
     seg_test_kwargs['dg_err'] = dg_err_tols
     LPs_sim = get_lset(data_bar_sys)
     LPs = LPs_sim
-    dl_min_update = 100000 # this basically mean no midpoints in the update (if they are added in LPs_allowed)
+    dl_min_update = 100000 # this basically means no midpoints in the update (if they are added in LPs_allowed)
     LPs_allowed = kwargs.get('LPs_allowed')
     if LPs_allowed is None:
         if kwargs.get('add_midpoints_LPs_allowed', True):
@@ -931,7 +961,7 @@ def update_LPs_times(data_bar_sys, data_dhdl_sys=None, T=300, **kwargs):
         else:
             LPs_allowed = list(LPs_sim)
             dl_min_update = dl_min # add midpoints at the update
-    segs2calc_LPs = get_segments2test(LPs_sim, LPs_allowed, **seg_test_kwargs)
+    segs2calc_LPs, segs2calc_dG = get_segments2test(LPs_sim, LPs_allowed, **seg_test_kwargs)
     si_l_dict = si_data_bar_dhdl(data_bar_sys)
     seg_score_flag = {}
     converged_segments = []
@@ -957,7 +987,7 @@ def update_LPs_times(data_bar_sys, data_dhdl_sys=None, T=300, **kwargs):
         for temp_seg in prev_step_converged_segments:
             update_overlapping_segs(temp_seg, converged_segments)
     new_LPs = update_LPs_call(update_LPs_fnc2call, LPs_allowed, seg_score_flag, converged_segments, dl_min_update)
-    return seg_score_flag, converged_segments, new_LPs, seg_data_dG_err
+    return seg_score_flag, converged_segments, new_LPs, seg_data_dG_err, segs2calc_dG
 
 def update_LPs_call(fnc2call, LPs, seg_score_flag, converged_segments, dl_min):
     update_LPs_fnc_dict = {1:update_LPs_1, 2:update_LPs_2}
@@ -1029,5 +1059,42 @@ def get_LPs_times(new_LPs_weights, LPs_times, max_iter_LPs_t, max_iter_t_LP=1., 
             max_iter_LPs_t -= t_step
             Real.fix_float(max_iter_LPs_t)
     return iter_LPs_times
+
+
+def __get_max_dl(segs):
+    dls = [seg[-1] - seg[0] for seg in segs]
+    return max(dls)
+
+def get_full_dG_from_segs(seg_data_dG_err, segs2calc_dG, method='mbar'):
+    """
+    get the full dG from the segments
+    :param seg_data_dG_err: output from update_LPs_times
+    :param segs2calc_dG: output from update_LPs_times
+    :param method: method used to calculate the dG of the segments, e.g. 'mbar'
+    :return: dG
+    """
+    dG = 0
+    for LPs_2_calc, seg2calc_dG in segs2calc_dG.items():
+        dG += seg_data_dG_err[LPs_2_calc][0][seg2calc_dG][method]
+    return dG
+
+def get_full_dG_err_from_segs(seg_data_dG_err, segs2calc_dG, err_method=dict(full=['mbar_err'])):
+    """
+    get the full dG from the segments
+    :param seg_data_dG_err: output from update_LPs_times
+    :param segs2calc_dG: output from update_LPs_times
+    :param err_method: method used to calculate the error estimate of the segments, e.g. dict(full=['mbar_err'], BS={N_steps:['mbar']})
+    :return: dG
+    """
+    dG_err = []
+    dG_err_keys = dG_err_tols._convert_dG_err2keys(err_method)
+    for dG_err_key in dG_err_keys:
+        temp_dG_err = 0
+        for LPs_2_calc, seg2calc_dG in segs2calc_dG.items():
+            temp_key = list(reversed(dG_err_key))
+            temp_data, flag_OI = __get_dG_err_data_from_keys(seg_data_dG_err[LPs_2_calc][1], temp_key, seg2calc_dG)
+            temp_dG_err += temp_data * temp_data
+        dG_err.append(np.sqrt(temp_dG_err))
+    return dG_err
 
 

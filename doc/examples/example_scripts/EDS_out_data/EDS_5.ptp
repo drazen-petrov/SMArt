@@ -1,0 +1,30 @@
+TITLE
+PERTURBATION TOPOLOGY BASED ON N = 5 STATES
+
+	from /home/dpetrov/poso/coding/GITLAB/SMArt/doc/some_data/gromos/GRA2/tops/stateA.top (GROMOS)
+
+	from /home/dpetrov/poso/coding/GITLAB/SMArt/doc/some_data/gromos/GRA2/tops/stateB.top (GROMOS)
+
+	from /home/dpetrov/poso/coding/GITLAB/SMArt/doc/some_data/gromos/GRA2/tops/stateC.top (GROMOS)
+
+	from /home/dpetrov/poso/coding/GITLAB/SMArt/doc/some_data/gromos/GRA2/tops/stateD.top (GROMOS)
+
+	from /home/dpetrov/poso/coding/GITLAB/SMArt/doc/some_data/gromos/GRA2/tops/stateE.top (GROMOS)
+
+END
+MPERTATOM
+   12    5
+                       st_1           st_2           st_3           st_4           st_5
+     1    C1  12   -0.14000  12    0.17000  12   -0.14000  12   -0.14000  12   -0.14000     1.00     1.00
+     2    H2  20    0.14000  22    0.00000  20    0.14000  20    0.14000  20    0.14000     1.00     1.00
+     3    F2  22    0.00000  32   -0.17000  22    0.00000  22    0.00000  22    0.00000     1.00     1.00
+     4    C4  12   -0.14000  12   -0.14000  12    0.17000  12   -0.14000  12   -0.14000     1.00     1.00
+     5    H5  20    0.14000  20    0.14000  22    0.00000  20    0.14000  20    0.14000     1.00     1.00
+     6    F5  22    0.00000  22    0.00000  32   -0.17000  22    0.00000  22    0.00000     1.00     1.00
+     7    C6  12   -0.14000  12   -0.14000  12   -0.14000  12    0.17000  12   -0.14000     1.00     1.00
+     8    H7  20    0.14000  20    0.14000  20    0.14000  22    0.00000  20    0.14000     1.00     1.00
+     9    F7  22    0.00000  22    0.00000  22    0.00000  32   -0.17000  22    0.00000     1.00     1.00
+    10    C8  12   -0.14000  12   -0.14000  12   -0.14000  12   -0.14000  12    0.17000     1.00     1.00
+    11    H9  20    0.14000  20    0.14000  20    0.14000  20    0.14000  22    0.00000     1.00     1.00
+    12    F9  22    0.00000  22    0.00000  22    0.00000  22    0.00000  32   -0.17000     1.00     1.00
+END

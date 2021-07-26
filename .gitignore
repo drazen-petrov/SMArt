@@ -3,3 +3,4 @@
 *.ipynb_checkpoints*
 __local*
 FE_data
+.idea/

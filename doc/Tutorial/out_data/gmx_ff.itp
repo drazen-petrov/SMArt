@@ -1,0 +1,10 @@
+;	from /pool/dpetrov/GROMACS/gromacs-2020/build_my_comp/build/share/gromacs/top/gromos54a7.ff/forcefield.itp (GROMACS)
+;
+
+#define _FF_GROMOS96
+#define _FF_GROMOS54A7
+
+[ defaults ]
+         1         1        no       1.0       1.0
+#include "ffnonbonded.itp"
+#include "ffbonded.itp"

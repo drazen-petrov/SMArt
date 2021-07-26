@@ -1,0 +1,19 @@
+;	from /home/dpetrov/poso/coding/GITLAB/SMArt/doc/some_data/gromos/villin/wt.top (GROMOS)
+;MAKE_TOP topology, using:
+;/mms/common/gromos_20200410/forcefields/official/54a8.mtb
+;/mms/common/gromos_20200410/forcefields/official/54a8.ifp
+;
+;Force-field code: 54A8
+;
+;
+
+#include "top_ff.itp"
+#include "mol_1.itp"
+#include "gromos54a7.ff/spc.itp"
+#include "gromos54a7.ff/ions.itp"
+
+
+[ system ]
+molecular system
+[ molecules ]
+mol_1                1

@@ -1,4 +1,4 @@
-from SMArt.incl import os, copy, OrderedDict, do_warn
+from SMArt.incl import os, copy, OrderedDict, np, do_warn
 from SMArt.incl import Defaults, GeneralContainer, FileStream, StringStream, split_gen, get_id_string
 from SMArt.md.incl import *
 #from SMArt.md.incl import _gr_title_gm_system, _file_type_ext_map, _add_DescriptionPart
@@ -1166,7 +1166,8 @@ class gmFragmentMoleculeIO(GromacsParser, GromacsWriter):
             atom_type = self.__find_a_type_gm(ff, atom_type_str)
         if atom_type is None:
             atom_type = atom_type_str
-        res_n = int(next(temp))
+        #res_n = int(next(temp))
+        res_n = next(temp)# this could apparently be a string as well
         res_name = next(temp)
         temp_res = self.add_residue(res_n, res_name)
         atom_name = next(temp)
@@ -1429,7 +1430,7 @@ class gmFragmentMoleculeIO(GromacsParser, GromacsWriter):
                         defines = kwargs.get('defines', getattr(self.ff, 'defines', None))
                     txt2write += ' ' + temp_gm_int_type._write_gm_params(defines = defines, **kwargs)
                 # PTP interaction
-                if temp_ptp_gm_int_type:
+                if temp_ptp_gm_int_type and temp_ptp_gm_int_type!=Dummy: # actually, this should be split to if temp_ptp_gm_int_type -> remove
                     flag_write_params = 1
                     if not kwargs.get('write_params_explicitly'): ######################### this part has to be adjusted for PTP atom types
                         temp_int_type = self.ff.find_interaction_type(temp_interaction.atoms, temp_interaction.int_type,
@@ -1629,12 +1630,56 @@ _gmTopologyIO_defs['_write_gm_molecules'] = '__write_molecules_v1'
 gmTopologyIO._add_defaults(_gmTopologyIO_defs, flag_set=1)
 
 
+class gmConfigurationIO(GromacsParser, GromacsWriter):
+    __line_form = [5,5,5,5,8,8,8] #resnum,res_name,at_name,at_num,x,y,z
+    __var_name = ['res_id', 'res_name', 'name', 'gm_id']
+    __var_type = [int, str, str, int, float, float, float]
+    
+    @staticmethod
+    def __get_cols(line, N_characters, var_type, offset=0): # this has to go somewhere more general!
+        pos = offset
+        values = []
+        for i, N_ch in enumerate(N_characters):
+            pos2 = pos + N_ch
+            values.append(line[pos:pos2])
+            pos = pos2
+        return values
+
+    def parse_gro(self, f_path):
+        f = open(f_path)
+        temp_title = DescriptionPart(form = 'gm')
+        temp_title.add_line(f.readline())
+        self.add2container(temp_title, create=True, db_type=list)
+        N_atoms = int(f.readline())
+        self._coord = np.empty((N_atoms, self._N_dim))
+        self._vel = np.empty((N_atoms, self._N_dim))
+        for at_i in range(N_atoms):
+            line = f.readline()
+            values = self.__get_cols(line, self.__line_form, self.__var_type)
+            at = self.Atom()
+            for i in range(4):
+                setattr(at, self.__var_name[i], values[i])
+            at.id = at.gm_id
+            self._coord[at_i] = values[-3:]
+            at.coord = self._coord[at_i]
+            try:
+                temp_vel = self.__get_cols(line, self.__line_form[-3:], self.__var_type[-3:], offset=sum(self.__line_form))
+                self._vel[at_i] = temp_vel
+                at.vel = self._vel[at_i]
+            except:
+                pass
+            self.add2container(at, db_type=list, create = True)
+        box_vec = [float(box_v) for box_v in f.readline().split()]
+        self.box = self.Box(vec = box_vec)
+
+    def write_gro(self, f_path):
+        pass
 
 
-
-
-
-
+_gmConfigurationIO_defs = {}
+_gmConfigurationIO_defs['__line_form'] = [5,5,5,5,8,8,8]
+_gmConfigurationIO_defs['__var_type'] = [int, str, str, int, float, float, float]
+gmConfigurationIO._add_defaults(_gmConfigurationIO_defs, flag_set=1)
 
 
 

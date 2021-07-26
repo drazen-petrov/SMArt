@@ -6,10 +6,16 @@ from SMArt.graph import Graph
 # ring solutions - all or nothing; all or one atom; all or one bond (two atoms); partial (needs bond breaking)
 # exclusions / pairs
 
+from SMArt.md.incl import Dummy
+
+"""
 class Dummy:
     m = None
     p_ch = None
     a_type = None
+    coord = np.array([np.nan] * 3)
+"""
+
 
 class Branch:
     def __init__(self, roots, parents, neigh_count, **kwargs):
@@ -102,7 +108,7 @@ class TopGraphProperties:
     attributes within g:
         rings, rings_map
         within each ring:
-            breaks, breaks_map, independent_parts, independent_parts_map, independent_parts_adj
+            breaks, breaks_map, break_parents, independent_parts, independent_parts_map, independent_parts_graph
 
     attributes within the instance:
         g, available_Vs, non_available_Vs
@@ -128,6 +134,7 @@ class TopGraphProperties:
         :param in_solution:
         :param kwargs:
             non__av_insol_Vs
+            flag_get_ind_ring_parts - if False, no ind_ring_parts (in case partial ring match not allowed)
         """
         if 'non__av_insol_Vs' in kwargs:
             self.available_Vs, self.non_available_Vs, self.in_solution_Vs, self.in_solution_dummy_match_Vs\
@@ -137,7 +144,7 @@ class TopGraphProperties:
                 self._g_non__available__insol_Vs(g, available_Vs, non_available_Vs, in_solution_Vs, in_solution_dummy_match_Vs)
         self._in_solution_Vs = self.in_solution_Vs - self.in_solution_dummy_match_Vs
         self.g = g
-        self.__get_rings() # gets the rings and rings_map (independent of available_Vs)
+        self.__get_rings(**kwargs) # gets the rings and rings_map (independent of available_Vs)
         #self.__get_independent_ring_parts(flag_get_ind_ring_branches = False)
         if 'ring_independent_parts_availability_map' in kwargs:
             self.ring_independent_parts_availability_map = kwargs['ring_independent_parts_availability_map']
@@ -222,8 +229,8 @@ class TopGraphProperties:
                     self._g_check_branch(self.g, b, flag_use_V_in_branch)
 
     @classmethod
-    def _g_get_rings(cls, g):
-        if not hasattr(g, 'rings_map') or not hasattr(g, 'rings'):
+    def _g_get_rings(cls, g, flag_get_ind_ring_parts=True, rerun_get_rings=False):
+        if not hasattr(g, 'rings_map') or not hasattr(g, 'rings') or rerun_get_rings:
             g.rings = tuple(g.find_rings_graph(flag_root_at = 1))
             g.rings_map = {}
             for r_graph in g.rings:
@@ -231,61 +238,54 @@ class TopGraphProperties:
                     if v not in g.rings_map:
                         g.rings_map[v] = []
                     g.rings_map[v].append(r_graph)
-# not sure if we need this###################################################################
-            """
-            g.rings_map2 = {}
-            for r in g.find_rings():
-                for v0 in r:
-                    g.rings_map2[v0] = r
-            """
-# not sure if we need this###################################################################
-            cls._g_get_independent_ring_parts(g, flag_get_ind_ring_branches = False)
+            cls._g_get_independent_ring_parts(g, flag_get_ind_ring_branches=False, flag_get_ind_ring_parts=flag_get_ind_ring_parts)
 
-    def __get_rings(self):
-        self._g_get_rings(self.g)
+    def __get_rings(self, flag_get_ind_ring_parts=True, rerun_get_rings=False, **kwargs):
+        self._g_get_rings(self.g, flag_get_ind_ring_parts=flag_get_ind_ring_parts, rerun_get_rings=rerun_get_rings)
 
     @classmethod
     def _g_get_independent_ring_parts(cls, g, flag_get_ind_ring_branches = True, branches = None, ring_branches = None,
-                                      combined_FromRing_branches = None):
+                                      combined_FromRing_branches = None, flag_get_ind_ring_parts=True):
         break_branches = {}
         for r in g.rings:
             r.breaks = {}
             r.break_parents = {}
             r.independent_parts = []
-            for v in r.adj:
-                if len(r.adj[v]) > 2:
-                    for v2 in r.adj[v]:
-                        if len(r.adj[v2]) > 2 and (v2, v) not in r.breaks:
-                            temp_pair = (v, v2)
-                            r.breaks[temp_pair] = []
-                            r.break_parents[temp_pair] = []
-                            first_neigh = set(r.BFS_l(temp_pair, 1, flag_v_list=True))
-                            ind_ring_part_i2del, flag_already_searched_ind_ring_parts = None, None
-                            while first_neigh:
-                                temp_first_neigh = first_neigh.pop()
-                                new_ind_ring_part = set(temp_pair)
-                                temp_branch = frozenset(r._BFS(temp_first_neigh, visited=new_ind_ring_part))
-                                ind_ring_part_parents = first_neigh & temp_branch
-                                if len(temp_branch) != len(r.adj) - 2:
-                                    new_ind_ring_part = frozenset(new_ind_ring_part)
-                                    ind_ring_part_parents.add(temp_first_neigh)
-                                    r.break_parents[temp_pair].append(ind_ring_part_parents)
-                                    r.breaks[temp_pair].append(tuple(temp_branch))
-                                    if ind_ring_part_i2del is None and flag_already_searched_ind_ring_parts is None:
-                                        flag_already_searched_ind_ring_parts = True
-                                        for temp_ind_ring_part_i, temp_ind_ring_part in enumerate(r.independent_parts):
-                                            if v in temp_ind_ring_part and v2 in temp_ind_ring_part:
-                                                ind_ring_part_i2del = temp_ind_ring_part_i
-                                                r.independent_parts.pop(ind_ring_part_i2del)
-                                                break
-                                    if ind_ring_part_i2del is None:
-                                        r.independent_parts.append(new_ind_ring_part)
+            if flag_get_ind_ring_parts: # all is one independent part if partial match is not allowed...
+                for v in r.adj:
+                    if len(r.adj[v]) > 2:
+                        for v2 in r.adj[v]:
+                            if len(r.adj[v2]) > 2 and (v2, v) not in r.breaks:
+                                temp_pair = (v, v2)
+                                r.breaks[temp_pair] = []
+                                r.break_parents[temp_pair] = []
+                                first_neigh = set(r.BFS_l(temp_pair, 1, flag_v_list=True))
+                                ind_ring_part_i2del, flag_already_searched_ind_ring_parts = None, None
+                                while first_neigh:
+                                    temp_first_neigh = first_neigh.pop()
+                                    new_ind_ring_part = set(temp_pair)
+                                    temp_branch = frozenset(r._BFS(temp_first_neigh, visited=new_ind_ring_part))
+                                    ind_ring_part_parents = first_neigh & temp_branch
+                                    if len(temp_branch) != len(r.adj) - 2:
+                                        new_ind_ring_part = frozenset(new_ind_ring_part)
+                                        ind_ring_part_parents.add(temp_first_neigh)
+                                        r.break_parents[temp_pair].append(ind_ring_part_parents)
+                                        r.breaks[temp_pair].append(tuple(temp_branch))
+                                        if ind_ring_part_i2del is None and flag_already_searched_ind_ring_parts is None:
+                                            flag_already_searched_ind_ring_parts = True
+                                            for temp_ind_ring_part_i, temp_ind_ring_part in enumerate(r.independent_parts):
+                                                if v in temp_ind_ring_part and v2 in temp_ind_ring_part:
+                                                    ind_ring_part_i2del = temp_ind_ring_part_i
+                                                    r.independent_parts.pop(ind_ring_part_i2del)
+                                                    break
+                                        if ind_ring_part_i2del is None:
+                                            r.independent_parts.append(new_ind_ring_part)
+                                        else:
+                                            r.independent_parts.append(temp_ind_ring_part & new_ind_ring_part)
                                     else:
-                                        r.independent_parts.append(temp_ind_ring_part & new_ind_ring_part)
-                                else:
-                                    r.breaks.pop(temp_pair)
-                                    r.break_parents.pop(temp_pair)
-                                first_neigh = first_neigh - frozenset(ind_ring_part_parents)
+                                        r.breaks.pop(temp_pair)
+                                        r.break_parents.pop(temp_pair)
+                                    first_neigh = first_neigh - frozenset(ind_ring_part_parents)
             if not r.independent_parts:
                 r.independent_parts = [frozenset(r.adj)]
             r.breaks_map = {}

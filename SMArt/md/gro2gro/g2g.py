@@ -1,4 +1,4 @@
-from SMArt.incl import copy, Defaults, do_warn, np, OrderedDict
+from SMArt.incl import copy, Defaults, do_warn, np, OrderedDict, permutations
 
 _atomtype_name__element_map = {'O': '8', 'OM': '8', 'OA': '8', 'OE': '8', 'OW': '8', 'N': '7', 'NT': '7', 'NL': '7',
     'NR': '7', 'NZ': '7', 'NE': '7', 'C': '6', 'CH0': '6', 'CH1': '6', 'CH2': '6', 'CH3': '6', 'CH4': '6', 'CH2r': '6',
@@ -7,6 +7,20 @@ _atomtype_name__element_map = {'O': '8', 'OM': '8', 'OA': '8', 'OE': '8', 'OW': 
     'OMet': '8', 'NA+': '11', 'CL-': '17', 'CChl': '6', 'CLChl': '17', 'HChl': '1', 'SDmso': '16', 'CDmso': '6',
     'ODmso': '8', 'CCl4': '6', 'CLCl4': '17', 'FTFE': '9', 'CTFE': '6', 'CHTFE': '6', 'OTFE': '8', 'CUrea': '6',
     'OUrea': '8', 'NUrea': '7', 'CH3p': '6'}
+
+_element__AtomicNum_map = dict(H=1, C=6, N=7, O=8, F=9, NA=11, MG=12, AL=13, SI=14, P=15, S=16, CL=17, AR=18, \
+                                K=19, CA=20, FE=26, CU=29, ZN=30, BR=35)
+_AtomicNum__element_map = dict(item[::-1] for item in _element__AtomicNum_map.items())
+
+
+def gr_get_atom_element(a_type):
+    if a_type.name == 'P,SI':
+        if round(a.m_type.m) == 31:
+            return _atomtype_name__element_map['P']
+        else:
+            return _atomtype_name__element_map['SI']
+    else:
+        return _atomtype_name__element_map[a_type.name]
 
 class ContPref_g2g(Defaults):
     ### GROMOS thingies
@@ -346,7 +360,7 @@ class Top_g2g:
                 mol_type.add2container(at.cg, replace=-1, create=True, db_type=list)
         self.renumber_container('cg', attrib = 'n', id_type = int)
         for int_cont in temp_source.get_interaction_containers():
-            flag_ds = False
+            flag_ds = False # distance restraints
             if int_cont and int_cont[0].int_type == self.Distance_r:
                 do_warn('distance restraint parameters decoupled - only state 0')
                 flag_ds = True
@@ -377,6 +391,9 @@ class Top_g2g:
                         break
                 if flag_add:
                     mol_type.add2container(temp_int, create=True, item_id=EP_pair, replace=-1)
+                    for perm_EP_pair in permutations(EP_pair):
+                        mol_type.EP_l[perm_EP_pair[0]].add(perm_EP_pair[1])
+                    
         mol_type._gm_generate_excl_pairs(reset=True)
         if kwargs.get('flag_renumber_atoms', True):
             mol_type.renumber_container('atoms', attrib = 'gm_id', id_type = int)

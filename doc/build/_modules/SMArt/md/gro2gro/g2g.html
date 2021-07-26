@@ -1,0 +1,725 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>SMArt.md.gro2gro.g2g &mdash; SMArt v1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../index.html" class="icon icon-home"> SMArt
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../modules.html">SMArt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../Tutorial/index.html">Tutorial</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">SMArt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../../md.html">SMArt.md</a> &raquo;</li>
+        
+      <li>SMArt.md.gro2gro.g2g</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for SMArt.md.gro2gro.g2g</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">SMArt.incl</span> <span class="kn">import</span> <span class="n">copy</span><span class="p">,</span> <span class="n">Defaults</span><span class="p">,</span> <span class="n">do_warn</span><span class="p">,</span> <span class="n">np</span><span class="p">,</span> <span class="n">OrderedDict</span><span class="p">,</span> <span class="n">permutations</span>
+
+<span class="n">_atomtype_name__element_map</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;O&#39;</span><span class="p">:</span> <span class="s1">&#39;8&#39;</span><span class="p">,</span> <span class="s1">&#39;OM&#39;</span><span class="p">:</span> <span class="s1">&#39;8&#39;</span><span class="p">,</span> <span class="s1">&#39;OA&#39;</span><span class="p">:</span> <span class="s1">&#39;8&#39;</span><span class="p">,</span> <span class="s1">&#39;OE&#39;</span><span class="p">:</span> <span class="s1">&#39;8&#39;</span><span class="p">,</span> <span class="s1">&#39;OW&#39;</span><span class="p">:</span> <span class="s1">&#39;8&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">:</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span> <span class="s1">&#39;NT&#39;</span><span class="p">:</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span> <span class="s1">&#39;NL&#39;</span><span class="p">:</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;NR&#39;</span><span class="p">:</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span> <span class="s1">&#39;NZ&#39;</span><span class="p">:</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span> <span class="s1">&#39;NE&#39;</span><span class="p">:</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="s1">&#39;CH0&#39;</span><span class="p">:</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="s1">&#39;CH1&#39;</span><span class="p">:</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="s1">&#39;CH2&#39;</span><span class="p">:</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="s1">&#39;CH3&#39;</span><span class="p">:</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="s1">&#39;CH4&#39;</span><span class="p">:</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="s1">&#39;CH2r&#39;</span><span class="p">:</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;CR1&#39;</span><span class="p">:</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="s1">&#39;HC&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;DUM&#39;</span><span class="p">:</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">:</span> <span class="s1">&#39;16&#39;</span><span class="p">,</span> <span class="s1">&#39;CU1+&#39;</span><span class="p">:</span> <span class="s1">&#39;29&#39;</span><span class="p">,</span> <span class="s1">&#39;CU2+&#39;</span><span class="p">:</span> <span class="s1">&#39;29&#39;</span><span class="p">,</span> <span class="s1">&#39;FE&#39;</span><span class="p">:</span> <span class="s1">&#39;26&#39;</span><span class="p">,</span> <span class="s1">&#39;ZN2+&#39;</span><span class="p">:</span> <span class="s1">&#39;30&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;MG2+&#39;</span><span class="p">:</span> <span class="s1">&#39;12&#39;</span><span class="p">,</span> <span class="s1">&#39;CA2+&#39;</span><span class="p">:</span> <span class="s1">&#39;20&#39;</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">:</span> <span class="s1">&#39;15&#39;</span><span class="p">,</span> <span class="s1">&#39;SI&#39;</span><span class="p">:</span> <span class="s1">&#39;14&#39;</span><span class="p">,</span> <span class="s1">&#39;AR&#39;</span><span class="p">:</span> <span class="s1">&#39;18&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">:</span> <span class="s1">&#39;9&#39;</span><span class="p">,</span> <span class="s1">&#39;CL&#39;</span><span class="p">:</span> <span class="s1">&#39;17&#39;</span><span class="p">,</span> <span class="s1">&#39;BR&#39;</span><span class="p">:</span> <span class="s1">&#39;35&#39;</span><span class="p">,</span> <span class="s1">&#39;CMet&#39;</span><span class="p">:</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;OMet&#39;</span><span class="p">:</span> <span class="s1">&#39;8&#39;</span><span class="p">,</span> <span class="s1">&#39;NA+&#39;</span><span class="p">:</span> <span class="s1">&#39;11&#39;</span><span class="p">,</span> <span class="s1">&#39;CL-&#39;</span><span class="p">:</span> <span class="s1">&#39;17&#39;</span><span class="p">,</span> <span class="s1">&#39;CChl&#39;</span><span class="p">:</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="s1">&#39;CLChl&#39;</span><span class="p">:</span> <span class="s1">&#39;17&#39;</span><span class="p">,</span> <span class="s1">&#39;HChl&#39;</span><span class="p">:</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;SDmso&#39;</span><span class="p">:</span> <span class="s1">&#39;16&#39;</span><span class="p">,</span> <span class="s1">&#39;CDmso&#39;</span><span class="p">:</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ODmso&#39;</span><span class="p">:</span> <span class="s1">&#39;8&#39;</span><span class="p">,</span> <span class="s1">&#39;CCl4&#39;</span><span class="p">:</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="s1">&#39;CLCl4&#39;</span><span class="p">:</span> <span class="s1">&#39;17&#39;</span><span class="p">,</span> <span class="s1">&#39;FTFE&#39;</span><span class="p">:</span> <span class="s1">&#39;9&#39;</span><span class="p">,</span> <span class="s1">&#39;CTFE&#39;</span><span class="p">:</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="s1">&#39;CHTFE&#39;</span><span class="p">:</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="s1">&#39;OTFE&#39;</span><span class="p">:</span> <span class="s1">&#39;8&#39;</span><span class="p">,</span> <span class="s1">&#39;CUrea&#39;</span><span class="p">:</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;OUrea&#39;</span><span class="p">:</span> <span class="s1">&#39;8&#39;</span><span class="p">,</span> <span class="s1">&#39;NUrea&#39;</span><span class="p">:</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span> <span class="s1">&#39;CH3p&#39;</span><span class="p">:</span> <span class="s1">&#39;6&#39;</span><span class="p">}</span>
+
+<span class="n">_element__AtomicNum_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">H</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">O</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">F</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">NA</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">MG</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">AL</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">SI</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">P</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">CL</span><span class="o">=</span><span class="mi">17</span><span class="p">,</span> <span class="n">AR</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> \
+                                <span class="n">K</span><span class="o">=</span><span class="mi">19</span><span class="p">,</span> <span class="n">CA</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">FE</span><span class="o">=</span><span class="mi">26</span><span class="p">,</span> <span class="n">CU</span><span class="o">=</span><span class="mi">29</span><span class="p">,</span> <span class="n">ZN</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">BR</span><span class="o">=</span><span class="mi">35</span><span class="p">)</span>
+<span class="n">_AtomicNum__element_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">item</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">_element__AtomicNum_map</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+
+
+<div class="viewcode-block" id="gr_get_atom_element"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.gr_get_atom_element">[docs]</a><span class="k">def</span> <span class="nf">gr_get_atom_element</span><span class="p">(</span><span class="n">a_type</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">a_type</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;P,SI&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">round</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">m_type</span><span class="o">.</span><span class="n">m</span><span class="p">)</span> <span class="o">==</span> <span class="mi">31</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_atomtype_name__element_map</span><span class="p">[</span><span class="s1">&#39;P&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_atomtype_name__element_map</span><span class="p">[</span><span class="s1">&#39;SI&#39;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_atomtype_name__element_map</span><span class="p">[</span><span class="n">a_type</span><span class="o">.</span><span class="n">name</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ContPref_g2g"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.ContPref_g2g">[docs]</a><span class="k">class</span> <span class="nc">ContPref_g2g</span><span class="p">(</span><span class="n">Defaults</span><span class="p">):</span>
+    <span class="c1">### GROMOS thingies</span>
+    <span class="k">def</span> <span class="nf">_set_gr_interaction_type_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">int_type</span><span class="p">):</span>
+        <span class="n">int_type</span><span class="o">.</span><span class="n">cont_pref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gr_cont_pref</span>
+
+    <span class="c1">### GROMACS thingies</span>
+    <span class="k">def</span> <span class="nf">_set_gm_interaction_type_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">int_type</span><span class="p">):</span>
+        <span class="n">int_type</span><span class="o">.</span><span class="n">cont_pref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gm_cont_pref</span></div>
+
+<span class="n">_ContPref_g2g_defs</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">_ContPref_g2g_defs</span><span class="p">[</span><span class="s1">&#39;_gr_cont_pref&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;gr_&#39;</span>
+<span class="n">_ContPref_g2g_defs</span><span class="p">[</span><span class="s1">&#39;_gm_cont_pref&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;gm_&#39;</span>
+<span class="n">ContPref_g2g</span><span class="o">.</span><span class="n">_add_defaults</span><span class="p">(</span><span class="n">_ContPref_g2g_defs</span><span class="p">,</span> <span class="n">flag_set</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="IntType_g2g"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.IntType_g2g">[docs]</a><span class="k">class</span> <span class="nc">IntType_g2g</span><span class="p">(</span><span class="n">ContPref_g2g</span><span class="p">):</span>
+<div class="viewcode-block" id="IntType_g2g.get_int_type"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.IntType_g2g.get_int_type">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_int_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span></div>
+
+<div class="viewcode-block" id="IntType_g2g.get_gr_gm_params"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.IntType_g2g.get_gr_gm_params">[docs]</a>    <span class="k">def</span> <span class="nf">get_gr_gm_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">gr_gm_params</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fnc_type</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">gr_gm_params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">gr_gm_params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">gr_gm_params</span></div>
+
+<div class="viewcode-block" id="IntType_g2g.generate_params_gr_gm"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.IntType_g2g.generate_params_gr_gm">[docs]</a>    <span class="k">def</span> <span class="nf">generate_params_gr_gm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gr_gm_params</span><span class="p">):</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flag</span><span class="p">)</span> <span class="c1"># PTP flag</span>
+        <span class="k">for</span> <span class="n">i1</span><span class="p">,</span> <span class="n">i2</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fnc_type</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">i2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">gr_gm_params</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">params</span><span class="p">[</span><span class="n">i2</span><span class="p">]</span> <span class="o">=</span> <span class="n">gr_gm_params</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_params</span><span class="p">(</span><span class="n">params</span><span class="p">)</span></div>
+
+<span class="c1"># gr2gm</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_get_gr2gm_int_type_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">dv</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">dv</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dv</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_current_class_dvalues</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">int_type</span> <span class="o">=</span> <span class="bp">cls</span>
+        <span class="n">int_type_def_key</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;__gr2gm_int_type&#39;</span>
+        <span class="k">if</span> <span class="n">int_type_def_key</span> <span class="ow">in</span> <span class="n">dv</span><span class="p">:</span>
+            <span class="n">int_type</span> <span class="o">=</span> <span class="n">dv</span><span class="p">[</span><span class="n">int_type_def_key</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">int_type</span>
+
+<div class="viewcode-block" id="IntType_g2g.get_gr2gm_int_type"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.IntType_g2g.get_gr2gm_int_type">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_gr2gm_int_type</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">dv</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_current_class_dvalues</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">int_type</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_gr2gm_int_type_class</span><span class="p">(</span><span class="n">dv</span> <span class="o">=</span> <span class="n">dv</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;fnc_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fnc_type&#39;</span><span class="p">,</span> <span class="n">dv</span><span class="p">[</span><span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;__gr2gm_fnc&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">int_type</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="IntType_g2g.get_gr2gm_def_pref_class"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.IntType_g2g.get_gr2gm_def_pref_class">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_gr2gm_def_pref_class</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        gets gm_def_pref for a given class, e.g. gb_ for BondType</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            flag_not_found</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dv</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dv&#39;</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_current_class_dvalues</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">dv</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;__gr2gm_def_pref&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_not_found&#39;</span> <span class="p">,</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="IntType_g2g.get_gr2gm_def_pref"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.IntType_g2g.get_gr2gm_def_pref">[docs]</a>    <span class="k">def</span> <span class="nf">get_gr2gm_def_pref</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        gets gm_def_pref for a given class, e.g. gb_ for BondType</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            flag_not_found</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span>
+        <span class="n">dv</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_current_class_dvalues</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">temp_k</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;__gr2gm_def_pref_fnc_type&#39;</span>
+        <span class="k">if</span> <span class="n">temp_k</span> <span class="ow">in</span> <span class="n">dv</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">fnc_type</span> <span class="ow">in</span> <span class="n">dv</span><span class="p">[</span><span class="n">temp_k</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">dv</span><span class="p">[</span><span class="n">temp_k</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">fnc_type</span><span class="p">]</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;dv&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dv</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">get_gr2gm_def_pref_class</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="IntType_g2g.gr2gm"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.IntType_g2g.gr2gm">[docs]</a>    <span class="k">def</span> <span class="nf">gr2gm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;int_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;int_code&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;atoms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;atoms&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_params&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_gr_gm_pos_fnc_map&#39;</span><span class="p">):</span>
+            <span class="n">gm_int_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gr2gm_int_type</span><span class="p">(</span><span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">gm_int_type</span>
+        <span class="n">gm_int_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gr2gm_int_type</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">gr_gm_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gr_gm_params</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;gm2gr_param_trans_fnc&#39;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">temp_fnc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gr2gm_param_trans_fnc</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">temp_fnc</span><span class="p">:</span>
+                    <span class="n">gr_gm_params</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_fnc</span><span class="p">(</span><span class="n">gr_gm_params</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">gm_int_type</span><span class="o">.</span><span class="n">generate_params_gr_gm</span><span class="p">(</span><span class="n">gr_gm_params</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gm_int_type</span></div>
+
+<span class="c1"># gm2gr</span>
+    <span class="k">def</span> <span class="nf">_get_gm2gr_int_type_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span>
+        <span class="n">int_type</span> <span class="o">=</span> <span class="bp">cls</span>
+        <span class="n">dv</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_current_class_dvalues</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">temp_k</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;__gm2gr_int_type_fnc_type&#39;</span>
+        <span class="k">if</span> <span class="n">temp_k</span> <span class="ow">in</span> <span class="n">dv</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">fnc_type</span> <span class="ow">in</span> <span class="n">dv</span><span class="p">[</span><span class="n">temp_k</span><span class="p">]:</span>
+            <span class="n">int_type</span> <span class="o">=</span> <span class="n">dv</span><span class="p">[</span><span class="n">temp_k</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">fnc_type</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">int_type</span>
+
+<div class="viewcode-block" id="IntType_g2g.get_gm2gr_int_type"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.IntType_g2g.get_gm2gr_int_type">[docs]</a>    <span class="k">def</span> <span class="nf">get_gm2gr_int_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">int_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_gm2gr_int_type_class</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;fnc_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;gr_fnc&#39;</span>
+        <span class="k">return</span> <span class="n">int_type</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="IntType_g2g.gm2gr"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.IntType_g2g.gm2gr">[docs]</a>    <span class="k">def</span> <span class="nf">gm2gr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;int_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;int_code&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;atoms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;atoms&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+        <span class="n">gr_int_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gm2gr_int_type</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">gr_gm_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gr_gm_params</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;gm2gr_param_trans_fnc&#39;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">temp_fnc</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">gm2gr_param_trans_fnc</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">temp_fnc</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">gr_gm_params</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">gr_gm_params</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">gr_gm_params</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_fnc</span><span class="p">(</span><span class="n">gr_gm_params</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;verbose&#39;</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">gr_gm_params</span><span class="p">)</span>
+        <span class="n">gr_int_type</span><span class="o">.</span><span class="n">generate_params_gr_gm</span><span class="p">(</span><span class="n">gr_gm_params</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gr_int_type</span></div></div>
+
+
+<div class="viewcode-block" id="FFg2g"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.FFg2g">[docs]</a><span class="k">class</span> <span class="nc">FFg2g</span><span class="p">(</span><span class="n">ContPref_g2g</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__just_for_readability</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_intDB</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># from FF</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gr_block_names</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># from gromos FF</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gm_FF_Defaults</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># from gromacs FF</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_define</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># from gromacs FF</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">self</span><span class="o">.</span><span class="n">_check_vdw_pair_gm_params</span> <span class="o">=</span> <span class="kc">None</span> <span class="c1"># from gmFFWriter</span>
+
+    <span class="k">def</span> <span class="nf">__check_ff_defs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;defines&#39;</span><span class="p">,{}):</span>
+            <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_FF_&#39;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">d</span>
+        <span class="k">return</span>
+
+<span class="c1"># gr2gm</span>
+<div class="viewcode-block" id="FFg2g.gr2gm"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.FFg2g.gr2gm">[docs]</a>    <span class="k">def</span> <span class="nf">gr2gm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ff_gr2gm</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FFg2g.ff_gr2gm"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.FFg2g.ff_gr2gm">[docs]</a>    <span class="k">def</span> <span class="nf">ff_gr2gm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            none</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__check_ff_defs</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_define</span><span class="p">([</span><span class="s1">&#39;_FF_GROMOS96&#39;</span><span class="p">])</span>
+            <span class="n">ff_name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gr_block_names</span><span class="o">.</span><span class="n">FORCEFIELD</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ff_name</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_define</span><span class="p">([</span><span class="s1">&#39;_FF_GROMOS&#39;</span> <span class="o">+</span> <span class="n">ff_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;gm_ff_defaults&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gm_ff_defaults</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gm_FF_Defaults</span><span class="p">([</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+
+        <span class="c1"># add SI from P,SI</span>
+
+        <span class="k">for</span> <span class="n">at_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_intDB</span><span class="p">()</span><span class="o">.</span><span class="n">a_type</span><span class="p">:</span>
+            <span class="n">at</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_intDB</span><span class="p">()</span><span class="o">.</span><span class="n">a_type</span><span class="p">[</span><span class="n">at_id</span><span class="p">]</span>
+            <span class="n">at</span><span class="o">.</span><span class="n">m</span> <span class="o">=</span> <span class="n">at</span><span class="o">.</span><span class="n">p_ch</span> <span class="o">=</span> <span class="mf">0.</span>
+            <span class="n">at</span><span class="o">.</span><span class="n">p_type</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span>
+            <span class="n">at</span><span class="o">.</span><span class="n">vdw</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_vdw</span><span class="p">(</span><span class="n">at</span><span class="o">.</span><span class="n">gr_id</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">gr_id</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">anames</span> <span class="o">=</span> <span class="n">at</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+            <span class="n">at</span><span class="o">.</span><span class="n">gm_id</span> <span class="o">=</span> <span class="n">anames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">at</span><span class="p">,</span> <span class="s1">&#39;element&#39;</span><span class="p">):</span>
+                <span class="n">at</span><span class="o">.</span><span class="n">element</span> <span class="o">=</span> <span class="s1">&#39;0&#39;</span>
+                <span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">for</span> <span class="n">at_name1</span> <span class="ow">in</span> <span class="n">_atomtype_name__element_map</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">at_name2</span> <span class="ow">in</span> <span class="n">anames</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">at_name1</span> <span class="o">==</span> <span class="n">at_name2</span><span class="p">:</span>
+                            <span class="n">at</span><span class="o">.</span><span class="n">element</span> <span class="o">=</span> <span class="n">_atomtype_name__element_map</span><span class="p">[</span><span class="n">at_name1</span><span class="p">]</span>
+                            <span class="n">flag</span> <span class="o">=</span> <span class="mi">0</span>
+                            <span class="k">break</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">at_name1</span> <span class="ow">in</span> <span class="n">_atomtype_name__element_map</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">at_name2</span> <span class="ow">in</span> <span class="n">anames</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">at_name1</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="n">at_name2</span><span class="o">.</span><span class="n">upper</span><span class="p">():</span>
+                                <span class="n">at</span><span class="o">.</span><span class="n">element</span> <span class="o">=</span> <span class="n">_atomtype_name__element_map</span><span class="p">[</span><span class="n">at_name1</span><span class="p">]</span>
+                                <span class="k">break</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">continue</span>
+                        <span class="k">break</span>
+        <span class="n">ff</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_intDB</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">vdw_pair</span> <span class="ow">in</span> <span class="n">ff</span><span class="o">.</span><span class="n">vdw</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+                <span class="n">vdw_pair</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">gm_int_type</span> <span class="o">=</span> <span class="n">vdw_pair</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">gr2gm</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_vdw_pair_gm_params</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">container_name</span> <span class="ow">in</span> <span class="n">ff</span><span class="o">.</span><span class="n">_containers</span><span class="p">:</span><span class="c1">#############################################</span>
+            <span class="k">if</span> <span class="n">container_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gr_cont_pref</span><span class="p">):</span>
+                <span class="n">temp_cont</span> <span class="o">=</span> <span class="n">ff</span><span class="o">.</span><span class="n">get_container</span><span class="p">(</span><span class="n">container_name</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">int_type</span> <span class="ow">in</span> <span class="n">temp_cont</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                    <span class="n">gm_int_type</span> <span class="o">=</span> <span class="n">int_type</span><span class="o">.</span><span class="n">gr2gm</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                    <span class="n">temp_def</span> <span class="o">=</span> <span class="n">gm_int_type</span><span class="o">.</span><span class="n">gm_params2define</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add2container</span><span class="p">(</span><span class="n">temp_def</span><span class="p">,</span> <span class="n">replace</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_def_replace&#39;</span><span class="p">))</span>
+                    <span class="n">int_type</span><span class="o">.</span><span class="n">gm_int_type</span> <span class="o">=</span> <span class="n">gm_int_type</span></div>
+
+<span class="c1"># gm2gr</span>
+    <span class="k">def</span> <span class="nf">__get_gm_def_pref</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">int_type_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_available_int_types</span><span class="p">:</span>
+            <span class="n">int_type</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">int_type_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">int_type</span><span class="p">,</span> <span class="s1">&#39;get_gr2gm_def_pref_class&#39;</span><span class="p">):</span>
+                <span class="n">gm_def_pref</span> <span class="o">=</span> <span class="n">int_type</span><span class="o">.</span><span class="n">get_gr2gm_def_pref_class</span><span class="p">(</span><span class="n">flag_not_found</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flag_do_warn</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">gm_def_pref</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">gm_def_pref</span><span class="p">,</span> <span class="n">int_type</span>
+
+<div class="viewcode-block" id="FFg2g.ff_gm2gr"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.FFg2g.ff_gm2gr">[docs]</a>    <span class="k">def</span> <span class="nf">ff_gm2gr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span> <span class="c1">######################################################## could be better with reading gr ff</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_intDB</span><span class="p">(),</span> <span class="s1">&#39;vdw&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">generate_vdw</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">at_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_intDB</span><span class="p">()</span><span class="o">.</span><span class="n">a_type</span><span class="p">:</span>
+            <span class="n">at</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_intDB</span><span class="p">()</span><span class="o">.</span><span class="n">a_type</span><span class="p">[</span><span class="n">at_id</span><span class="p">]</span>
+            <span class="n">temp_vdw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_intDB</span><span class="p">()</span><span class="o">.</span><span class="n">vdw</span><span class="p">[(</span><span class="n">at</span><span class="p">,)</span><span class="o">*</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">gm2gr</span><span class="p">()</span>
+            <span class="n">at</span><span class="o">.</span><span class="n">c612</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">temp_vdw</span><span class="o">.</span><span class="n">p</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+                <span class="n">at</span><span class="o">.</span><span class="n">c612</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">at</span><span class="o">.</span><span class="n">c612</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="c1">############################################## could be better with reading gr ff</span>
+            <span class="n">temp_pair</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_intDB</span><span class="p">()</span><span class="o">.</span><span class="n">vdw</span><span class="p">[(</span><span class="n">at</span><span class="p">,)</span><span class="o">*</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">temp_pair</span><span class="p">:</span>
+                <span class="n">temp_pair</span> <span class="o">=</span> <span class="n">temp_pair</span><span class="o">.</span><span class="n">gm2gr</span><span class="p">()</span>
+                <span class="n">at</span><span class="o">.</span><span class="n">c612</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">temp_pair</span><span class="o">.</span><span class="n">p</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">at</span><span class="o">.</span><span class="n">c612</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">at</span><span class="o">.</span><span class="n">c612</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_intDB</span><span class="p">()</span><span class="o">.</span><span class="n">renumber_container</span><span class="p">(</span><span class="s1">&#39;a_type&#39;</span><span class="p">,</span> <span class="n">attrib</span> <span class="o">=</span> <span class="s1">&#39;gr_id&#39;</span><span class="p">)</span>
+        <span class="n">flag_ff_defs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__check_ff_defs</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">flag_ff_defs</span> <span class="ow">and</span> <span class="s1">&#39;GROMOS&#39;</span> <span class="ow">in</span> <span class="n">flag_ff_defs</span><span class="o">.</span><span class="n">upper</span><span class="p">():</span>
+            <span class="n">gm_def_pref_int_type</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_gm_def_pref</span><span class="p">())</span>
+            <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">defines</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">gm_def_pref</span> <span class="ow">in</span> <span class="n">gm_def_pref_int_type</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">d</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">gm_def_pref</span><span class="p">):</span>
+                        <span class="n">temp_id</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">gm_def_pref</span><span class="p">):]</span>
+                        <span class="n">temp_gr_int_type</span> <span class="o">=</span> <span class="n">gm_def_pref_int_type</span><span class="p">[</span><span class="n">gm_def_pref</span><span class="p">](</span><span class="n">fnc_type</span> <span class="o">=</span> <span class="s1">&#39;gr_fnc&#39;</span><span class="p">)</span>
+                        <span class="n">temp_gm_int_type</span> <span class="o">=</span> <span class="n">temp_gr_int_type</span><span class="o">.</span><span class="n">get_gr2gm_int_type</span><span class="p">(</span><span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">defines</span><span class="p">[</span><span class="n">d</span><span class="p">]</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+                        <span class="n">new_gr_int_type</span> <span class="o">=</span> <span class="n">temp_gm_int_type</span><span class="o">.</span><span class="n">gm2gr</span><span class="p">(</span><span class="n">int_code</span><span class="o">=</span><span class="n">temp_id</span><span class="p">)</span>
+                        <span class="n">new_gr_int_type</span><span class="o">.</span><span class="n">cont_pref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gr_cont_pref</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">get_intDB</span><span class="p">()</span><span class="o">.</span><span class="n">add2container</span><span class="p">(</span><span class="n">new_gr_int_type</span><span class="p">,</span> <span class="n">create</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">gr_int_type</span> <span class="ow">in</span> <span class="n">gm_def_pref_int_type</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="n">temp_kw</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">flag_class</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">allow_not_found</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+                <span class="n">temp_gm_conts</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_intDB</span><span class="p">()</span><span class="o">.</span><span class="n">get_container</span><span class="p">(</span><span class="n">gr_int_type</span><span class="p">,</span> <span class="n">cont_pref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gm_cont_pref</span><span class="p">,</span> <span class="o">**</span><span class="n">temp_kw</span><span class="p">)]</span>
+                <span class="c1">#temp_gm_conts.append(self.get_intDB().get_container(gr_int_type, **temp_kw))</span>
+                <span class="k">for</span> <span class="n">temp_gm_cont</span> <span class="ow">in</span> <span class="n">temp_gm_conts</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">temp_gm_cont</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">temp_gm_int_type</span> <span class="ow">in</span> <span class="n">temp_gm_cont</span><span class="p">:</span>
+                            <span class="n">temp_gr_int_type</span> <span class="o">=</span> <span class="n">temp_gm_int_type</span><span class="o">.</span><span class="n">gm2gr</span><span class="p">()</span>
+                            <span class="n">temp_gr_int_type</span><span class="o">.</span><span class="n">cont_pref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gr_cont_pref</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_eq_int_type</span><span class="p">(</span><span class="n">temp_gr_int_type</span><span class="p">):</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">get_intDB</span><span class="p">()</span><span class="o">.</span><span class="n">add2container</span><span class="p">(</span><span class="n">temp_gr_int_type</span><span class="p">,</span> <span class="n">create</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FFg2g.gm2gr"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.FFg2g.gm2gr">[docs]</a>    <span class="k">def</span> <span class="nf">gm2gr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ff_gm2gr</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Top_g2g"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.Top_g2g">[docs]</a><span class="k">class</span> <span class="nc">Top_g2g</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    g2m (gr2gm &amp; gm2gr) functionality for topology</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__just_for_readability</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ff_gr2gm</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">molecule_types</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="c1"># gr2gm</span>
+<div class="viewcode-block" id="Top_g2g.top_gr2gm"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.Top_g2g.top_gr2gm">[docs]</a>    <span class="k">def</span> <span class="nf">top_gr2gm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            ff_gr2gm(**kwargs)</span>
+<span class="sd">            generate_mol_types(*mol_ids, **kwargs)</span>
+<span class="sd">            mol_ids - names for each molecule type</span>
+<span class="sd">            flag_add_molecule - adding molecule 1 for each molecule type</span>
+<span class="sd">            num_mols - adding more than 1 molecule for each molecule type</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ff_gr2gm</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        if kwargs.get(&#39;reset_excl_pairs&#39;, True):</span>
+<span class="sd">            self._gr_exp_red_sort_excl_pair()</span>
+<span class="sd">            self.get_exclusions_from_e_l(reset = 1)</span>
+<span class="sd">            self.get_pairs_from_p_l(reset = 1)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_clear_mols_types&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">molecule_types</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="n">mol_ids</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mol_ids&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generate_mol_types</span><span class="p">(</span><span class="o">*</span><span class="n">mol_ids</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Top_g2g.gr2gm"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.Top_g2g.gr2gm">[docs]</a>    <span class="k">def</span> <span class="nf">gr2gm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">top_gr2gm</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Top_g2g.generate_mol_types"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.Top_g2g.generate_mol_types">[docs]</a>    <span class="k">def</span> <span class="nf">generate_mol_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">mol_ids</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param mol_ids:  names for each molecule type</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            flag_add_molecule - adding molecule 1 for each molecule type</span>
+<span class="sd">            num_mols - adding more than 1 molecule for each molecule type</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_add_molecule&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;num_mols&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;num_mols&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">mols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_molecules</span><span class="p">(</span><span class="n">flag_mol_atom_sort</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">mols</span><span class="p">):</span>
+            <span class="n">atom_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">at</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">m</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">i</span><span class="o">&lt;</span><span class="nb">len</span><span class="p">(</span><span class="n">mol_ids</span><span class="p">):</span>
+                <span class="n">mol_id</span> <span class="o">=</span> <span class="n">mol_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mol_id</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">mol_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_mol_type</span><span class="p">(</span><span class="n">atom_ids</span><span class="p">,</span> <span class="n">molecule_id</span><span class="o">=</span><span class="n">mol_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_add_molecule&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_molecule</span><span class="p">(</span><span class="n">mol_type</span> <span class="o">=</span> <span class="n">mol_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">flag_sol</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_sol&#39;</span><span class="p">,</span> <span class="s1">&#39;#include &quot;gromos54a7.ff/spc.itp&quot;&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">flag_sol</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parse_gm</span><span class="p">(</span><span class="n">flag_sol</span><span class="p">,</span> <span class="n">parse_from_file</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">flag_ion</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_ion&#39;</span><span class="p">,</span> <span class="s1">&#39;#include &quot;gromos54a7.ff/ions.itp&quot;&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">flag_ion</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parse_gm</span><span class="p">(</span><span class="n">flag_ion</span><span class="p">,</span> <span class="n">parse_from_file</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Top_g2g.generate_mol_type"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.Top_g2g.generate_mol_type">[docs]</a>    <span class="k">def</span> <span class="nf">generate_mol_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_ids</span><span class="p">,</span> <span class="n">molecule_id</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">mol_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">add_molecule_type</span><span class="p">(</span><span class="n">molecule_id</span> <span class="o">=</span> <span class="n">molecule_id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_decouple&#39;</span><span class="p">):</span>
+            <span class="n">do_warn</span><span class="p">(</span><span class="s1">&#39;this also decouples the force-field parameters&#39;</span><span class="p">)</span>
+            <span class="n">temp_source</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">temp_source</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">temp_source</span><span class="o">.</span><span class="n">get_atoms</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">at</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">atom_ids</span><span class="p">:</span>
+                <span class="n">mol_type</span><span class="o">.</span><span class="n">add2container</span><span class="p">(</span><span class="n">at</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">mol_type</span><span class="o">.</span><span class="n">add2container</span><span class="p">(</span><span class="n">at</span><span class="o">.</span><span class="n">res</span><span class="p">,</span> <span class="n">replace</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">mol_type</span><span class="o">.</span><span class="n">add2container</span><span class="p">(</span><span class="n">at</span><span class="o">.</span><span class="n">cg</span><span class="p">,</span> <span class="n">replace</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">db_type</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">renumber_container</span><span class="p">(</span><span class="s1">&#39;cg&#39;</span><span class="p">,</span> <span class="n">attrib</span> <span class="o">=</span> <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="n">id_type</span> <span class="o">=</span> <span class="nb">int</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">int_cont</span> <span class="ow">in</span> <span class="n">temp_source</span><span class="o">.</span><span class="n">get_interaction_containers</span><span class="p">():</span>
+            <span class="n">flag_ds</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># distance restraints</span>
+            <span class="k">if</span> <span class="n">int_cont</span> <span class="ow">and</span> <span class="n">int_cont</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">int_type</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">Distance_r</span><span class="p">:</span>
+                <span class="n">do_warn</span><span class="p">(</span><span class="s1">&#39;distance restraint parameters decoupled - only state 0&#39;</span><span class="p">)</span>
+                <span class="n">flag_ds</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">c_index</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">temp_int</span> <span class="ow">in</span> <span class="n">int_cont</span><span class="p">:</span>
+                <span class="n">flag_add</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">temp_int</span><span class="o">.</span><span class="n">atoms</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">at</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">atom_ids</span><span class="p">:</span>
+                        <span class="n">flag_add</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="k">break</span>
+                <span class="k">if</span> <span class="n">flag_add</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">flag_ds</span><span class="p">:</span>
+                        <span class="n">new_int_state0</span> <span class="o">=</span> <span class="n">temp_int</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">gr2gm</span><span class="p">(</span><span class="n">index</span> <span class="o">=</span> <span class="n">c_index</span><span class="p">)</span>
+                        <span class="n">new_int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Interaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Distance_r</span><span class="p">,</span> <span class="n">atoms</span> <span class="o">=</span> <span class="n">temp_int</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="n">new_int_state0</span><span class="p">])</span>
+                        <span class="k">for</span> <span class="n">temp_state</span> <span class="ow">in</span> <span class="n">temp_int</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+                            <span class="n">new_int</span><span class="o">.</span><span class="n">add_state</span><span class="p">(</span><span class="n">temp_state</span><span class="p">)</span>
+                        <span class="n">mol_type</span><span class="o">.</span><span class="n">add2container</span><span class="p">(</span><span class="n">new_int</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">db_type</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">container_name</span><span class="o">=</span><span class="n">new_int_state0</span><span class="p">,</span> <span class="n">flag_class</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="n">c_index</span><span class="o">+=</span><span class="mi">1</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">gm_int_type</span> <span class="o">=</span> <span class="n">temp_int</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_get_gr2gm_int_type_class</span><span class="p">()</span>
+                        <span class="n">mol_type</span><span class="o">.</span><span class="n">add2container</span><span class="p">(</span><span class="n">temp_int</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">db_type</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">container_name</span><span class="o">=</span><span class="n">gm_int_type</span><span class="p">,</span> <span class="n">flag_class</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">temp_source</span><span class="p">,</span> <span class="s1">&#39;excl_pair&#39;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">EP_pair</span><span class="p">,</span> <span class="n">temp_int</span> <span class="ow">in</span> <span class="n">temp_source</span><span class="o">.</span><span class="n">excl_pair</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">flag_add</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">temp_int</span><span class="o">.</span><span class="n">atoms</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">at</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">atom_ids</span><span class="p">:</span>
+                        <span class="n">flag_add</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="k">break</span>
+                <span class="k">if</span> <span class="n">flag_add</span><span class="p">:</span>
+                    <span class="n">mol_type</span><span class="o">.</span><span class="n">add2container</span><span class="p">(</span><span class="n">temp_int</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">item_id</span><span class="o">=</span><span class="n">EP_pair</span><span class="p">,</span> <span class="n">replace</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">perm_EP_pair</span> <span class="ow">in</span> <span class="n">permutations</span><span class="p">(</span><span class="n">EP_pair</span><span class="p">):</span>
+                        <span class="n">mol_type</span><span class="o">.</span><span class="n">EP_l</span><span class="p">[</span><span class="n">perm_EP_pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">perm_EP_pair</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                    
+        <span class="n">mol_type</span><span class="o">.</span><span class="n">_gm_generate_excl_pairs</span><span class="p">(</span><span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_renumber_atoms&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+            <span class="n">mol_type</span><span class="o">.</span><span class="n">renumber_container</span><span class="p">(</span><span class="s1">&#39;atoms&#39;</span><span class="p">,</span> <span class="n">attrib</span> <span class="o">=</span> <span class="s1">&#39;gm_id&#39;</span><span class="p">,</span> <span class="n">id_type</span> <span class="o">=</span> <span class="nb">int</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_renumber_residues&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">mol_type</span><span class="o">.</span><span class="n">renumber_container</span><span class="p">(</span><span class="s1">&#39;residues&#39;</span><span class="p">,</span> <span class="n">attrib</span> <span class="o">=</span> <span class="s1">&#39;gm_id&#39;</span><span class="p">,</span> <span class="n">id_type</span> <span class="o">=</span> <span class="nb">int</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">mol_type</span><span class="o">.</span><span class="n">residues</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="n">res</span><span class="o">.</span><span class="n">gm_id</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">return</span> <span class="n">mol_type</span></div>
+
+<span class="c1"># gm2gr</span>
+<div class="viewcode-block" id="Top_g2g.generate_sys_atoms_from_mols_types"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.Top_g2g.generate_sys_atoms_from_mols_types">[docs]</a>    <span class="k">def</span> <span class="nf">generate_sys_atoms_from_mols_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">sys_atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_container</span><span class="p">(</span><span class="s1">&#39;atoms&#39;</span><span class="p">,</span> <span class="n">create</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">sys_residues</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_container</span><span class="p">(</span><span class="s1">&#39;residues&#39;</span><span class="p">,</span> <span class="n">create</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">curr_res</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecules</span><span class="p">:</span>
+            <span class="k">del</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">mol_type</span><span class="o">.</span><span class="n">ff</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">n</span><span class="p">):</span>
+                <span class="n">temp_mol_type</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">mol_type</span><span class="p">)</span>
+                <span class="n">temp_mol_type</span><span class="o">.</span><span class="n">ff</span> <span class="o">=</span> <span class="bp">self</span>
+                <span class="c1">#temp_mol_type.generate_e_p_l()</span>
+                <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">temp_mol_type</span><span class="o">.</span><span class="n">get_atoms</span><span class="p">():</span>
+                    <span class="n">at</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_next_code</span><span class="p">(</span><span class="s1">&#39;atoms&#39;</span><span class="p">)</span>
+                    <span class="n">at</span><span class="o">.</span><span class="n">gr_id</span> <span class="o">=</span> <span class="n">at</span><span class="o">.</span><span class="n">id</span>
+                    <span class="k">if</span> <span class="n">at</span><span class="o">.</span><span class="n">res</span> <span class="o">!=</span> <span class="n">curr_res</span><span class="p">:</span>
+                        <span class="n">at</span><span class="o">.</span><span class="n">res</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_next_code</span><span class="p">(</span><span class="s1">&#39;residues&#39;</span><span class="p">)</span>
+                        <span class="n">at</span><span class="o">.</span><span class="n">res</span><span class="o">.</span><span class="n">gr_id</span> <span class="o">=</span> <span class="n">at</span><span class="o">.</span><span class="n">res</span><span class="o">.</span><span class="n">id</span>
+                        <span class="n">curr_res</span> <span class="o">=</span> <span class="n">at</span><span class="o">.</span><span class="n">res</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add2container</span><span class="p">(</span><span class="n">at</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add2container</span><span class="p">(</span><span class="n">at</span><span class="o">.</span><span class="n">res</span><span class="p">,</span> <span class="n">replace</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add2container</span><span class="p">(</span><span class="n">at</span><span class="o">.</span><span class="n">cg</span><span class="p">,</span> <span class="n">replace</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">db_type</span><span class="o">=</span><span class="nb">list</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">EP_l</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">temp_mol_type</span><span class="o">.</span><span class="n">EP_l</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">atom_pair</span> <span class="ow">in</span> <span class="n">temp_mol_type</span><span class="o">.</span><span class="n">excl_pair</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add2container</span><span class="p">(</span><span class="n">temp_mol_type</span><span class="o">.</span><span class="n">excl_pair</span><span class="p">[</span><span class="n">atom_pair</span><span class="p">],</span> <span class="n">item_id</span> <span class="o">=</span> <span class="n">atom_pair</span><span class="p">,</span> <span class="n">create</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">replace</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">int_cont</span> <span class="ow">in</span> <span class="n">temp_mol_type</span><span class="o">.</span><span class="n">get_interaction_containers</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">int_cont</span> <span class="ow">and</span> <span class="n">int_cont</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PairType</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ExclusionType</span><span class="p">)</span> <span class="ow">and</span> \
+                            <span class="nb">hasattr</span><span class="p">(</span><span class="n">int_cont</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;fnc&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;gr_fnc&#39;</span> <span class="ow">in</span> <span class="n">int_cont</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fnc</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">temp_int</span> <span class="ow">in</span> <span class="n">int_cont</span><span class="p">:</span>
+                            <span class="n">gr_int_type_class</span> <span class="o">=</span> <span class="n">temp_int</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_get_gm2gr_int_type_class</span><span class="p">()</span>
+                            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">temp_int_type</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">temp_int</span><span class="o">.</span><span class="n">states</span><span class="p">):</span>
+                                <span class="n">temp_gr_int_type</span> <span class="o">=</span> <span class="n">temp_int_type</span><span class="o">.</span><span class="n">gm2gr</span><span class="p">()</span>
+                                <span class="n">temp_gr_int_type</span><span class="o">.</span><span class="n">cont_pref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gr_cont_pref</span>
+                                <span class="n">temp_ff_gr_int_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_eq_int_type</span><span class="p">(</span><span class="n">temp_gr_int_type</span><span class="p">)</span>
+                                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_eq_int_type</span><span class="p">(</span><span class="n">temp_ff_gr_int_type</span><span class="p">):</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">get_intDB</span><span class="p">()</span><span class="o">.</span><span class="n">add2container</span><span class="p">(</span><span class="n">temp_gr_int_type</span><span class="p">,</span> <span class="n">create</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+                                    <span class="n">temp_ff_gr_int_type</span> <span class="o">=</span> <span class="n">temp_gr_int_type</span>
+                                <span class="n">temp_int</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_ff_gr_int_type</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">add2container</span><span class="p">(</span><span class="n">temp_int</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">db_type</span><span class="o">=</span><span class="nb">list</span><span class="p">,</span> <span class="n">container_name</span><span class="o">=</span><span class="n">gr_int_type_class</span><span class="p">,</span>
+                                               <span class="n">flag_class</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">mol_type</span><span class="o">.</span><span class="n">ff</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">for</span> <span class="n">cg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cg</span><span class="p">:</span>
+            <span class="n">cg</span><span class="o">.</span><span class="n">update</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">__get_SOL_gm2gr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;SOLVENTATOM&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">undefined_bl</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">undefined_bl</span><span class="p">[</span><span class="s1">&#39;SOLVENTATOM&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">sol_m_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecule_types</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SOL&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">sol_m_type</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">undefined_bl</span><span class="p">[</span><span class="s1">&#39;SOLVENTATOM&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sol_m_type</span><span class="o">.</span><span class="n">atoms</span><span class="p">)))</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">at</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sol_m_type</span><span class="o">.</span><span class="n">get_atoms</span><span class="p">()):</span>
+                    <span class="n">temp_l</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:&gt;5}</span><span class="s1"> </span><span class="si">{:&gt;5}</span><span class="s1"> </span><span class="si">{:&gt;4}</span><span class="s1"> </span><span class="si">{:9.5f}</span><span class="s1"> </span><span class="si">{:9.5f}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">at</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">a_type</span><span class="o">.</span><span class="n">gr_id</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">m</span><span class="p">,</span> <span class="n">at</span><span class="o">.</span><span class="n">p_ch</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">undefined_bl</span><span class="p">[</span><span class="s1">&#39;SOLVENTATOM&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_l</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;SOLVENTCONSTR&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">undefined_bl</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">undefined_bl</span><span class="p">[</span><span class="s1">&#39;SOLVENTCONSTR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">sol_m_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecule_types</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SOL&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">sol_m_type</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sol_m_type</span><span class="p">,</span> <span class="s1">&#39;bonds&#39;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">undefined_bl</span><span class="p">[</span><span class="s1">&#39;SOLVENTCONSTR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sol_m_type</span><span class="o">.</span><span class="n">bonds</span><span class="p">)))</span>
+                    <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">sol_m_type</span><span class="o">.</span><span class="n">bonds</span><span class="p">:</span>
+                        <span class="n">temp_l</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:&gt;5}{:&gt;5}{:9.5f}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">undefined_bl</span><span class="p">[</span><span class="s1">&#39;SOLVENTCONSTR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_l</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sol_m_type</span><span class="p">,</span> <span class="s1">&#39;settles&#39;</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">undefined_bl</span><span class="p">[</span><span class="s1">&#39;SOLVENTCONSTR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;3</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+                        <span class="n">temp_l</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:&gt;5}{:&gt;5}</span><span class="s1"> </span><span class="si">{:9.5f}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sol_m_type</span><span class="o">.</span><span class="n">settles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">undefined_bl</span><span class="p">[</span><span class="s1">&#39;SOLVENTCONSTR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_l</span><span class="p">)</span>
+                    <span class="n">temp_l</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:&gt;5}{:&gt;5}</span><span class="s1"> </span><span class="si">{:9.5f}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">sol_m_type</span><span class="o">.</span><span class="n">settles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">undefined_bl</span><span class="p">[</span><span class="s1">&#39;SOLVENTCONSTR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_l</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Top_g2g.top_gm2gr"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.Top_g2g.top_gm2gr">[docs]</a>    <span class="k">def</span> <span class="nf">top_gm2gr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;undefined_bl&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">undefined_bl</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ff_gm2gr</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__get_SOL_gm2gr</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generate_sys_atoms_from_mols_types</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Top_g2g.gm2gr"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.Top_g2g.gm2gr">[docs]</a>    <span class="k">def</span> <span class="nf">gm2gr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">top_gm2gr</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="MolType_g2g"><a class="viewcode-back" href="../../../../SMArt.md.gro2gro.html#SMArt.md.gro2gro.g2g.MolType_g2g">[docs]</a><span class="k">class</span> <span class="nc">MolType_g2g</span><span class="p">:</span>
+<span class="c1"># gm2gr</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    def generate_e_p_l(self):</span>
+<span class="sd">        db = self.get_container(self.ff.PairType.find_int_container2write(), allow_not_found = True)</span>
+<span class="sd">        if db:</span>
+<span class="sd">            for temp_pair in db:</span>
+<span class="sd">                at_pair = temp_pair.atoms</span>
+<span class="sd">                at_pair[0].add_pair(at_pair[1], replace = -1)</span>
+<span class="sd">        self.add_exclusions_neigh(self.nrexcl)</span>
+<span class="sd">        db = self.get_container(self.ff.ExclusionType.find_int_container2write(), allow_not_found = True)</span>
+<span class="sd">        if db:</span>
+<span class="sd">            for temp_pair in db:</span>
+<span class="sd">                at_pair = temp_pair.atoms</span>
+<span class="sd">                at_pair[0].add_excl(at_pair[1], replace = -1)</span>
+<span class="sd">        self._gr_expand_excl_pair()</span>
+<span class="sd">        self._gr_reduce_excl_pair()</span>
+<span class="sd">        self._gr_sort_excl_pair()</span>
+<span class="sd">        self.remove_excl_from_p_l(flag_reduced=True)</span>
+
+<span class="sd">    def remove_excl_from_p_l(self, **kwargs):</span>
+<span class="sd">        if kwargs.get(&#39;flag_reduced&#39;):</span>
+<span class="sd">            N4for = 1</span>
+<span class="sd">        else:N4for = 2</span>
+<span class="sd">        for at in self.get_atoms():</span>
+<span class="sd">            for at2 in at.p_l:</span>
+<span class="sd">                at_pair = (at, at2)</span>
+<span class="sd">                for i in range(N4for):</span>
+<span class="sd">                    try:</span>
+<span class="sd">                        at_pair[i].e_l.remove(at_pair[(i+1)%2])</span>
+<span class="sd">                    except ValueError:</span>
+<span class="sd">                        pass</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Drazen Petrov.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

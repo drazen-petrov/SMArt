@@ -1,0 +1,21 @@
+TITLE
+PERTURBATION TOPOLOGY BASED ON N = 2 STATES
+
+	from /home/dpetrov/poso/coding/GITLAB/SMArt/doc/some_data/gromos/LYS_K3C_KAC/single_AA/LYS.top (GROMOS)
+
+	from /home/dpetrov/poso/coding/GITLAB/SMArt/doc/some_data/gromos/LYS_K3C_KAC/single_AA/K3C.top (GROMOS)
+
+END
+PERTATOMPARAM
+7
+    11    1    NZ   8   14.00670    0.05000   8   14.00670    0.20000        0        0
+    12    1   HZ1  21    1.00800    0.25000  22    1.00800    0.00000     1.00     1.00
+    13    1   HZ2  21    1.00800    0.25000  22    1.00800    0.00000     1.00     1.00
+    14    1   HZ3  21    1.00800    0.25000  22    1.00800    0.00000     1.00     1.00
+    15    1   CH1  22   15.03500    0.00000  16   15.03500    0.20000     1.00     1.00
+    16    1   CH2  22   15.03500    0.00000  16   15.03500    0.20000     1.00     1.00
+    17    1   CH3  22   15.03500    0.00000  16   15.03500    0.20000     1.00     1.00
+END
+PERTATOMPAIR
+0
+END

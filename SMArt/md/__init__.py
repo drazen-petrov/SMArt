@@ -50,3 +50,11 @@ def parse_trc(f_path, **kwargs):
     """
     return Trajectory(f_path, **kwargs)
 
+def parse_cnf(f_path, **kwargs):
+    """
+    :param parse_from: this can also be gromos stream
+    :param parse_from_file:
+    :param kwargs:
+    :return: configuration
+    """
+    return Configuration(f_path, **kwargs)

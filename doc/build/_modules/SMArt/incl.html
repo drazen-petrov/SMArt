@@ -1,0 +1,1001 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>SMArt.incl &mdash; SMArt v1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> SMArt
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">SMArt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../Tutorial/index.html">Tutorial</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SMArt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>SMArt.incl</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for SMArt.incl</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">gzip</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">itemgetter</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+<span class="kn">import</span> <span class="nn">traceback</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">re</span> <span class="kn">import</span> <span class="n">finditer</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span><span class="p">,</span> <span class="n">defaultdict</span><span class="p">,</span> <span class="n">deque</span><span class="p">,</span> <span class="n">Counter</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations</span><span class="p">,</span> <span class="n">combinations_with_replacement</span><span class="p">,</span> <span class="n">permutations</span><span class="p">,</span> <span class="n">product</span>
+<span class="kn">from</span> <span class="nn">bisect</span> <span class="kn">import</span> <span class="n">bisect_left</span><span class="p">,</span> <span class="n">bisect_right</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Manager</span><span class="p">,</span> <span class="n">Pool</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">frozendict</span> <span class="kn">import</span> <span class="n">frozendict</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">frozendict</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pickle</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">pickle</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">yaml</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">yaml</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">np</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">pd</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">plt</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">minimize</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">minimize</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">integrate</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">integrate</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="c1">#import xml.etree.ElementTree as ET</span>
+
+
+<span class="k">class</span> <span class="nc">__VersionCompatibility</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+    <span class="k">class</span> <span class="nc">__VersionCompatibility</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+
+<span class="c1">#class __VersionCompatibility(object):pass</span>
+
+<div class="viewcode-block" id="test_time"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.test_time">[docs]</a><span class="k">def</span> <span class="nf">test_time</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t</span><span class="p">,</span> <span class="n">res</span></div>
+
+
+<div class="viewcode-block" id="split_gen"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.split_gen">[docs]</a><span class="k">def</span> <span class="nf">split_gen</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">pattern</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;the same as s.split() but it makes a generator out of it&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">pattern</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">finditer</span><span class="p">(</span><span class="s2">&quot;\S+&quot;</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">finditer</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WARN"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.WARN">[docs]</a><span class="k">class</span> <span class="nc">WARN</span><span class="p">(</span><span class="ne">UserWarning</span><span class="p">):</span>
+    <span class="n">flag_traceback</span> <span class="o">=</span> <span class="mi">0</span></div>
+
+<span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">WARN</span><span class="p">)</span>
+
+<div class="viewcode-block" id="set_print_warnings"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.set_print_warnings">[docs]</a><span class="k">def</span> <span class="nf">set_print_warnings</span><span class="p">(</span><span class="n">flag</span> <span class="o">=</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;always&#39;</span><span class="p">,</span> <span class="n">WARN</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">,</span> <span class="n">WARN</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="do_warn"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.do_warn">[docs]</a><span class="k">def</span> <span class="nf">do_warn</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">WARN</span><span class="o">.</span><span class="n">flag_traceback</span><span class="p">:</span>
+        <span class="n">temp_txt</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">temp_stack</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_stack</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">temp_stack</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="n">temp_txt</span><span class="o">+=</span><span class="n">i</span>
+        <span class="n">temp_warn</span> <span class="o">=</span> <span class="n">WARN</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\t</span><span class="s1">traceback:</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">temp_txt</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+        <span class="n">warn</span><span class="p">(</span><span class="n">temp_warn</span><span class="p">,</span> <span class="n">stacklevel</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">WARN</span><span class="p">,</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Defaults"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.Defaults">[docs]</a><span class="k">class</span> <span class="nc">Defaults</span><span class="p">(</span><span class="n">__VersionCompatibility</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    takes care of default values:</span>
+<span class="sd">        1) normal defaults (instance based), where each instance is independent</span>
+<span class="sd">        2) class defaults where each instance inherit from the class, so change affects all instances</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">__transform_var</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">flag_pvar</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="n">var</span>
+            <span class="k">elif</span> <span class="n">var</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;\__&#39;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">var</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">flag_pvar</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">var</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;__&#39;</span> <span class="o">+</span> <span class="n">var</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">var</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">__transform_defs</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">defs</span><span class="p">,</span> <span class="n">flag_pvar</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="n">new_dvalues</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">defs</span><span class="p">:</span>
+            <span class="n">new_dvalues</span><span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="n">__transform_var</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">flag_pvar</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__transform_var</span><span class="p">(</span><span class="n">defs</span><span class="p">[</span><span class="n">var</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">new_dvalues</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">__add_class_defaults</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">defs</span><span class="p">,</span> <span class="n">default_dict</span><span class="p">,</span> <span class="n">flag_set</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">flag_pvar</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="n">default_dict</span><span class="p">):</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="n">default_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">())</span>
+        <span class="n">dvalues</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="n">default_dict</span><span class="p">)</span>
+        <span class="n">new_dvalues</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__transform_defs</span><span class="p">(</span><span class="n">defs</span><span class="p">,</span> <span class="n">flag_pvar</span><span class="p">)</span>
+        <span class="n">dvalues</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new_dvalues</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">flag_set</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">new_dvalues</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">new_dvalues</span><span class="p">[</span><span class="n">var</span><span class="p">])</span>
+
+    <span class="c1"># normal defaults</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_add_defaults</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">defs</span><span class="p">,</span> <span class="n">flag_set</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;add normal defaults, where defs is a dictionary - same format as __defaults: {var1:value, var2:value,...}&quot;&quot;&quot;</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">__add_class_defaults</span><span class="p">(</span><span class="n">defs</span><span class="p">,</span> <span class="s1">&#39;__defaults&#39;</span><span class="p">,</span> <span class="n">flag_set</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">__check_DefaultClass</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s2">&quot;__mro__&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">Defaults</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">:</span> <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">__loop_base_Default_classes_mro</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">temp_base_class</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__check_DefaultClass</span><span class="p">():</span>
+                <span class="k">yield</span> <span class="n">temp_base_class</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">__loop_base_Default_classes_defs_mro</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">kl</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__loop_base_Default_classes_mro</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">kl</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="n">kl</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;__defaults&#39;</span><span class="p">,</span> <span class="p">{})</span>
+
+<div class="viewcode-block" id="Defaults.get_defaults"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.Defaults.get_defaults">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">get_defaults</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="nb">vars</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get normal (instance-based) defaults - list all options&quot;&quot;&quot;</span>
+        <span class="n">dvalues</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">vars</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">dd</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__loop_base_Default_classes_defs_mro</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">dd</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">var</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dvalues</span><span class="p">:</span>
+                        <span class="n">dvalues</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">dvalues</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dd</span><span class="p">[</span><span class="n">var</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">dd</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__loop_base_Default_classes_defs_mro</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">dd</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">var</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dvalues</span><span class="p">:</span><span class="n">dvalues</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">dvalues</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dd</span><span class="p">[</span><span class="n">var</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">var</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dvalues</span><span class="p">:</span>
+                <span class="n">do_warn</span><span class="p">(</span><span class="s1">&#39;variable </span><span class="si">{:}</span><span class="s1"> not in defaults&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">dvalues</span></div>
+
+<div class="viewcode-block" id="Defaults.set_defaults"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.Defaults.set_defaults">[docs]</a>    <span class="k">def</span> <span class="nf">set_defaults</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="nb">vars</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;set normal (instance-based) defaults&quot;&quot;&quot;</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">dd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_defaults</span><span class="p">(</span><span class="o">*</span><span class="nb">vars</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">dd</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">dd</span><span class="p">[</span><span class="n">var</span><span class="p">][</span><span class="n">version</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Defaults.get_current_dvalues"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.Defaults.get_current_dvalues">[docs]</a>    <span class="k">def</span> <span class="nf">get_current_dvalues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get current values of default variables (normal, instance-based)&quot;&quot;&quot;</span>
+        <span class="n">current_dvalues</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">dvalues</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_defaults</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">dvalues</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">):</span>
+                <span class="n">current_dvalues</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">current_dvalues</span></div>
+
+<div class="viewcode-block" id="Defaults.reset_dvalues"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.Defaults.reset_dvalues">[docs]</a>    <span class="k">def</span> <span class="nf">reset_dvalues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temp_dvalues</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;reset values of default variables from some state obtained using get_current_dvalues function&quot;&quot;&quot;</span>
+        <span class="n">dvalues</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_defaults</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">dvalues</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">temp_dvalues</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">temp_dvalues</span><span class="p">[</span><span class="n">var</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">):</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="nb">delattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="n">do_warn</span><span class="p">(</span><span class="s1">&#39;not able to remove this variable: &#39;</span><span class="o">+</span><span class="n">var</span><span class="p">)</span></div>
+
+    <span class="c1"># class defaults</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_add_class_defaults</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">defs</span><span class="p">,</span> <span class="n">flag_set</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;add class defaults, where defs is a dictionary</span>
+<span class="sd">        same format as __class_defaults: {__var1:value, __var2:value,...}&quot;&quot;&quot;</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">__add_class_defaults</span><span class="p">(</span><span class="n">defs</span><span class="p">,</span> <span class="s1">&#39;__class_defaults&#39;</span><span class="p">,</span> <span class="n">flag_set</span><span class="p">,</span> <span class="n">flag_pvar</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_get_class_defaults</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="nb">vars</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get class defaults - list all options</span>
+<span class="sd">        :param vars:</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            flag_do_warn = True - prints a warning if the class doesn&#39;t have defaults</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">d_values</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">d_var</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;__class_defaults&#39;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;__class_defaults&#39;</span><span class="p">):</span>
+            <span class="n">d_dict</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span><span class="n">d_var</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">vars</span><span class="p">:</span>
+                <span class="nb">vars</span> <span class="o">=</span> <span class="n">d_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">var</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;__&#39;</span><span class="p">):</span>
+                    <span class="n">var</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;__&#39;</span> <span class="o">+</span> <span class="n">var</span>
+                <span class="k">if</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">d_dict</span><span class="p">:</span>
+                    <span class="n">d_values</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">d_dict</span><span class="p">[</span><span class="n">var</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">do_warn</span><span class="p">(</span><span class="s1">&#39;variable </span><span class="si">{:}</span><span class="s1"> not in defaults&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_do_warn&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+                <span class="n">do_warn</span><span class="p">(</span><span class="s2">&quot;class </span><span class="si">{:}</span><span class="s2"> doesn&#39;t have defaults&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">d_values</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_set_class_defaults</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="nb">vars</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        set class defaults</span>
+<span class="sd">        :param vars:</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            flag_do_warn = True - prints a warning if the class doesn&#39;t have defaults</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">d_values</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_class_defaults</span><span class="p">(</span><span class="o">*</span><span class="nb">vars</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">d_values</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">d_values</span><span class="p">[</span><span class="n">var</span><span class="p">])</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_get_current_class_dvalues</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        get current values of default class variables</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            flag_do_warn = True - prints a warning if the class doesn&#39;t have defaults</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">curr_values</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">d_values</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_class_defaults</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">d_values</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">var</span><span class="p">):</span>
+                <span class="n">curr_values</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">curr_values</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_reset_class_dvalues</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">temp_dvalues</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;reset values of default class variables from some state obtained using _get_current_class_dvalues function&quot;&quot;&quot;</span>
+        <span class="n">d_values</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_class_defaults</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">d_values</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">temp_dvalues</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">temp_dvalues</span><span class="p">[</span><span class="n">var</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">var</span><span class="p">):</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="nb">delattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="n">do_warn</span><span class="p">(</span><span class="s1">&#39;not able to remove this variable: &#39;</span><span class="o">+</span><span class="n">var</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FileHandler"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.FileHandler">[docs]</a><span class="k">class</span> <span class="nc">FileHandler</span><span class="p">(</span><span class="n">Defaults</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f_path</span><span class="p">,</span> <span class="n">write</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">bck_num</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">pre</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">suf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flag_bck</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;creates or reads a file at f_path</span>
+<span class="sd">        if bck_num given, reads the back-up file</span>
+<span class="sd">        if write given, will back up a file if the file already exists</span>
+<span class="sd">        pre and suf are used for naming back-up files: bck_file_name = pre + file_name + suf + str(bck_num)&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_defaults</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">pre</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__change_pre</span><span class="p">(</span><span class="n">pre</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">suf</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__change_suf</span><span class="p">(</span><span class="n">suf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__new_f</span><span class="p">(</span><span class="n">f_path</span><span class="p">,</span> <span class="n">write</span><span class="p">,</span> <span class="n">bck_num</span><span class="p">,</span> <span class="n">flag_bck</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">f_path</span><span class="p">)</span>
+
+    <span class="n">__defaults</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pre&#39;</span><span class="p">:</span><span class="s1">&#39;#bck_&#39;</span><span class="p">,</span> <span class="s1">&#39;suf&#39;</span><span class="p">:</span><span class="s1">&#39;_&#39;</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__change_pre</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pre</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;change prefix for backup files&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pre</span> <span class="o">=</span> <span class="n">pre</span>
+
+    <span class="c1"># change suf</span>
+    <span class="k">def</span> <span class="nf">__change_suf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">suf</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;change sufix for backup files&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">suf</span> <span class="o">=</span> <span class="n">suf</span>
+
+<div class="viewcode-block" id="FileHandler.get_f"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.FileHandler.get_f">[docs]</a>    <span class="k">def</span> <span class="nf">get_f</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;returns the file&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span></div>
+
+    <span class="k">def</span> <span class="nf">__new_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f_path</span><span class="p">,</span> <span class="n">write</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">bck_num</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flag_bck</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fnc2open</span> <span class="o">=</span> <span class="nb">open</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f_path</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">write</span> <span class="ow">and</span> <span class="n">bck_num</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;write and bck_num mutually exclusive&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">write</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">f_path</span><span class="p">)</span> <span class="ow">and</span> <span class="n">flag_bck</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__bck_file</span><span class="p">(</span><span class="n">f_path</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">mode</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mode&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;open mode has to start with &quot;w&quot; - otherwise set write = False&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">fnc2open</span><span class="p">(</span><span class="n">f_path</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;currently in: &quot;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">cannot open: &quot;</span> <span class="o">+</span> <span class="n">f_path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">bck_num</span><span class="p">:</span>
+                <span class="n">f_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bck_file_name</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">f_path</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">f_path</span><span class="p">)[</span><span class="mi">1</span><span class="p">],</span> <span class="n">bck_num</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">mode</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;mode&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">mode</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;open mode has to start with &quot;r&quot; - otherwise set write = True&#39;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">fnc2open</span><span class="p">(</span><span class="n">f_path</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;currently in: &quot;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">cannot open: &quot;</span> <span class="o">+</span> <span class="n">f_path</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__bck_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;back up a file - called automatically when a file gets open with write=True&quot;&quot;&quot;</span>
+        <span class="n">fd</span><span class="p">,</span> <span class="n">f_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">f_path</span><span class="p">)</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">temp_f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bck_file_name</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">f_name</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">temp_f</span><span class="p">):</span>
+            <span class="n">c</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">temp_f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__bck_file_name</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">f_name</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">f_path</span><span class="p">,</span> <span class="n">temp_f</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__bck_file_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="n">f_name</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;returns a name for a backup file - called from bck_file&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre</span> <span class="o">+</span> <span class="n">f_name</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">suf</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">))</span></div>
+
+
+<span class="k">def</span> <span class="nf">_copy_file</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="n">cp_fname</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">cp_fname</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">cp_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">fname</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">fd</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">cp_fname</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cp_fname</span>
+
+
+<span class="k">def</span> <span class="nf">_parse_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;removes comments&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">comm</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comm_indicators</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">comm</span> <span class="ow">in</span> <span class="n">l</span><span class="p">:</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="n">l</span><span class="p">[:</span><span class="n">l</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">comm</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">l</span>
+
+
+<div class="viewcode-block" id="FileStream"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.FileStream">[docs]</a><span class="k">class</span> <span class="nc">FileStream</span><span class="p">(</span><span class="n">FileHandler</span><span class="p">):</span>
+    <span class="n">parse_line</span> <span class="o">=</span> <span class="n">_parse_line</span>
+
+<div class="viewcode-block" id="FileStream.lines"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.FileStream.lines">[docs]</a>    <span class="k">def</span> <span class="nf">lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;generator yielding line by line (comments removed)&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">:</span>
+            <span class="n">temp_l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_line</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">temp_l</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="p">(</span><span class="n">temp_l</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="FileStream.reset_stream"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.FileStream.reset_stream">[docs]</a>    <span class="k">def</span> <span class="nf">reset_stream</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">f_path</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_remove_f</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="StringStream"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.StringStream">[docs]</a><span class="k">class</span> <span class="nc">StringStream</span><span class="p">(</span><span class="n">Defaults</span><span class="p">):</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span>
+    <span class="n">parse_line</span> <span class="o">=</span> <span class="n">_parse_line</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="n">s</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">f_path</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;string expected - provided &#39;</span> <span class="o">+</span> <span class="nb">type</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+<div class="viewcode-block" id="StringStream.reset_stream"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.StringStream.reset_stream">[docs]</a>    <span class="k">def</span> <span class="nf">reset_stream</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__s</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="StringStream.lines"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.StringStream.lines">[docs]</a>    <span class="k">def</span> <span class="nf">lines</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;generator yielding line by line (comments removed) - from string&quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">s</span><span class="p">:</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">temp_l</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">temp</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="n">temp</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">yield</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parse_line</span><span class="p">(</span><span class="n">temp_l</span><span class="p">))</span></div>
+
+    <span class="k">def</span> <span class="nf">_remove_f</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="GeneralContainer"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.GeneralContainer">[docs]</a><span class="k">class</span> <span class="nc">GeneralContainer</span><span class="p">:</span>
+
+<div class="viewcode-block" id="GeneralContainer.get_container"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.GeneralContainer.get_container">[docs]</a>    <span class="k">def</span> <span class="nf">get_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_name</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">db_type</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;gets the container by the name</span>
+<span class="sd">        kwargs: flag_item - searches for the container name from the item (e.g. flag_item = Bond())</span>
+<span class="sd">                flag_class - searches for the container name from the class (e.g. flag_item = Bond)</span>
+<span class="sd">                flag_item and flag_class finds the container name that is usually defined from container2write</span>
+<span class="sd">                pre_containers - list of pre_containers (e.g. top.ff with cont_name = bonds gives top.ff.bonds)</span>
+<span class="sd">                cont_pref</span>
+<span class="sd">                cont_suf&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_item&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">container_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_container_name</span><span class="p">(</span><span class="n">container_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_class&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">container_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_container_name_class</span><span class="p">(</span><span class="n">container_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">container_name</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">container_name</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+                <span class="n">container_name</span> <span class="o">=</span> <span class="p">[</span><span class="n">container_name</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">container_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">container_name</span><span class="p">)</span>
+        <span class="n">container_names</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;pre_containers&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">container_names</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">container_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_container_recursive</span><span class="p">(</span><span class="n">container_names</span><span class="p">,</span> <span class="n">create</span><span class="p">,</span> <span class="n">db_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__update_containers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_containers&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_containers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">container_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_containers</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_containers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">container_name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__get_container_single</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_name</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">db_type</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_name</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">create</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_name</span><span class="p">,</span> <span class="n">db_type</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__update_containers</span><span class="p">(</span><span class="n">container_name</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;allow_not_found&#39;</span><span class="p">):</span>
+                <span class="k">return</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;container &#39;</span> <span class="o">+</span> <span class="n">container_name</span> <span class="o">+</span> <span class="s1">&#39; not defined; set create=True&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__get_container_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_name</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_name</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">create</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_name</span><span class="p">,</span> <span class="n">GeneralContainer</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__update_containers</span><span class="p">(</span><span class="n">container_name</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;allow_not_found&#39;</span><span class="p">):</span>
+                <span class="k">return</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;container group &#39;</span> <span class="o">+</span> <span class="n">container_name</span> <span class="o">+</span> <span class="s1">&#39; not defined; set create=True&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__get_container_recursive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_names</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">db_type</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">container_name</span> <span class="o">=</span> <span class="n">container_names</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">container_names</span><span class="p">:</span>
+            <span class="n">db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_container_group</span><span class="p">(</span><span class="n">container_name</span><span class="p">,</span> <span class="n">create</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">db</span><span class="o">.</span><span class="n">__get_container_recursive</span><span class="p">(</span><span class="n">container_names</span><span class="p">,</span> <span class="n">create</span><span class="p">,</span> <span class="n">db_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_container_single</span><span class="p">(</span><span class="n">container_name</span><span class="p">,</span> <span class="n">create</span><span class="p">,</span> <span class="n">db_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__get_pref_suf_container</span><span class="p">(</span><span class="n">item_class</span><span class="p">,</span> <span class="n">cont_pref</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">cont_suf</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">cont_pref</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">item_class</span><span class="p">,</span> <span class="s1">&#39;cont_pref&#39;</span><span class="p">):</span>
+                <span class="n">cont_pref</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cont_pref</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">item_class</span><span class="p">,</span> <span class="s1">&#39;cont_pref&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cont_suf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">item_class</span><span class="p">,</span> <span class="s1">&#39;cont_suf&#39;</span><span class="p">):</span>
+                <span class="n">cont_suf</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cont_suf</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">item_class</span><span class="p">,</span> <span class="s1">&#39;cont_suf&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cont_pref</span><span class="p">,</span> <span class="n">cont_suf</span>
+
+    <span class="k">def</span> <span class="nf">__get_container_name_from_container2write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_class</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">cont_pref</span><span class="p">,</span> <span class="n">cont_suf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_pref_suf_container</span><span class="p">(</span><span class="n">item_class</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cont_pref</span> <span class="o">+</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">item_class</span><span class="p">,</span> <span class="s1">&#39;container2write&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">cont_suf</span>
+
+    <span class="k">def</span> <span class="nf">__get_container_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s1">&#39;container2write&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_container_name_from_container2write</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;db_&#39;</span> <span class="o">+</span> <span class="n">item</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+
+    <span class="k">def</span> <span class="nf">__get_container_name_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">klass</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="s1">&#39;container2write&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_container_name_from_container2write</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s1">&#39;db_&#39;</span> <span class="o">+</span> <span class="n">klass</span><span class="o">.</span><span class="vm">__name__</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__get_pref_suf_item_id</span><span class="p">(</span><span class="n">klass</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="s1">&#39;id_pref&#39;</span><span class="p">):</span>
+            <span class="n">id_pref</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">id_pref</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="s1">&#39;id_pref&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="s1">&#39;id_suf&#39;</span><span class="p">):</span>
+            <span class="n">id_suf</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">id_suf</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="s1">&#39;id_suf&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">id_pref</span><span class="p">,</span> <span class="n">id_suf</span>
+
+<div class="viewcode-block" id="GeneralContainer.add2container"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.GeneralContainer.add2container">[docs]</a>    <span class="k">def</span> <span class="nf">add2container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">container_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">db_type</span><span class="o">=</span><span class="n">OrderedDict</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;adds an item to a container, container name comes from the item, but can be passed as a variable</span>
+<span class="sd">        kwargs: list_index - if the container is a list, the item will get inserted to the given index</span>
+<span class="sd">                item_id - can be passed if the item doesnt have its own it</span>
+<span class="sd">                replace = (-1, 0, 1) -1 used to ignore if an item is already in the container, 0 raises an error</span>
+<span class="sd">                flag_find_next_id&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">container_name</span><span class="p">:</span>
+            <span class="n">container_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_container_name</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_container</span><span class="p">(</span><span class="n">container_name</span><span class="p">,</span> <span class="n">create</span><span class="p">,</span> <span class="n">db_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">from_segment</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;from_segment&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">from_segment</span><span class="p">:</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">from_segment</span> <span class="o">=</span> <span class="n">from_segment</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">db</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">db</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">replace</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">db</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">replace</span><span class="o">==-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="k">return</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                        <span class="s1">&#39;item already in the list&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;; add replace = True or replace = -1 (ignore)&#39;</span><span class="p">)</span>
+            <span class="n">ind</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;list_index&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">db</span><span class="p">))</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">ind</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">set</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">:</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="s1">&#39;item_id&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_find_next_id&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+                    <span class="n">item</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_next_code</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;give item id to add it to a container (either as item.id or item_id variable of the&#39;</span>
+                                    <span class="s1">&#39; function) or use flag_find_next_id&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+                <span class="n">item_id</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">id</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">item_id</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;item_id&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">item_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_find_next_id&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+                    <span class="n">item</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_next_code</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                    <span class="n">item_id</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">id</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;item id is None.... set it to something else or use flag_find_next_id&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">item_id</span> <span class="ow">in</span> <span class="n">db</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">replace</span><span class="o">==</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">db</span><span class="p">[</span><span class="n">item_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span>
+                <span class="k">elif</span> <span class="n">replace</span><span class="o">==-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="k">return</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">item_id</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; already defined in the database &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span>
+                                    <span class="n">container_name</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;; add replace = True or replace = -1 (ignore)&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">db</span><span class="p">[</span><span class="n">item_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span></div>
+
+<div class="viewcode-block" id="GeneralContainer.get_item"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.GeneralContainer.get_item">[docs]</a>    <span class="k">def</span> <span class="nf">get_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item_id</span><span class="p">,</span> <span class="n">klass</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">create_container</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_container</span><span class="p">(</span><span class="n">klass</span><span class="p">,</span> <span class="n">flag_class</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="n">create_container</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">dict</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">item_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">item_id</span> <span class="ow">in</span> <span class="n">db</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">db</span><span class="p">[</span><span class="n">item_id</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">create</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">dict</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">item_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">id_pref</span><span class="p">,</span> <span class="n">id_suf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_pref_suf_item_id</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span>
+                    <span class="n">item_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_next_code</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">pref</span><span class="o">=</span><span class="n">id_pref</span><span class="p">,</span> <span class="n">suf</span><span class="o">=</span><span class="n">id_suf</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="n">klass</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">item</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">item_id</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">item</span> <span class="o">=</span> <span class="n">klass</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add2container</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">item</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;allow_not_found&#39;</span><span class="p">):</span>
+            <span class="k">return</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;item_id not defined: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">item_id</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="GeneralContainer.get_code"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.GeneralContainer.get_code">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_code</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">pref</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">suf</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pref</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">+</span> <span class="n">suf</span></div>
+
+<div class="viewcode-block" id="GeneralContainer.get_num_from_code"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.GeneralContainer.get_num_from_code">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_num_from_code</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">pref</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">suf</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">pos2</span> <span class="o">=</span> <span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">suf</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pos2</span><span class="p">:</span>
+            <span class="n">pos2</span><span class="o">=</span><span class="kc">None</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">code</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">pref</span><span class="p">):</span><span class="n">pos2</span><span class="p">])</span></div>
+
+    <span class="k">def</span> <span class="nf">_find_next_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">pref</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">suf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">id_pref</span><span class="p">,</span> <span class="n">id_suf</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">klass</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;klass&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">klass</span><span class="p">:</span>
+            <span class="n">id_pref</span><span class="p">,</span> <span class="n">id_suf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_pref_suf_item_id</span><span class="p">(</span><span class="n">klass</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">pref</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span><span class="n">pref</span> <span class="o">=</span> <span class="n">id_pref</span>
+        <span class="k">if</span> <span class="n">suf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span><span class="n">suf</span> <span class="o">=</span> <span class="n">id_suf</span>
+        <span class="n">temp_code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_code</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">pref</span><span class="p">,</span> <span class="n">suf</span><span class="p">)</span>
+        <span class="n">flag_type</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id_type&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">flag_type</span><span class="p">:</span>
+            <span class="n">temp_code</span> <span class="o">=</span> <span class="n">flag_type</span><span class="p">(</span><span class="n">temp_code</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">temp_code</span> <span class="ow">in</span> <span class="n">container</span><span class="p">:</span>
+            <span class="n">c</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">temp_code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_code</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">pref</span><span class="p">,</span> <span class="n">suf</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">flag_type</span><span class="p">:</span>
+                <span class="n">temp_code</span> <span class="o">=</span> <span class="n">flag_type</span><span class="p">(</span><span class="n">temp_code</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">temp_code</span>
+
+<div class="viewcode-block" id="GeneralContainer.find_next_code"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.GeneralContainer.find_next_code">[docs]</a>    <span class="k">def</span> <span class="nf">find_next_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_name</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">pref</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">suf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">create</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        finds the next available code in a dict (of e.g. bonds)</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            id_type - defines the type</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_container</span><span class="p">(</span><span class="n">container_name</span><span class="p">,</span> <span class="n">create</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_next_code</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">pref</span><span class="p">,</span> <span class="n">suf</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__renumber_list</span><span class="p">(</span><span class="n">temp_cont</span><span class="p">,</span> <span class="n">c_init</span><span class="p">,</span> <span class="n">attrib</span><span class="p">,</span> <span class="n">flag_id_map</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">id_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">c_init</span>
+        <span class="k">for</span> <span class="n">temp_item</span> <span class="ow">in</span> <span class="n">temp_cont</span><span class="p">:</span>
+            <span class="n">new_num</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;id_type&#39;</span><span class="p">](</span><span class="n">c</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">flag_id_map</span><span class="p">:</span>
+                <span class="n">id_map</span><span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">temp_item</span><span class="p">,</span> <span class="n">attrib</span><span class="p">)]</span> <span class="o">=</span> <span class="n">new_num</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">temp_item</span><span class="p">,</span> <span class="n">attrib</span><span class="p">,</span> <span class="n">new_num</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">return</span> <span class="n">id_map</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__renumber_ordereddict</span><span class="p">(</span><span class="n">temp_cont</span><span class="p">,</span> <span class="n">c_init</span><span class="p">,</span> <span class="n">attrib</span><span class="p">,</span> <span class="n">flag_id_map</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">id_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">c_init</span>
+        <span class="n">temp_list_items</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">temp_item_id</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">temp_cont</span><span class="p">):</span>
+            <span class="n">temp_item</span> <span class="o">=</span> <span class="n">temp_cont</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">temp_item_id</span><span class="p">)</span>
+            <span class="n">new_num</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;id_type&#39;</span><span class="p">](</span><span class="n">c</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">flag_id_map</span><span class="p">:</span>
+                <span class="n">id_map</span><span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">temp_item</span><span class="p">,</span> <span class="n">attrib</span><span class="p">)]</span> <span class="o">=</span> <span class="n">new_num</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">temp_item</span><span class="p">,</span> <span class="n">attrib</span><span class="p">,</span> <span class="n">new_num</span><span class="p">)</span>
+            <span class="n">temp_list_items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_item</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">+=</span><span class="mi">1</span>
+        <span class="k">for</span> <span class="n">temp_item</span> <span class="ow">in</span> <span class="n">temp_list_items</span><span class="p">:</span>
+            <span class="n">temp_cont</span><span class="p">[</span><span class="n">temp_item</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_item</span>
+        <span class="k">return</span> <span class="n">id_map</span>
+
+<div class="viewcode-block" id="GeneralContainer.renumber_container"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.GeneralContainer.renumber_container">[docs]</a>    <span class="k">def</span> <span class="nf">renumber_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_name</span><span class="p">,</span> <span class="n">c_init</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">attrib</span> <span class="o">=</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">flag_id_map</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param container_name:</span>
+<span class="sd">        :param c_init:</span>
+<span class="sd">        :param attrib:</span>
+<span class="sd">        :param flag_id_map:</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            id_type - str or int</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_container</span><span class="p">(</span><span class="n">container_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;id_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id_type&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">OrderedDict</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__renumber_ordereddict</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">c_init</span><span class="p">,</span> <span class="n">attrib</span><span class="p">,</span> <span class="n">flag_id_map</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">list</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__mro__</span> <span class="ow">or</span> <span class="nb">tuple</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__renumber_list</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">c_init</span><span class="p">,</span> <span class="n">attrib</span><span class="p">,</span> <span class="n">flag_id_map</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;type(container) not in (list, tuple, OrderedDict)...&#39;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__sort_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">attrib</span><span class="p">,</span> <span class="n">pref</span><span class="p">,</span> <span class="n">suf</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">attrib</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">temp_list_ids</span> <span class="o">=</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_num_from_code</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">pref</span><span class="p">,</span> <span class="n">suf</span><span class="p">),</span> <span class="n">code</span><span class="p">)</span> <span class="k">for</span> <span class="n">code</span> <span class="ow">in</span> <span class="n">db</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">temp_list_ids</span> <span class="o">=</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_num_from_code</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">db</span><span class="p">[</span><span class="n">item_id</span><span class="p">],</span> <span class="n">attrib</span><span class="p">),</span> <span class="n">pref</span><span class="p">,</span> <span class="n">suf</span><span class="p">),</span> <span class="n">item_id</span><span class="p">)</span> <span class="k">for</span> <span class="n">item_id</span> <span class="ow">in</span> <span class="n">db</span><span class="p">]</span>
+        <span class="n">temp_list_ids</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">reverse</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reverse&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">c</span><span class="p">,</span> <span class="n">code</span> <span class="ow">in</span> <span class="n">temp_list_ids</span><span class="p">:</span>
+            <span class="n">temp_item</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+            <span class="n">db</span><span class="p">[</span><span class="n">code</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_item</span>
+
+    <span class="k">def</span> <span class="nf">__sort_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">,</span> <span class="n">attrib</span><span class="p">,</span> <span class="n">pref</span><span class="p">,</span> <span class="n">suf</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_num_from_code</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">attrib</span><span class="p">),</span> <span class="n">pref</span><span class="p">,</span> <span class="n">suf</span><span class="p">),</span> <span class="n">reverse</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;reverse&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+
+<div class="viewcode-block" id="GeneralContainer.sort_container"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.GeneralContainer.sort_container">[docs]</a>    <span class="k">def</span> <span class="nf">sort_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">container_name</span><span class="p">,</span> <span class="n">attrib</span> <span class="o">=</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">pref</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">suf</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_container</span><span class="p">(</span><span class="n">container_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">OrderedDict</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__sort_dict</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">attrib</span><span class="p">,</span> <span class="n">pref</span><span class="p">,</span> <span class="n">suf</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">list</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__sort_list</span><span class="p">(</span><span class="n">db</span><span class="p">,</span> <span class="n">attrib</span><span class="p">,</span> <span class="n">pref</span><span class="p">,</span> <span class="n">suf</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;type(container) not in (list, OrderedDict)...&#39;</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="get_id_string"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.get_id_string">[docs]</a><span class="k">def</span> <span class="nf">get_id_string</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">flag_id</span> <span class="o">=</span> <span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">default_id</span> <span class="o">=</span> <span class="s1">&#39;id&#39;</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">flag_id</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">flag_id</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">flag_id</span><span class="o">!=</span><span class="n">default_id</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">default_id</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">default_id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">item</span></div>
+
+<span class="n">mode_map</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pickle&#39;</span><span class="p">:</span><span class="s1">&#39;b&#39;</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="DataDumping"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.DataDumping">[docs]</a><span class="k">class</span> <span class="nc">DataDumping</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;class providing pickle of yaml dump functionality&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__pickle_dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temp_f</span><span class="p">):</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temp_f</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__yaml_dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temp_f</span><span class="p">):</span>
+        <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temp_f</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__remove_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">extra_parsing_sources</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;extra_parsing_sources&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;ff&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;parsed_from&#39;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">parsing_source</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parsed_from</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">FileHandler</span> <span class="ow">in</span> <span class="n">parsing_source</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__mro__</span> <span class="ow">and</span> <span class="n">parsing_source</span><span class="o">.</span><span class="n">f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">parsing_source</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">temp_attr</span> <span class="ow">in</span> <span class="n">extra_parsing_sources</span><span class="p">:</span>
+            <span class="n">temp_parsed_source</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temp_attr</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">temp_parsed_source</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">temp_parsed_source</span><span class="p">,</span> <span class="s1">&#39;_DataDumping__remove_files&#39;</span><span class="p">):</span>
+                <span class="n">temp_parsed_source</span><span class="o">.</span><span class="n">_DataDumping__remove_files</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DataDumping.dump"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.DataDumping.dump">[docs]</a>    <span class="k">def</span> <span class="nf">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f_path</span><span class="p">,</span> <span class="n">dump_format</span> <span class="o">=</span> <span class="s1">&#39;pickle&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        dumps data in a file</span>
+<span class="sd">        :param f_path:</span>
+<span class="sd">        :param dump_format: (&#39;pickle&#39;, &#39;yaml&#39;)</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            mode: same as file open mode</span>
+<span class="sd">            prep4dump - additional function to call before dumping</span>
+<span class="sd">            post_dump_load - additional function to call after dumping (usually opposite from prep4dump)</span>
+<span class="sd">            other kwargs from SMArt.incl.FileHandler</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">dump_format</span> <span class="ow">in</span> <span class="n">mode_map</span> <span class="ow">and</span> <span class="s1">&#39;mode&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;w&#39;</span> <span class="o">+</span> <span class="n">mode_map</span><span class="p">[</span><span class="n">dump_format</span><span class="p">]</span>
+        <span class="n">fnc_map</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pickle&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">__pickle_dump</span><span class="p">,</span><span class="s1">&#39;yaml&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">__yaml_dump</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">dump_format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fnc_map</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;dump_format not in&quot;</span><span class="p">,</span> <span class="n">fnc_map</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;prep4dump&#39;</span><span class="p">):</span>
+            <span class="n">prep4dump_fnc</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;prep4dump&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">prep4dump_fnc</span><span class="p">:</span>
+                <span class="n">prep4dump_fnc</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1">#self.__remove_files()</span>
+        <span class="n">temp_f</span> <span class="o">=</span> <span class="n">FileHandler</span><span class="p">(</span><span class="n">f_path</span><span class="p">,</span> <span class="n">write</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">fnc_map</span><span class="p">[</span><span class="n">dump_format</span><span class="p">](</span><span class="n">temp_f</span><span class="p">)</span>
+        <span class="n">temp_f</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;post_dump_load&#39;</span><span class="p">):</span>
+            <span class="n">post_dump_load_fnc</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;post_dump_load&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">post_dump_load_fnc</span><span class="p">:</span>
+                <span class="n">post_dump_load_fnc</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__pickle_load</span><span class="p">(</span><span class="n">temp_f</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">temp_f</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__yaml_load</span><span class="p">(</span><span class="n">temp_f</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">temp_f</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="n">Loader</span><span class="o">=</span><span class="n">yaml</span><span class="o">.</span><span class="n">Loader</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DataDumping.load"><a class="viewcode-back" href="../../SMArt.html#SMArt.incl.DataDumping.load">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">f_path</span><span class="p">,</span> <span class="n">load_format</span> <span class="o">=</span> <span class="s1">&#39;pickle&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        loads data from a file</span>
+<span class="sd">        :param f_path:</span>
+<span class="sd">        :param load_format: (&#39;pickle&#39;, &#39;yaml&#39;)</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            mode: same as file open mode</span>
+<span class="sd">            post_dump_load - additional function to call after loading</span>
+<span class="sd">            other kwargs from SMArt.incl.FileHandler</span>
+<span class="sd">        :return: data</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">load_format</span> <span class="ow">in</span> <span class="n">mode_map</span> <span class="ow">and</span> <span class="s1">&#39;mode&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;mode&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span> <span class="o">+</span> <span class="n">mode_map</span><span class="p">[</span><span class="n">load_format</span><span class="p">]</span>
+        <span class="n">fnc_map</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pickle&#39;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__pickle_load</span><span class="p">,</span> <span class="s1">&#39;yaml&#39;</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">__yaml_load</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">load_format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fnc_map</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;dump_format not in&quot;</span><span class="p">,</span> <span class="n">fnc_map</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">temp_f</span> <span class="o">=</span> <span class="n">FileHandler</span><span class="p">(</span><span class="n">f_path</span><span class="p">,</span> <span class="n">write</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">loaded_data</span> <span class="o">=</span> <span class="n">fnc_map</span><span class="p">[</span><span class="n">load_format</span><span class="p">](</span><span class="n">temp_f</span><span class="p">)</span>
+        <span class="n">temp_f</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;post_dump_load&#39;</span><span class="p">):</span>
+            <span class="n">post_dump_load_fnc</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">loaded_data</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;post_dump_load&#39;</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">post_dump_load_fnc</span><span class="p">:</span>
+                <span class="n">post_dump_load_fnc</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">loaded_data</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Drazen Petrov.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

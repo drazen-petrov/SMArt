@@ -1,6 +1,6 @@
 from SMArt.incl import np, combinations, permutations, do_warn, deque, Counter
 from SMArt.alchemy.incl import Dummy
-from SMArt.md.incl import check_if_eq, DescriptionPart, DihedralType, ImproperType, ExclusionPairType
+from SMArt.md.incl import check_if_eq, DescriptionPart, Interaction, DihedralType, ImproperType, ExclusionPairType
 from SMArt.md.data_st import Topology, MoleculeType
 
 
@@ -34,6 +34,8 @@ def get_res_common_atoms(*tops):
                 #temp_available_atoms_group = [frozenset(top_res[top_i][res_i].atoms) for top_i in range(len(tops))]
                 temp_available_atoms_group = [top_res[top_i][res_i].atoms for top_i in range(len(tops))]
                 available_atoms_groups.append(temp_available_atoms_group)
+        if not available_atoms_groups:
+            available_atoms_groups.append([[] for top_i in range(len(tops))])
         return common_atoms, available_atoms_groups
     else:
         return None, None
@@ -306,11 +308,13 @@ def update_ptp_excl_pair_row_row_pair(sol, sol_atoms_pair, top_atom_list_01, **k
                     add_state2EP_ND_states(sol, sol_interaction_0, temp_state, top_atom_1[0])
                     assert temp_state.p == (0,)
         done_sol_atom_pair.add(sol_atom_pair_1)
-    for other_sol_at in sol.toptp.EP_l[sol_atom_1]:
+    EP_l_sol_atom_1 = sol.toptp.EP_l.pop(sol_atom_1)
+    for other_sol_at in EP_l_sol_atom_1:
         sol_atom_pair_1 = frozenset((sol_atom_1, other_sol_at))
+        if sol_atom_pair_1 in done_sol_atom_pair:continue
         sol_interaction_1 = sol.toptp.excl_pair[sol_atom_pair_1]
         sol_atom_pair_0 = frozenset((sol_atom_0, other_sol_at))
-        assert sol_atom_pair_1 not in sol.toptp.excl_pair
+        assert sol_atom_pair_0 not in sol.toptp.excl_pair
         sol.toptp.excl_pair[sol_atom_pair_0] = sol_interaction_1
         for top_atom_0 in top_atom_list_01[0]:
             other_atom_0 = sol._sol.loc[other_sol_at.id, top_atom_0[0]]
@@ -322,8 +326,7 @@ def update_ptp_excl_pair_row_row_pair(sol, sol_atoms_pair, top_atom_list_01, **k
         assert sol_at != sol_atom_1
 #        if sol_at != sol_atom_1:
         if sol_atom_1 in sol.toptp.EP_l[sol_at]:
-        #if sol_atom_1 in sol_at.EP_l:
-            sol_at.remove(sol_atom_1)
+            sol.toptp.EP_l[sol_at].remove(sol_atom_1)
             assert sol_at!=sol_atom_0
             sol.toptp.add_atom_pair2EP_l(sol_at, sol_atom_0)
 
@@ -349,16 +352,6 @@ def update_ptp_interactions(sol, top_atom_list_01, done_interactions = None, **k
             at1 = top_at1[1]
             for int_matches, int_ptp, container_name in find_interactions_ptp(at0, at1, top_01, top_pair_ind, sol,
                                                                               done_interactions, **kwargs):
-                if kwargs.get('verbose'):
-                    print(container_name)
-                    print(int_matches)
-                    print('ptp\t\t', int_ptp)
-                    if int_ptp[0]:
-                        print('\n\t\tHELLLOOOO!!!!!!!!!')
-                        if int_ptp[0][0] is None:
-                            print(int_ptp[1][0].atoms)
-                            print(int_ptp[1][0].states[0])
-                    print(done_interactions)
                 #############################
                 # same (matched) interactions
                 #############################
@@ -400,17 +393,10 @@ def update_ptp_interactions(sol, top_atom_list_01, done_interactions = None, **k
                         sol_ND_state_tops_set.add(top_i_other)
                         sol.toptp.interaction_states_map[top_i_other][int_match_other] = sol_interaction
                         done_interactions.add(sol_interaction)
-                    if kwargs.get('verbose'):
-                        print('\t', other_int_state)
-                        print('\t', other_int_states)
                 ######################################
                 # different (not matched) interactions
                 ######################################
                 for ii in range(len(int_ptp[0])):
-                    if kwargs.get('ptp_verbose'):
-                        print('\nptp2')
-                        print(int_ptp)
-                        print(sol.toptp.ptp_int)
                     sol_interaction = None
                     sol_interaction_2 = None
                     for i in range(2):
@@ -424,18 +410,6 @@ def update_ptp_interactions(sol, top_atom_list_01, done_interactions = None, **k
                         sol_interaction.ND_states.update(sol_interaction_2.ND_states)
                         for top_set in sol_interaction_2.ND_states.values():
                             for top_i in top_set:
-                                if sol_interaction.int_states[top_i] is not None:###############################
-                                    print(top_i)
-                                    print(sol_interaction.ND_states)
-                                    print(sol_interaction.int_states)
-                                    print(sol_interaction.int_states[0].atoms)
-                                    print(sol_interaction.int_states[1].atoms)
-                                    print('')
-                                    print(sol_interaction_2.ND_states)
-                                    print(sol_interaction_2.int_states)
-                                    print(sol_interaction_2.int_states[0].atoms)
-                                    print(sol_interaction_2.int_states[1].atoms)
-                                    print(sol_interaction is sol_interaction_2)
                                 assert sol_interaction.int_states[top_i] is None
                                 int_i = sol_interaction_2
                                 sol_interaction.int_states[top_i] = int_i
@@ -464,10 +438,6 @@ def update_ptp_interactions(sol, top_atom_list_01, done_interactions = None, **k
                     if container_name not in sol.toptp.ptp_int:
                         sol.toptp.ptp_int[container_name] = 0
                     sol.toptp.ptp_int[container_name] += 1
-    if kwargs.get('verbose_2'):
-        print(done_interactions)
-        print(top_atom_list_01)
-
 
 def find_ND_state_tops_set(ND_states, state_top_i, top_i):
     if state_top_i in ND_states and top_i in ND_states[state_top_i]:
@@ -549,12 +519,14 @@ def add_atom_a_type_to_row(sol_at, at_a_type, st_at, ptp_atom):
 
 # interactions
 def _sep_int_groups_ptp_flags(int_list):
+    if len(int_list)==0:
+        return []
     sep_int_lists = [[int_list.pop()]]
     while int_list:
         temp_int = int_list.pop()
         flag_no_match = True
         for temp_int_list in sep_int_lists:
-            temp_int2 = temp_int_list
+            temp_int2 = temp_int_list[0]
             if temp_int.states[0].check_eq_ptp_flag_params(temp_int2.states[0].p):
                 temp_int_list.append(temp_int)
                 flag_no_match = False
@@ -643,6 +615,7 @@ def _find_interactions_ptp_atom_set(top_01, int_list0, int_list1, atoms_01_map, 
                 if temp_sep_int_list0[0].states[0].check_eq_ptp_flag_params(temp_sep_int_list1[0].states[0].p):
                     sep_int_lists_01.append((temp_sep_int_list0, temp_sep_int_list1))
                     flag_no_match = False
+                    sep_int_lists1.pop(i1)
                     break
             if flag_no_match:
                 sep_int_lists_01.append((temp_sep_int_list0, []))
@@ -663,7 +636,7 @@ def _find_interactions_ptp_atom_set(top_01, int_list0, int_list1, atoms_01_map, 
         flag_improper = False
     elif int_list1 and int_list1[0].int_type != ImproperType:
         flag_improper = False
-    while int_list0 and int_list1:
+    while int_list0:
         int0 = int_list0.pop()
         flag_no_match = True
         for i1, int1 in enumerate(int_list1):
@@ -780,17 +753,10 @@ def _find_int_list_01_to_compare(sol, top_01, top_pair_ind, int_container_01, do
                             break
                     else:
                         break
-                if kwargs.get('verbose'):
-                    print('\t in finding int lists')
-                    print(atoms_i)
-                    print(atoms_ii)
-                    print('\t in finding int lists END')
                 if len(atoms_i) == len(atoms_ii):
-                    if kwargs.get('verbose'):print('\t\tTU SMO 1')
                     if flag_dih:# flag_dih is only true when it's dihedral and dihedral_match_version == 1
                         if not _check_extra_dih_in_sol(temp_int_i, top_01[i], top_pair_ind[i], top_pair_ind[ii], sol):
                             continue
-                    if kwargs.get('verbose'):print('\t\tTU SMO 2')
                     int_list_i = top_01[i].find_interactions(atoms_i, int_container_01[i], v=dihedral_match_v,
                                                 allow_not_found=flag_int_allow_not_found, allow_multiple_matches = True)
                     int_list_ii = top_01[ii].find_interactions(atoms_ii, int_container_01[ii], v=dihedral_match_v,
@@ -804,8 +770,6 @@ def gen_int_container_01_list_new(at0, at1, top_01, top_pair_ind, sol, **kwargs)
     flag_dih_params = False, (None, None), 2
     #for int_container0, container_name in at0.get_interaction_containers(get_container_name=True):
     for int_container0, container_name in top_01[0].atom_interactions[at0].get_interaction_containers(get_container_name=True):
-        if kwargs.get('verbose_2'):
-            print('KUKU', container_name, len(int_container0))
         done_int_01 = [], []
         if kwargs.get('dihedral_match_v', 1) == 1:
             #if int_container0 and int_container0[0].int_type==top_01[0].DihedralType:continue
@@ -845,8 +809,6 @@ def gen_int_container_01_list_new(at0, at1, top_01, top_pair_ind, sol, **kwargs)
                             for temp_dih in temp_dih_container_01:
                                 if neigh_at_01[i] in temp_dih.atoms[1:3]:
                                     int_container_01[i].append(temp_dih)
-        if kwargs.get('verbose'):
-            print('diheedrals!!!!!!!!!!!\t\t', int_container_01)
         yield int_container_01, done_int_01, flag_dih_params, container_name
 
 def gen_int_container_01_list(at0, at1, top_01, top_pair_ind, sol, **kwargs):
@@ -856,7 +818,6 @@ def gen_int_container_01_list(at0, at1, top_01, top_pair_ind, sol, **kwargs):
     flag_dih_params = False, (None, None), 2
     for int_container0, container_name in at0.get_interaction_containers(get_container_name=True):
     #for int_container0, container_name in top_01[0].atom_interactions[at0].get_interaction_containers(get_container_name=True):
-        print('KUKU', container_name, len(int_container0))
         done_int_01 = [], []
         if kwargs.get('dihedral_match_v', 1) == 1:
             #if int_container0 and int_container0[0].int_type==top_01[0].DihedralType:continue
@@ -894,22 +855,17 @@ def gen_int_container_01_list(at0, at1, top_01, top_pair_ind, sol, **kwargs):
                             for temp_dih in temp_dih_container_01:
                                 if neigh_at_01[i] in temp_dih.atoms[1:3]:
                                     int_container_01[i].append(temp_dih)
-        if kwargs.get('verbose'):
-            print('diheedrals!!!!!!!!!!!\t\t', int_container_01)
         yield int_container_01, done_int_01, flag_dih_params, container_name
 
 def find_interactions_ptp(at0, at1, top_01, top_pair_ind, sol, done_interactions, **kwargs):
     temp_gen_out = gen_int_container_01_list_new(at0, at1, top_01, top_pair_ind, sol, **kwargs)
     for int_container_01, done_int_01, flag_dih_params, container_name in temp_gen_out:
-        if kwargs.get('verbose'):
-            print('\t\t',container_name, flag_dih_params)
         #temp_gen_inner = _find_int_list_01_to_compare(sol, top_01, top_pair_ind, int_container_01, done_int_01,
         temp_gen_inner = _find_int_list_01_to_compare(sol, top_01, top_pair_ind, int_container_01, done_interactions,
                                                       flag_dih_params, **kwargs)
         # generates lists of interactions from top0 and from top1 based on set of common atoms
         # in principle, the groups are of len == 1, but for e.g. dihedrals this could be > 1
         for (int_list0, int_list1), atoms_01 in temp_gen_inner:
-            if kwargs.get('verbose'):print('\t\t2\t',container_name)
             atoms_01_map = [dict(zip(atoms_01[i], atoms_01[(i+1) % 2])) for i in range(2)] # maps atoms0 <-> atoms1
             # this map is needed for impropers, as one can specify the same improper using different order of atoms
             int_matches, int_ptp = _find_interactions_ptp_atom_set(top_01, list(int_list0), list(int_list1),
@@ -919,11 +875,25 @@ def find_interactions_ptp(at0, at1, top_01, top_pair_ind, sol, done_interactions
 def _get_sol_int_atoms_simple(sol, top_i, int_i, sol_interaction):
     sol_interaction.atoms = tuple(sol.find_sol_atom((top_i, at)) for at in int_i.atoms)
 
-def _get_sol_int_states(sol, sol_int, **kwargs):
+def _get_sol_int_states(sol, sol_int, flag_dih_v_1=False):
+    tops2check = []
     sol_int.states = [None] * len(sol.tops)
     for ND_state in sol_int.ND_states:
-        for top_i in sol_int.ND_states[ND_state]:
-            sol_int.states[top_i] = ND_state
+        for top_i in sol._sol.columns:
+            if top_i in sol_int.ND_states[ND_state]:
+                sol_int.states[top_i] = ND_state
+            else:
+                tops2check.append(top_i)
+    if flag_dih_v_1:
+        flag_atoms_in_sol = _check_sol_dih_v_1_atoms(sol, sol_int, tops2check=tops2check)
+    else:
+        flag_atoms_in_sol = _check_sol_int_atoms(sol, sol_int, tops2check=tops2check)
+    for ND_state in sol_int.ND_states:
+        for top_i in sol._sol.columns:
+            if top_i not in sol_int.ND_states[ND_state]:
+                if flag_atoms_in_sol[top_i]==False:
+                    pass
+                    #sol_int.states[top_i] = Dummy
 
 def _check_sol_atoms_if_real(sol_row, list_tops2check):
     for top_set in list_tops2check:
@@ -931,6 +901,52 @@ def _check_sol_atoms_if_real(sol_row, list_tops2check):
             if sol_row[temp_top_i] == Dummy:
                 return False
     return True
+
+def _check_sol_int_atoms(sol, sol_int, tops2check=None, atom_range=(None, None)):
+    """
+    checks if atoms of each topology (corresonding to the sol_int.atoms) are physical (non-Dummy) atoms
+    :param sol:
+    :param sol_int:
+    :return: list of bools
+    """
+    flag_atoms_in_sol = [True] * len(sol.tops)
+    if tops2check is None:
+        tops2check = sol._sol.columns
+    for top_i in tops2check:
+        temp_flag = True
+        for sol_at in sol_int.atoms[atom_range[0]:atom_range[1]]:
+            sol_row = sol._sol.loc[sol_at.id]
+            if sol_row[top_i] == Dummy:
+                temp_flag = False
+                break
+        flag_atoms_in_sol[top_i] = temp_flag
+    return flag_atoms_in_sol
+
+def _check_sol_dih_v_1_atoms(sol, sol_int, tops2check=None):
+    """
+    same as _check_sol_int_atoms (but for dihedrals under dihedral_match_v==1 condition)
+    :param sol:
+    :param sol_int:
+    :return:
+    """
+    # first_check the middle 2 atoms
+    if tops2check is None:
+        tops2check = sol._sol.columns
+    flag_atoms_in_sol = _check_sol_int_atoms(sol, sol_int, tops2check=tops2check, atom_range=(1,3))
+    # now check the neighbours of the middle 2, could be any...
+    sol_rows = [sol._sol.loc[sol_at.id] for sol_at in sol_int.atoms[1:3]]
+    for top_i in tops2check:
+        top_atoms = [sol_row[top_i] for sol_row in sol_rows]
+        for top_at in top_atoms:
+            if flag_atoms_in_sol[top_i]:
+                temp_flag = False
+                for at_neigh in sol.tops[top_i].adj[top_at]:
+                    if at_neigh != Dummy and at_neigh not in top_atoms:
+                        temp_flag = True
+                        break
+                flag_atoms_in_sol[top_i] *= temp_flag
+    return flag_atoms_in_sol
+
 
 def _check_sol_dih_atoms(sol, sol_int):
     for atom_i in (0, 3):
@@ -954,15 +970,30 @@ def _get_masses_real_atoms(sol_row, list_tops2check):
 ############################################
 
 def generate_multi_state_top(sol, top_state = 0, **kwargs):
+    """
+    generates multi state topology (and ptp topology) based on the solution
+    :param sol: solution (from MCS)
+    :param top_state: state to use to generate the topology (0 default)
+    :kwargs
+        add_DUM_exclusions: adds exclusions betweeen dummies from different states (True by default)
+        flag_EP2excl: generates exclusions and pairse from EP
+        flag_bond_constraints: generates constraints to all bonds except the perturbed ones
+
+        also to be passed on to the following functions:
+            generate_atom_states, generate_int_states, find_atom_order
+
+    """
     sol.toptp.ff = sol.tops[0].ff
     #sol.toptp.top_state = top_state
     generate_atom_states(sol, **kwargs)
     #generate_atom_top_state(sol, **kwargs)
     generate_int_states(sol, **kwargs)
+    if kwargs.get('add_DUM_exclusions', True):
+        add_DUM_exclusions(sol, **kwargs)
     sol.toptp.set_top_state(top_state = top_state, **kwargs)
     if kwargs.get('flag_EP2excl'):
         generate_excl_from_EP(sol)
-    ordered_atoms = find_atom_order_1(sol, **kwargs)
+    ordered_atoms = find_atom_order(sol, **kwargs)
     c = 0
     for at in ordered_atoms:
         c+=1
@@ -972,23 +1003,21 @@ def generate_multi_state_top(sol, top_state = 0, **kwargs):
     if isinstance(sol.toptp.atoms, list):
         sol.toptp.atoms = ordered_atoms
     else:
-        if kwargs.get('verbose_imp'):
-            print('\t\tATOMS:')
-            for at_id, at in sol.toptp.atoms.items():
-                print(at_id, at, at.id, at.sol_id)
-            print('')
-            print(sol.toptp.dihedrals[-1].ND_states, sol.toptp.dihedrals[-1].int_states)
-            print('\t1\t', sol.toptp.dihedrals[-1].int_states[1].atoms)
-            for at in sol.toptp.dihedrals[-1].atoms:
-                print(at.id, at, at.sol_id)
         sol.toptp.atoms.clear()
-    for at in ordered_atoms:
-        sol.toptp.add2container(at)
+        for at in ordered_atoms:
+            sol.toptp.add2container(at)
     for at in ordered_atoms:
         sol.toptp.add2container(at.cg, create=True, db_type=list, replace = -1)
     for i, cg in enumerate(sol.toptp.cg):
         cg.update()
         cg.n = i+1
+    # add constraints if there is bond ptp
+    if sol.toptp.ptp_int.get('bonds') and kwargs.get('flag_bond_constraints', True):
+        excl_bonds = []
+        for b in sol.toptp.bonds:
+            if len(b.ND_states) != 1:
+                excl_bonds.append(b)
+        sol.toptp.generate_constraints(excl_bonds = excl_bonds)
     get_residues_v1(sol)
     get_res_atom_names_v1(sol)
     get_sys_title(sol)
@@ -997,16 +1026,11 @@ def generate_atom_states(sol, ff_dumm = None, **kwargs):
     if ff_dumm is None:
         ff_dumm = sol.toptp.get_DUM_type
     for at in sol.toptp.get_atoms():
-        if kwargs.get('verbose'):
-            print('')
-            print('\t',)
-            print(at, at.ND_m_states, at.ND_a_type_states)
         # mass
         at.m_states = [None] * len(sol.tops)
         for m_state in at.ND_m_states:
             for top_i in at.ND_m_states[m_state]:
                 at.m_states[top_i] = m_state
-                if kwargs.get('verbose'):print('mass       ', m_state, top_i)
         # partial charge
         at.p_ch_states = [None] * len(sol.tops)
         for p_ch_state in at.ND_pch_states:
@@ -1017,14 +1041,30 @@ def generate_atom_states(sol, ff_dumm = None, **kwargs):
         for a_type_state in at.ND_a_type_states:
             if a_type_state is None:
                 for top_i in at.ND_a_type_states[a_type_state]:
-                    if kwargs.get('verbose'):print(1, top_i)
                     at.a_type_states[top_i] = ff_dumm
                     assert at.p_ch_states[top_i] == 0.0
                     assert at.m_states[top_i] is None
             else:
                 for top_i in at.ND_a_type_states[a_type_state]:
-                    if kwargs.get('verbose'):print(2, top_i)
                     at.a_type_states[top_i] = a_type_state
+
+def add_DUM_exclusions(sol, ff_dumm = None, **kwargs):
+    if ff_dumm is None:
+        ff_dumm = sol.toptp.get_DUM_type
+    atoms_non_DUM_states = [list() for i in range(len(sol.tops))]
+    for at in sol.toptp.get_atoms(): 
+        st_non_dum = [i for i, at_state in enumerate(at.a_type_states) if at_state != ff_dumm]
+        if len(st_non_dum)==1:
+            st_non_dum = st_non_dum[0]
+            atoms_non_DUM_states[st_non_dum].append(at)
+    for top_i_pair in combinations(range(len(sol.tops)), 2):
+        for at_0 in atoms_non_DUM_states[top_i_pair[0]]:
+            for at_1 in atoms_non_DUM_states[top_i_pair[1]]:
+                    temp_interaction = Interaction(ExclusionPairType, atoms=(at_0, at_1))
+                    for i in range(len(sol.tops)):
+                        temp_interaction.add_state(fnc_type = None, params = (True,))
+                    sol.toptp.add2container(temp_interaction, create=True, item_id=frozenset((at_0, at_1)), replace = -1)
+                    sol.toptp.add_atom_pair2EP_l(at_0, at_1)
 
 def generate_atom_top_state(sol, other_state = None, **kwargs):
     for at in sol.toptp.get_atoms():
@@ -1072,6 +1112,7 @@ def generate_int_states(sol, **kwargs):
         top = sol.tops[top_i]
         for int_cont in top.get_interaction_containers(EP_cont_exclude = True):
             for int_i in int_cont:
+                flag_dih_v_1 = False
                 if int_i in sol.toptp.interaction_states_map[top_i]:
                     sol_int = sol.toptp.interaction_states_map[top_i][int_i]
                 else:
@@ -1080,28 +1121,17 @@ def generate_int_states(sol, **kwargs):
                     sol_int.int_states = [None] * len(sol.tops)
                     sol_int.int_states[top_i] = int_i
                     _get_sol_int_atoms_simple(sol, top_i, int_i, sol_int)
-                    _get_sol_int_states(sol, sol_int)
+                    _get_sol_int_states(sol, sol_int) # in this case this is also fine for the dihedrals of v==1 (as they have to be DUM in the other states)
                     sol.toptp.add2container(sol_int, create=True, db_type=list, **kwargs)
-                    """
-                    if top_i==3:
-                        print('HELLOOOO')
-                        #if int_i.int_type == top.DihedralType:
-                        if int_i.int_type == DihedralType:
-                            print(int_i, int_i.atoms)
-                    """
                     continue
-                    #done_interactions.add(sol_int)
+                    #done_interactions.add(sol_int) # not needed as not matched to any other interaction (all other states DUM)
                 if sol_int in done_interactions:
                     continue
                 if sol_int.int_states[top_i] is None:
                     continue
                 flag_OK = True
+
                 if sol_int.int_states[top_i].int_type == ImproperType:
-                    if kwargs.get('verbose'):
-                        print('')
-                        print(sol_int)
-                        print(sol_int.int_states)
-                        print(sol_int.ND_states)
                     for temp_top_i, temp_int_state in enumerate(sol_int.int_states):
                         if temp_int_state and temp_int_state.states[0] in sol_int.ND_states:
                             _get_sol_int_atoms_simple(sol, temp_top_i, temp_int_state, sol_int)
@@ -1109,6 +1139,7 @@ def generate_int_states(sol, **kwargs):
                 #elif sol_int.int_states[top_i].int_type == top.DihedralType:
                 elif sol_int.int_states[top_i].int_type == DihedralType:
                     if dihedral_match_v == 1:
+                        flag_dih_v_1 = True
                         _get_sol_int_atoms_simple(sol, top_i, int_i, sol_int)
                         if not _check_sol_dih_atoms(sol, sol_int):
                             flag_OK = False
@@ -1119,7 +1150,7 @@ def generate_int_states(sol, **kwargs):
                 else:
                     _get_sol_int_atoms_simple(sol, top_i, int_i, sol_int)
                 if flag_OK:
-                    _get_sol_int_states(sol, sol_int)
+                    _get_sol_int_states(sol, sol_int, flag_dih_v_1 = flag_dih_v_1)
                     sol.toptp.add2container(sol_int, create=True, db_type=list, **kwargs)
                     done_interactions.add(sol_int)
     sol.toptp.gen_graph()
@@ -1157,7 +1188,7 @@ def generate_int_states(sol, **kwargs):
         if not flag_OK[0] * flag_OK[1]:
             do_warn('dihedral is not represented in all states by real atoms:\n' + str(sol_int.atoms))
         sol_int.atoms = tuple(sol_int.atoms)
-        _get_sol_int_states(sol, sol_int)
+        _get_sol_int_states(sol, sol_int, flag_dih_v_1 = True)
         sol.toptp.add2container(sol_int, **kwargs)
 
 def _add_next_atom_2_stack(sol, tops_order, atoms2order, stack):
@@ -1168,7 +1199,7 @@ def _add_next_atom_2_stack(sol, tops_order, atoms2order, stack):
                 stack.append(sol_at)
                 return
 
-def find_atom_order_1(sol, **kwargs):
+def find_atom_order(sol, **kwargs):
     tops_order = kwargs.get('tops_order')
     if not tops_order:
         tops_order = [sol.toptp.top_state]

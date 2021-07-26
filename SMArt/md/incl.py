@@ -104,6 +104,13 @@ def _add_atom(self, *atoms):
         self._atoms_tuple()
 
 
+class Dummy:
+    m = None
+    p_ch = None
+    a_type = None
+    coord = np.array([np.nan] * 3)
+
+
 class Interaction(__VersionCompatibility):
     """base class for each interaction type (bonds, angles...)
     each interaction type should be a new class inheriting from this class and defining na
@@ -138,8 +145,9 @@ class Interaction(__VersionCompatibility):
             state = self.int_type(**kwargs)
         self.states.append(state) # state = interaction parameters (fnc type, type code, params)
 
-    def check_atoms_int_match(self, atoms, **kwargs):
+    def check_atoms_int_match(self, atoms, **kwargs): # not sure if this is correct....
         return self.int_type._cls_check_atoms_int_match(self.atoms, atoms, **kwargs)
+         # not sure if this is correct.... atom types of self.atoms might be needed
 
 
 from SMArt.md.gro2gro.g2g import IntType_g2g
@@ -180,6 +188,12 @@ class InteractionType(gmInteractionTypeWriter, IntType_g2g):
 
     add_atom = _add_atom
     _atoms_tuple = _atoms_tuple
+
+    def get_form(self):
+        for temp_form in ('gr', 'gm'):
+            if self.fnc_type.startswith(temp_form):
+                return temp_form
+        return 'gm' # correct at the moment, but should be fixed with the change in InteratcionType fnc_types
 
     def check_eq_params(self, params2, cutoff=0.00001, check_type = True, flag_np = False, **kwargs):
         if not flag_np:
@@ -348,6 +362,9 @@ class InteractionType(gmInteractionTypeWriter, IntType_g2g):
                 return True
         return False
 
+    def check_atoms_int_match(self, atom_types, **kwargs):
+        return self._cls_check_atoms_int_match(atom_types, self.atoms, **kwargs)
+
 
 class ExclusionType(InteractionType, Defaults):
     """
@@ -402,7 +419,7 @@ def generate_params_khq(self, khq):
             params[i2] = khq[i1]
     self.add_params(params)
 
-def get_khm(self):
+def get_khq(self):
     khq = []
     for i in self._khq_pos_fnc_map[self.fnc_type]:
         if i is None:
@@ -439,7 +456,7 @@ class BondType(InteractionType, Defaults):
     _gr_gm_pos_fnc_map['gr_fnc'] = (2, 1, 0)
 
     generate_params_khq = generate_params_khq
-    get_khm = get_khm
+    get_khq = get_khq
 
     def convert_harm_quad(self, **kwargs):
         b_khq = self.get_gr_gm_params()
@@ -484,7 +501,7 @@ class AngleType(InteractionType, Defaults):
     fnc['gr_fnc'] = 'fff111'
 
     generate_params_khq = generate_params_khq
-    get_khm = get_khm
+    get_khq = get_khq
 
     _gr_gm_pos_fnc_map = {} # a0, kh, kq
     _gr_gm_pos_fnc_map['1'] = (0, 1, None)
@@ -986,4 +1003,4 @@ for k in list(locals().keys()):
             setattr(AvailableInteractionTypes, k, locals()[k])
 
 __all__ = list(AvailableInteractionTypes._available_int_types)
-__all__.extend(('AvailableInteractionTypes', 'InteractionType', 'Interaction', 'DescriptionPart', 'check_if_eq'))
+__all__.extend(('AvailableInteractionTypes', 'InteractionType', 'Interaction', 'DescriptionPart', 'check_if_eq', 'Dummy'))

@@ -81,7 +81,7 @@ def split_gen(s, pattern=None):
 class WARN(UserWarning):
     flag_traceback = 0
 
-warnings.simplefilter('always', WARN)
+warnings.simplefilter('ignore', WARN)
 
 def set_print_warnings(flag = 1):
     if flag:

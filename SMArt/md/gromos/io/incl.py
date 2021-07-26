@@ -133,7 +133,7 @@ class GromosParser(GeneralContainer, GromosDefaults):
             return GromosFile(parsing_from, **kwargs)
         return GromosString(parsing_from)
 
-    def parse_gro(self, parse_from, parse_from_file=True, **kwargs):
+    def _parse_gr(self, parse_from, parse_from_file=True, **kwargs):
         """
         parsing gromos format
         :param parse_from:
@@ -142,7 +142,7 @@ class GromosParser(GeneralContainer, GromosDefaults):
 
         :return:
         """
-        temp_f = getattr(self, self.__parse_gro_v)
+        temp_f = getattr(self, self.__parse_gr_v)
         temp_f(parse_from, parse_from_file, **kwargs)
 
     def __find_parse_fnc(self, bl_name):
@@ -153,7 +153,7 @@ class GromosParser(GeneralContainer, GromosDefaults):
             do_warn('unknown block read in as text: ' + bl_name)
             return self.__read_unknown_block
 
-    def __parse_gro_v1(self, parsing_from, parse_from_file, **kwargs):
+    def __parse_gr_v1(self, parsing_from, parse_from_file, **kwargs):
         gs = self.__parse_from_source(parsing_from, parse_from_file, **kwargs)
         if not hasattr(self, 'parsed_from'):
             self.parsed_from = []
@@ -191,7 +191,7 @@ class GromosParser(GeneralContainer, GromosDefaults):
         setattr(self, getattr(self._gr_block_names, kwargs['bl_name']), temp[0].strip())
 
 _GromosParser_defs = {}
-_GromosParser_defs['__parse_gro_v'] = '__parse_gro_v1' # this will take __parse_gro_v1 function
+_GromosParser_defs['__parse_gr_v'] = '__parse_gr_v1' # this will take __parse_gr_v1 function
 _GromosParser_defs['_TITLE_parser'] = '__TITLE_v1'
 _GromosParser_defs['_FORCEFIELD_parser'] = '__oneliner_block_v1'
 _GromosParser_defs['_MAKETOPVERSION_parser'] = '__oneliner_block_v1'
@@ -284,7 +284,7 @@ class IFPBlocksParser(GromosParser):
     """contains functions that read of different IFP-related blocks"""
     def parse_ifp(self, parse_from, parse_from_file = True, **kwargs):
         """parses an ifp file"""
-        self.parse_gro(parse_from, parse_from_file, **kwargs)
+        self._parse_gr(parse_from, parse_from_file, **kwargs)
         self.find_imp_pairs()
 
     def __just_for_readability(self):
@@ -756,7 +756,7 @@ class MTBBlocksParser(GromosParser):
 
     def parse_mtb(self, parse_from, parse_from_file = True, **kwargs):
         """parses a mtb file and set appropriate parameters within the instance of MTB"""
-        self.parse_gro(parse_from, parse_from_file, **kwargs)
+        self._parse_gr(parse_from, parse_from_file, **kwargs)
 
 
 
@@ -799,7 +799,7 @@ class topBlocksParser(GromosParser):
 
     def parse_top_gr(self, parse_from, parse_from_file = True, **kwargs):
         """parses a top file (GROMOS format)"""
-        self.parse_gro(parse_from, parse_from_file, **kwargs)
+        self._parse_gr(parse_from, parse_from_file, **kwargs)
         self.cg.pop()
         self.sort_atoms()
         #self.get_pairs_from_p_l()
@@ -914,7 +914,7 @@ class topBlocksParser(GromosParser):
 
     def parse_dsr(self, parse_from, parse_from_file = True, **kwargs):
         """parses a top file (GROMOS format)"""
-        self.parse_gro(parse_from, parse_from_file, **kwargs)
+        self._parse_gr(parse_from, parse_from_file, **kwargs)
 
     def __DISTANCERESSPEC_v1(self, parse_from, bl_name):
         dish, disc = float(next(parse_from.block_split_fnc)), float(next(parse_from.block_split_fnc))
@@ -974,7 +974,7 @@ class topBlocksWriter(GromosWriter):
         self._get_gr_molecule_string()
         gs = self._get_grs_from_fpaht(f_path)
         self.write_gromos_format(gs, 'TITLE', 'PHYSICALCONSTANTS', 'TOPVERSION',)
-        if kwargs.get('constraints', False):
+        if kwargs.get('constraints', True):
             int_blocks2write = ('ATOMTYPENAME', 'RESNAME', 'SOLUTEATOM', 'BONDSTRETCHTYPE', 'BONDH', 'BOND',
                                 'CONSTRAINT', 'BONDANGLEBENDTYPE', 'BONDANGLEH', 'BONDANGLE', 'IMPDIHEDRALTYPE',
                                 'IMPDIHEDRALH', 'IMPDIHEDRAL', 'TORSDIHEDRALTYPE', 'DIHEDRALH', 'DIHEDRAL',
@@ -1249,81 +1249,8 @@ _topBlocksWriter_defs['_write_PERTATOMPAIR'] = '__write_PERTATOMPAIR_v1'
 for temp_bl in ptp_block_interaction_map:
     _topBlocksWriter_defs['_write_' +  temp_bl] = '_write_pert_interaction'
 
-"""
-_topBlocksWriter_defs['_write_PERTBONDSTRETCH'] = '__write_PERTBONDSTRETCH_v1'
-_topBlocksWriter_defs['_write_PERTBONDANGLE'] = '__write_PERTBONDANGLE_v1'
-_topBlocksWriter_defs['_write_PERTIMPROPERDIH'] = '__write_PERTIMPROPERDIH_v1'
-_topBlocksWriter_defs['_write_PERTPROPERDIH'] = '__write_PERTPROPERDIH_v1'
-"""
-
 topBlocksWriter._add_defaults(_topBlocksWriter_defs, flag_set=1)
 
-
-"""
-class ptpBlocksWriter(GromosWriter): ####################################### something to change!!!
-
-    def __write_PERTATOMPARAM_v1(self, gf, bl, *args, **kwargs):
-        ALJ = kwargs.get('ALJ', 1.0)
-        ACRF = kwargs.get('ACRF', 1.0)
-        s = str(len(self.ptp.atoms)) + '\n'
-        for at in self.ptp.atoms:
-            at_ptp = self.ptp.atoms[at]
-            temp_at = get_id_string(at.a_type)
-            s += at.write_gr_id
-            s += '{:>5}{:>6}{:>4}{:11.5f}{:11.5f}'.format(get_id_string(at.res, flag_id='gr_id'),
-                                                          at.name, temp_at, at.m, at.p_ch)
-            s += '{:>4}{:11.5f}{:11.5f}'.format(get_id_string(at_ptp[0]), at_ptp[1], at_ptp[2])
-            if at_ptp[3]:
-                s += '{:9.2f}{:9.2f}\n'.format(ALJ, ACRF)
-            else:
-                s += '{:9d}{:9d}\n'.format(0, 0)
-        gf.write_block(bl, s)
-
-    def __write_pert_interaction(self, gf, bl, pert_int_list, *args, **kwargs):
-        s = str(len(pert_int_list)) + '\n'
-        for pert_int in pert_int_list:
-            for at in pert_int.atoms:
-                s += at.write_gr_id
-            for i in range(2):
-                s += '{:>6}'.format(pert_int_list[pert_int][i])
-            s += '\n'
-        gf.write_block(bl, s)
-
-    def __write_PERTATOMPAIR_v1(self, gf, bl, *args, **kwargs):
-        s = str(len(self.ptp.pair_vdw)) + '\n'
-        for at_p in self.ptp.pair_vdw:
-            for at in at_p:
-                s += at.write_gr_id
-            for i in range(2):
-                s += '{:>6}'.format(self.ptp.pair_vdw[at_p][i])
-            s += '\n'
-        gf.write_block(bl, s)
-
-    def __write_PERTATOMPAIR_v2(self, gf, bl, *args, **kwargs):
-        self.__write_pert_interaction(gf, bl, self.ptp.pair_vdw, *args, **kwargs)
-
-    def __write_PERTBONDSTRETCH_v1(self, gf, bl, *args, **kwargs):
-        self.__write_pert_interaction(gf, bl, self.ptp.bonds, *args, **kwargs)
-
-    def __write_PERTBONDANGLE_v1(self, gf, bl, *args, **kwargs):
-        self.__write_pert_interaction(gf, bl, self.ptp.angles, *args, **kwargs)
-
-    def __write_PERTIMPROPERDIH_v1(self, gf, bl, *args, **kwargs):
-        self.__write_pert_interaction(gf, bl, self.ptp.impropers, *args, **kwargs)
-
-    def __write_PERTPROPERDIH_v1(self, gf, bl, *args, **kwargs):
-        self.__write_pert_interaction(gf, bl, self.ptp.dihedrals, *args, **kwargs)
-
-_ptpBlocksWriter_defs = {}
-_ptpBlocksWriter_defs['_write_PERTATOMPARAM'] = '__write_PERTATOMPARAM_v1'
-_ptpBlocksWriter_defs['_write_PERTATOMPAIR'] = '__write_PERTATOMPAIR_v1'
-_ptpBlocksWriter_defs['_write_PERTBONDSTRETCH'] = '__write_PERTBONDSTRETCH_v1'
-_ptpBlocksWriter_defs['_write_PERTBONDANGLE'] = '__write_PERTBONDANGLE_v1'
-_ptpBlocksWriter_defs['_write_PERTIMPROPERDIH'] = '__write_PERTIMPROPERDIH_v1'
-_ptpBlocksWriter_defs['_write_PERTPROPERDIH'] = '__write_PERTPROPERDIH_v1'
-
-ptpBlocksWriter._add_defaults(_ptpBlocksWriter_defs, flag_set=1)
-"""
 
 # PTP / EDS reading and writing
 class PTP_EDS_BlocksParser(GromosParser):
@@ -1427,8 +1354,12 @@ class cnfBlocksParser(GromosParser):
         self.box.box_type = next(parse_from.block_split_fnc)
         for i in range(3):
             self.box.abc[i] = float(next(parse_from.block_split_fnc))
-        for i in range(9):
+        for i in range(3):
             self.box.angles[i] = float(next(parse_from.block_split_fnc))
+        for i in range(3):
+            self.box.euler_angles[i] = float(next(parse_from.block_split_fnc))
+        for i in range(3):
+            self.box.origin[i] = float(next(parse_from.block_split_fnc))
         parse_from.end_block_split()
 
 _cnfBlocksParser_defs = {}
@@ -1493,9 +1424,10 @@ class cnfBlocksWriter(GromosWriter):
     def __write_GENBOX_v1(self, gf, bl, *args, **kwargs):
         s = '{:>5}\n'.format(self.box.box_type)
         temp = '{:15.9f}' * 3 + '\n'
-        s += temp.format(*self.box.abc)
-        for i in range(3):
-            s += temp.format(*self.box.angles[i * 3:3 + i * 3])
+        attribs_2_write = ('abc', 'angles', 'euler_angles', 'origin')
+        for attrib_2_write in attribs_2_write:
+            temp_values = getattr(self.box, attrib_2_write)
+            s += temp.format(*temp_values)
         gf.write_block(bl, s)
 
 _cnfBlocksWriter_defs = {}

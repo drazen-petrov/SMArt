@@ -1,20 +1,28 @@
 from SMArt.incl import combinations, np,  OrderedDict, permutations, bisect_left, Counter, DataDumping
 from SMArt.alchemy.incl import AlchemicalSolution, Dummy, TopGraphProperties
 from SMArt.alchemy.top_matching_fnc import update_ptp, generate_toptp
-
+from SMArt.md.ana.incl import _RMSD, _RMSD_pairwise
 
 class MCS(DataDumping):
-    def __init__(self, *tops, **kwargs):
+    def __init__(self, *tops, flag_partial_ring=True, max_partial_ring_match=2, **kwargs):
         """
         :param tops:
+        :param flag_partial_ring - allow partial ring match, such that partial matches form a ring (e.g. benzene and indene)
+        :param max_partial_ring_match - max number of allowed atoms to be matched between chain and ring or 2 rings matched partially
         :param kwargs:
-            nb - how far (in neighbours) a new atom pair can be [2] default (through bonds, see enumerate function)
+            nb - how far (in neighbours) a new atom pair can be (through bonds, see enumerate function) - default 2 (and only option at the moment)
+            flag_top_update - update topology at each step
+            score_fnc - general score function
+            flag_score_fnc - to specify predefined score functions
+            add_RMSD - add RMSD to the score ['simple' or 'pairwise'] - see SMArt.md.incl functions
+                RMSD_position - at which position in the score to add the RMSD (by default 1)
             kwargs for AlchemicalSolution
                 available_atoms
                 non_available_atoms
                 common_atoms
                 tried_pairs
         """
+        kwargs = dict(kwargs)
         ######## steps accounting
         self.solutions = [] # solutions from each step
         self.solution_scores = []
@@ -25,15 +33,45 @@ class MCS(DataDumping):
         self.none_solutions = [] # debugging
         self.current = [None] * 4 # debugging
         ######## steps accounting
+        self.tops = tuple(tops)
+        for top in self.tops:
+            assert len(list(top.get_Gs())) == 1
         ####### some params
         self.flag_mem = kwargs.get('flag_mem', True)
         self.flag_top_update = kwargs.get('flag_top_update')
         self.flag_top_prune = kwargs.get('flag_top_prune')
         self.flag_score_fnc = kwargs.get('flag_score_fnc', '')
+        self.score_fnc = kwargs.get('score_fnc')
+        if self.score_fnc is None:
+            self.score_fnc = getattr(self, '_calc_sol_score_' + self.flag_score_fnc)
+        flag_add_RMSD = kwargs.get('add_RMSD')
+        if flag_add_RMSD:
+            assert flag_add_RMSD in ('simple', 'pairwise')
+            RMSD_fnc_map = dict(simple=_RMSD, pairwise=_RMSD_pairwise)
+            self.calc_RMSD = RMSD_fnc_map[flag_add_RMSD]
+            self.RMSD_position = kwargs.get('RMSD_position', 1)
+            coords = kwargs.get('coords')
+            if coords:
+                try:
+                    for top_i, top in enumerate(self.tops):
+                        for at_i, at in enumerate(top.get_atoms()):
+                            at.coord = coords[top_i][at_i]
+                except:
+                    self.coords = {}
+                    for top_i, top in enumerate(self.tops):
+                        self.coords[top_i] = {}
+                        try:
+                            for at_i, at in enumerate(top.get_atoms()):
+                                self.coords[top_i][at] = coords[top_i][at_i]
+                        except:
+                            for at_i, at in enumerate(top.adj):
+                                self.coords[top_i][at] = coords[top_i][at_i]
+        else:
+            self.calc_RMSD = False
         ######################################### initial #########################################
-        self.tops = tuple(tops)
-        for top in self.tops:
-            assert len(list(top.get_Gs())) == 1
+        self.flag_partial_ring = flag_partial_ring
+        # add chain ring atom pairs in tried_pairs if max_partial_ring_match==0
+        self.max_partial_ring_match = max_partial_ring_match
         self.nb = kwargs.get('nb', 2)
         # get list of neighbours for each atom of each top, separated in lists (1st, 2nd, 3rd... neighbours)
         # the list goes to nb - 1
@@ -44,10 +82,13 @@ class MCS(DataDumping):
         self.__generate_initial_sol_TGPs(**kwargs)
         self._top_pairs = tuple([top_pair_ind for top_pair_ind in combinations(self.initial_sol._sol.columns, 2)])
         self.pyramid_neighbours = list(self.__get_pyramid_neighbours())
+
         ######################################### initial #########################################
         ######################################### initial topology props #########################################
         ######################################### initial topology props #########################################
         #self.__get_initial_estimate_matrices() # this is for testing!!!!!!!!!!!!!
+
+
 
     ####################################################################################################################
     #                                        initial topology properties
@@ -94,7 +135,9 @@ class MCS(DataDumping):
         sol_available_atoms = []
         for i, t in enumerate(self.tops):
             temp_TPGs = {}
-            temp_kwargs = dict(available_Vs=available_atoms[i], non_available_Vs=non_available_atoms[i])
+            temp_kwargs = dict(available_Vs=available_atoms[i], non_available_Vs=non_available_atoms[i], rerun_get_rings=True)
+            if not self.flag_partial_ring:
+                temp_kwargs['flag_get_ind_ring_parts'] = False
             temp_tgp = TopGraphProperties(t, **temp_kwargs)
             temp_TPGs[(temp_tgp.available_Vs, frozenset(), frozenset())] = temp_tgp
             self.TGPs.append(temp_TPGs)
@@ -105,6 +148,27 @@ class MCS(DataDumping):
                 temp_map[at] = dict(t.BFS(at))
                 del(temp_map[at][at])
             self.tops_neigh_map.append(temp_map)
+        if self.max_partial_ring_match==0:
+            tried_pairs = kwargs.get('tried_pairs', [])
+            top_non__ring_at = []
+            for top_i, top in enumerate(self.tops):
+                ring_at, non_ring_at = [], []
+                for at in sol_available_atoms[top_i]:
+                    if at in top.rings_map:
+                        ring_at.append(at)
+                    else:
+                        non_ring_at.append(at)
+                top_non__ring_at.append((ring_at, non_ring_at))
+            for top_pair_idx in combinations(range(len(self.tops)), 2):
+                top_idx_0 = top_pair_idx[0]
+                top_idx_1 = top_pair_idx[1]
+                for i in range(2): # loops over ring and non-ring atoms
+                    j = (i + 1) % 2 # picks the opposite of i 
+                    for at_0 in top_non__ring_at[top_idx_0][i]:
+                        for at_1 in top_non__ring_at[top_idx_1][j]:
+                            tried_pairs.append(((top_idx_0, at_0), (top_idx_1, at_1)))
+            kwargs['tried_pairs'] = tried_pairs
+
         kwargs['available_atoms'] = sol_available_atoms
         initial_sol = kwargs.get('initial_sol')
         if initial_sol:
@@ -644,6 +708,7 @@ class MCS(DataDumping):
         flag_partial_valid_solution = True
         rings2check = {}
         tops_in_sol = tuple(top_i for top_i in sol._sol.columns if not sol.flag_top_not_in_sol[top_i])
+        # find rings with 2 or more atoms in the solution (save the atoms per ring)
         for top_i in tops_in_sol:
             temp_ring_atoms_in_sol = {}
             #for atom_ii, atom_i in enumerate(sol._sol.values[:, top_i]): # loop over atoms of top_i
@@ -655,14 +720,15 @@ class MCS(DataDumping):
                         temp_ring_atoms_in_sol[temp_r].append(atom_i)
             r2del = []
             for temp_r in temp_ring_atoms_in_sol:
-                if len(temp_ring_atoms_in_sol[temp_r]) >= 2:
+                if len(temp_ring_atoms_in_sol[temp_r]) <= self.max_partial_ring_match:
+                    r2del.append(temp_r)
+                else:
                     #temp_ring_atoms_in_sol[temp_r] = frozenset(temp_ring_atoms_in_sol[temp_r])
                     pass
-                else:
-                    r2del.append(temp_r)
             for temp_r in r2del:
                 del(temp_ring_atoms_in_sol[temp_r])
             rings2check[top_i] = temp_ring_atoms_in_sol
+        # rings2check - for each top_i, dict  with keys = rings and values = ring atoms in sol
         tops_ind_ring_parts_pairs = []
         tops_allowed_atoms_pairs = {}
         tops_disallowed_atoms_pairs = {}
@@ -671,7 +737,7 @@ class MCS(DataDumping):
             for r2check_0 in rings2check[top_pair_ind[0]]:
                 ind_ring_part_1_skip = []
                 atoms_closed_ind_ring_parts_0 = set()
-                flag_find_solution = True
+                flag_find_solution = True # if this partial is valid
                 atoms_top_0 = {}
                 atoms_top_1 = {}
                 r2check_1 = None
@@ -687,7 +753,7 @@ class MCS(DataDumping):
                             else:
                                 r2check_1 = [temp_r for temp_r in r2check_1 if atom_1 in temp_r.adj]
                         else:
-                            flag_find_solution = False # this means 1 ring (3+ atoms) matched to non-ring atom
+                            flag_find_solution = False # this means 1 ring matched to non-ring atom (used below if number of matched atoms > max_partial_ring_match)
                         atoms_top_0[atom_0] = atom_1
                         atoms_top_1[atom_1] = atom_0
                 if kwargs.get('verbose'):
@@ -697,9 +763,9 @@ class MCS(DataDumping):
                     print(r2check_1)
                 if r2check_1 is None:
                     r2check_1 = list()
-                if len(r2check_1) != 1: # this means 1 ring matched to 2 rings...
+                if len(r2check_1) != 1: # this means 1 ring matched to 0 or 2 (or more) rings...
                     flag_find_solution = False
-                if len(atoms_top_0) > 2:
+                if len(atoms_top_0) > self.max_partial_ring_match: # more matched atoms in a ring than allowed for partial sol
                     temp_flag_partial_valid_solution = False
                     if flag_find_solution == False:
                         return False, None
@@ -709,7 +775,7 @@ class MCS(DataDumping):
                             atom_0 = sol.find_common_atom_pair((top_pair_ind[1], atom_1), top_pair_ind[0])
                             #temp_row = sol.sol_atoms_map[top_pair_ind[1], atom_1]
                             #atom_0 = sol._sol.values[temp_row, top_pair_ind[0]]
-                            if atom_0 not in (None, Dummy): # this means 1 ring (3+ atoms) matched to non-ring atom
+                            if atom_0 not in (None, Dummy): # this means 1 ring (with more matches than allowed for partial sol) matched to non-ring atom
                                 return False, None
                     # find all ind ring parts that are compatible with both atoms_top_0 and 1
                     if kwargs.get('verbose'):print('JOS SMO TU')
@@ -717,20 +783,21 @@ class MCS(DataDumping):
                     atoms_set_top_1 = frozenset(atoms_top_1)
                     allowed_atoms_0, allowed_atoms_1 = set(), set()
                     for ind_ring_part_0 in r2check_0.independent_parts:
-                        at_in_sol_0 = ind_ring_part_0 & atoms_set_top_0
+                        at_in_sol_0 = ind_ring_part_0 & atoms_set_top_0#atoms in sol (top_0) and in one of ind_ring_parts
                         if at_in_sol_0:
-                            if len(at_in_sol_0) > min_at_in_sol_allowed:
+                            #if len(at_in_sol_0) >= min_at_in_sol_allowed:
+                            if 1:
                                 allowed_atoms_0 = allowed_atoms_0 | ind_ring_part_0
-                            if len(at_in_sol_0) > 2:
+                            if len(at_in_sol_0) > 2:#this ensures that 1 distinct ind_ring_part is defined (can't be more)
                                 at_in_sol_1 = frozenset(atoms_top_0[at_0] for at_0 in at_in_sol_0)
                                 ind_ring_part_1 = self.__find_common_ind_ring_part_from_atoms(r2check_1, at_in_sol_1)
                                 if len(ind_ring_part_1) != 1:
-                                    # in this case, ind_ring_part has to match to 1 ind_ring_part of the other top
+                                    # in this case, ind_ring_part has to match to exactly 1 ind_ring_part of the other top
                                     return False, None
                                 ind_ring_part_1 = ind_ring_part_1[0]
-                            else:
+                            else: # this ind_part could be matched to more ind parts
                                 ind_ring_part_0 = self.__find_common_ind_ring_part_from_atoms(r2check_0, at_in_sol_0)
-                                if len(ind_ring_part_0) != 1:
+                                if len(ind_ring_part_0) != 1:# this subset of atoms defines more ind_ring_parts
                                     continue
                                 ind_ring_part_0 = ind_ring_part_0[0]
                                 at_in_sol_1 = frozenset(atoms_top_0[at_0] for at_0 in at_in_sol_0)
@@ -763,14 +830,15 @@ class MCS(DataDumping):
                             else:
                                 atoms_closed_ind_ring_parts_0 = atoms_closed_ind_ring_parts_0 | ind_ring_part_0
                             ind_ring_part_1_skip.append(ind_ring_part_1)
-                            assert len(at_in_sol_1) > min_at_in_sol_allowed
+                            #assert len(at_in_sol_1) > min_at_in_sol_allowed
                             allowed_atoms_1 = allowed_atoms_1 | ind_ring_part_1
                             if kwargs.get('verbose'):print('JOS SMO TU 4 END OF THE LOOP')
                     for ind_ring_part_1 in r2check_1.independent_parts:
                         if ind_ring_part_1 in ind_ring_part_1_skip:
                             continue
                         at_in_sol_1 = ind_ring_part_1 & atoms_set_top_1
-                        if len(at_in_sol_1) > min_at_in_sol_allowed:
+                        #if len(at_in_sol_1) > min_at_in_sol_allowed:
+                        if at_in_sol_1:
                             allowed_atoms_1 = allowed_atoms_1 | ind_ring_part_1
                             if len(at_in_sol_1) > 2:
                                 # in this case, ind_ring_part would match more than 1 ind_ring_part of the other top
@@ -782,7 +850,7 @@ class MCS(DataDumping):
                     tops_allowed_atoms_pairs[top_pair_ind][0]  = tops_allowed_atoms_pairs[top_pair_ind][0] | allowed_atoms_0
                     tops_allowed_atoms_pairs[top_pair_ind][1]  = tops_allowed_atoms_pairs[top_pair_ind][1] | allowed_atoms_1
                 else:
-                    # only 2 vs 2 or 1 vs 1 atoms in a ring!
+                    # only max_partial_ring_match atoms matched (or less) in a ring!
                     temp_flag_partial_valid_solution = True
                     """
                     if len(atoms_top_0) == 2 and len(r2check_1)==1:
@@ -824,14 +892,14 @@ class MCS(DataDumping):
                             else:
                                 r2check_0 = [temp_r for temp_r in r2check_0 if atom_0 in temp_r.adj]
                         else:
-                            flag_find_solution = False # this means 1 ring (3+ atoms) matched to non-ring atom
+                            flag_find_solution = False  # this means 1 ring matched to non-ring atom (used below if number of matched atoms > max_partial_ring_match)
                         atoms_top_0[atom_0] = atom_1
                         atoms_top_1[atom_1] = atom_0
                 if r2check_0 is None:
                     r2check_0 = list()
-                if len(r2check_0) != 1: # this means 1 ring matched to 2 rings...
+                if len(r2check_0) != 1: # this means 1 ring matched to 0 or 2 (or more) rings...
                     flag_find_solution = False
-                if len(atoms_top_0) > 2:
+                if len(atoms_top_0) > self.max_partial_ring_match: # more matched atoms in a ring than allowed for partial sol
                     #temp_flag_partial_valid_solution = False
                     if flag_find_solution == False:
                         return False, None
@@ -841,7 +909,7 @@ class MCS(DataDumping):
                             atom_1 = sol.find_common_atom_pair((top_pair_ind[0], atom_0), top_pair_ind[1])
                             #temp_row = sol.sol_atoms_map[top_pair_ind[0], atom_0]
                             #atom_1 = sol._sol.values[temp_row, top_pair_ind[1]]
-                            if atom_1 not in (None, Dummy): # this means 1 ring (3+ atoms) matched to non-ring atom
+                            if atom_1 not in (None, Dummy): # this means 1 ring (with more matches than allowed for partial sol) matched to non-ring atom
                                 return False, None
                     #flag_partial_valid_solution_top_pair *= temp_flag_partial_valid_solution
                     # in this case this is not needed, as this is already checked above
@@ -1056,7 +1124,8 @@ class MCS(DataDumping):
         if sol.toptp.ptp_int.get('bonds') or sol.toptp.ptp_make_break_int:
             return True
 
-    def _calc_sol_score_(self, sol): # the lower the better
+    @staticmethod
+    def _calc_sol_score_(sol, **kwargs): # the lower the better
         num_matches = sum(sol.full_estimate)
         if hasattr(sol, 'toptp'):
             top_score = sum(sol.toptp.ptp_atom) + sum(sol.toptp.ptp_int.values()) + sol.toptp.ptp_excl_pair
@@ -1064,18 +1133,56 @@ class MCS(DataDumping):
         else:
             sol.score = -num_matches
 
-    def _calc_sol_score_EDS(self, sol): # the lower the better
+    @staticmethod
+    def _calc_sol_score_EDS(sol, **kwargs): # the lower the better
         sol.score = (-sum(sol.full_estimate), sol.toptp.ptp_atom[1], sol.toptp.ptp_atom[2])
 
-    def calc_score(self, sol):
-        score_fnc = getattr(self, '_calc_sol_score_' + self.flag_score_fnc)
-        score_fnc(sol)
+    def __get_c_space(self, sol):
+        shape = list(sol._sol.shape[::-1])
+        shape.append(3)
+        c_space = np.zeros(shape)
+        for row_i, row in sol._sol.iterrows():
+            for top_i, at in enumerate(row):
+                if at is None:
+                    at_coord = np.nan
+                else:
+                    try:
+                        at_coord = at.coord
+                    except:
+                        at_coord = self.coords[top_i][at]
+                c_space[top_i, row_i,:] = at_coord
+        return c_space
+        
+    def __add_RMSD_score(self, sol, **kwargs):
+        c_space = self.__get_c_space(sol)
+        RMSD = self.calc_RMSD(c_space, flag_make_c_space=False)
+        sol._score_without_RMSD = sol.score
+        try:
+            sol.score = list(sol.score)
+        except:
+            sol.score = [sol.score]
+        if  0 <= self.RMSD_position < len(sol.score):
+            sol.score.insert(self.RMSD_position, RMSD)
+        else:
+            sol.score.append(RMSD)
+        #sol.score = tuple(sol.score)
+
+    def calc_score(self, sol, **kwargs):
+        self.score_fnc(sol, **kwargs)
+        if self.calc_RMSD:
+            self.__add_RMSD_score(sol, **kwargs)
+        #score_fnc = getattr(self, '_calc_sol_score_' + self.flag_score_fnc)
+        #score_fnc(sol)
 
     def prune(self, sol, **kwargs):
-        self.calc_score(sol)
+        self.calc_score(sol, **kwargs) # actually the same as the line below...
         if not kwargs.get('flag_skip_prune'):
             if self.solutions:
-                if self.solutions[0].score < sol.score:
+                if hasattr(sol, '_score_without_RMSD'):
+                    score_attr = '_score_without_RMSD'
+                else:
+                    score_attr = 'score'
+                if getattr(self.solutions[0], score_attr) < getattr(sol, score_attr):
                     return True
             if self.flag_top_prune:
                 top_prune_fnc = getattr(self, '_prune_top_' + self.flag_top_prune)

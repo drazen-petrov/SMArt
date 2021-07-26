@@ -1,0 +1,1075 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>SMArt.alchemy package &mdash; SMArt v1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="SMArt.graph package" href="SMArt.graph.html" />
+    <link rel="prev" title="SMArt package" href="SMArt.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> SMArt
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">SMArt</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="SMArt.html">SMArt package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="SMArt.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">SMArt.alchemy package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="SMArt.graph.html">SMArt.graph package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="SMArt.local_config.html">SMArt.local_config package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="SMArt.md.html">SMArt.md package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="SMArt.tests.html">SMArt.tests package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="SMArt.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="SMArt.html#module-SMArt.geometry">SMArt.geometry module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="SMArt.html#module-SMArt.incl">SMArt.incl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="SMArt.html#module-SMArt.mp_fnc">SMArt.mp_fnc module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="SMArt.html#module-SMArt">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SMArt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">SMArt</a> &raquo;</li>
+        
+          <li><a href="SMArt.html">SMArt package</a> &raquo;</li>
+        
+      <li>SMArt.alchemy package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/SMArt.alchemy.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="smart-alchemy-package">
+<h1>SMArt.alchemy package<a class="headerlink" href="#smart-alchemy-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-SMArt.alchemy.MCS">
+<span id="smart-alchemy-mcs-module"></span><h2>SMArt.alchemy.MCS module<a class="headerlink" href="#module-SMArt.alchemy.MCS" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="SMArt.alchemy.MCS.MCS">
+<em class="property">class </em><code class="sig-prename descclassname">SMArt.alchemy.MCS.</code><code class="sig-name descname">MCS</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">tops</span></em>, <em class="sig-param"><span class="n">flag_partial_ring</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">max_partial_ring_match</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="SMArt.html#SMArt.incl.DataDumping" title="SMArt.incl.DataDumping"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.incl.DataDumping</span></code></a></p>
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.calc_score">
+<code class="sig-name descname">calc_score</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.calc_score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.calc_score" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.calculate_combined_branch_pair_estimate">
+<em class="property">static </em><code class="sig-name descname">calculate_combined_branch_pair_estimate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">b1</span></em>, <em class="sig-param"><span class="n">b2</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.calculate_combined_branch_pair_estimate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.calculate_combined_branch_pair_estimate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.calculate_estimate_atom_dummy_pairs_in_sol">
+<code class="sig-name descname">calculate_estimate_atom_dummy_pairs_in_sol</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="n">top_pair_ind</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.calculate_estimate_atom_dummy_pairs_in_sol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.calculate_estimate_atom_dummy_pairs_in_sol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.calculate_estimate_atom_pair_in_sol">
+<code class="sig-name descname">calculate_estimate_atom_pair_in_sol</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="n">top_pair_ind</span></em>, <em class="sig-param"><span class="n">atom_i</span></em>, <em class="sig-param"><span class="n">atom_j</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.calculate_estimate_atom_pair_in_sol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.calculate_estimate_atom_pair_in_sol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.calculate_estimate_atom_pair_in_sol_ring_ind">
+<code class="sig-name descname">calculate_estimate_atom_pair_in_sol_ring_ind</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="n">top_pair_ind</span></em>, <em class="sig-param"><span class="n">atom_i</span></em>, <em class="sig-param"><span class="n">atom_j</span></em>, <em class="sig-param"><span class="n">ind_ring_parts_in_sol</span></em>, <em class="sig-param"><span class="n">ind_ring_parts_avail</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.calculate_estimate_atom_pair_in_sol_ring_ind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.calculate_estimate_atom_pair_in_sol_ring_ind" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.check_match_pair">
+<code class="sig-name descname">check_match_pair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">matched_pair</span></em>, <em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.check_match_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.check_match_pair" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>matched_pair</strong> – </p></li>
+<li><p><strong>sol</strong> – </p></li>
+<li><p><strong>kwargs</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.create_estimate_top_pair_in_sol">
+<code class="sig-name descname">create_estimate_top_pair_in_sol</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">top_pair_ind</span></em>, <em class="sig-param"><span class="n">available_atoms_frozenset</span></em>, <em class="sig-param"><span class="n">in_solution_atoms_frozenset</span></em>, <em class="sig-param"><span class="n">in_solution_dummy_match_atoms_frozenset</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.create_estimate_top_pair_in_sol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.create_estimate_top_pair_in_sol" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.enumerate_brute_force">
+<code class="sig-name descname">enumerate_brute_force</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.enumerate_brute_force"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.enumerate_brute_force" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.enumerate_brute_force_call">
+<code class="sig-name descname">enumerate_brute_force_call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.enumerate_brute_force_call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.enumerate_brute_force_call" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.enumerate_stepwise">
+<code class="sig-name descname">enumerate_stepwise</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.enumerate_stepwise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.enumerate_stepwise" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.enumerate_stepwise_call">
+<code class="sig-name descname">enumerate_stepwise_call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.enumerate_stepwise_call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.enumerate_stepwise_call" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.enumerate_stepwise_call_partial_sol_invalid">
+<code class="sig-name descname">enumerate_stepwise_call_partial_sol_invalid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="n">top_pair</span></em>, <em class="sig-param"><span class="n">rows</span></em>, <em class="sig-param"><span class="n">independent_ring_parts</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.enumerate_stepwise_call_partial_sol_invalid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.enumerate_stepwise_call_partial_sol_invalid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.enumerate_stepwise_sorted">
+<code class="sig-name descname">enumerate_stepwise_sorted</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.enumerate_stepwise_sorted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.enumerate_stepwise_sorted" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.enumerate_stepwise_sorted_call">
+<code class="sig-name descname">enumerate_stepwise_sorted_call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.enumerate_stepwise_sorted_call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.enumerate_stepwise_sorted_call" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.find_atom_order">
+<code class="sig-name descname">find_atom_order</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.find_atom_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.find_atom_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.get_TGP_top_available_atoms">
+<code class="sig-name descname">get_TGP_top_available_atoms</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">top_i</span></em>, <em class="sig-param"><span class="n">available_atoms</span></em>, <em class="sig-param"><span class="n">in_solution_atoms</span></em>, <em class="sig-param"><span class="n">in_solution_dummy_match_atoms</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.get_TGP_top_available_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.get_TGP_top_available_atoms" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.get_all_vs_all_estimate_matrix_top_pair">
+<code class="sig-name descname">get_all_vs_all_estimate_matrix_top_pair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">top_pair_ind</span></em>, <em class="sig-param"><span class="n">available_atoms</span></em>, <em class="sig-param"><span class="n">available_atoms_frozenset</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.get_all_vs_all_estimate_matrix_top_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.get_all_vs_all_estimate_matrix_top_pair" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.get_initial_atom_brute_force">
+<code class="sig-name descname">get_initial_atom_brute_force</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.get_initial_atom_brute_force"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.get_initial_atom_brute_force" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.get_initial_pairs_brute_force">
+<code class="sig-name descname">get_initial_pairs_brute_force</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.get_initial_pairs_brute_force"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.get_initial_pairs_brute_force" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.get_initial_pairs_stepwise">
+<code class="sig-name descname">get_initial_pairs_stepwise</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.get_initial_pairs_stepwise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.get_initial_pairs_stepwise" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.get_new_pairs_brute_force">
+<code class="sig-name descname">get_new_pairs_brute_force</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.get_new_pairs_brute_force"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.get_new_pairs_brute_force" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.get_new_pairs_stepwise">
+<code class="sig-name descname">get_new_pairs_stepwise</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.get_new_pairs_stepwise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.get_new_pairs_stepwise" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.get_sorted_initial_pairs_stepwise">
+<code class="sig-name descname">get_sorted_initial_pairs_stepwise</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.get_sorted_initial_pairs_stepwise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.get_sorted_initial_pairs_stepwise" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.get_sorted_initial_pairs_stepwise_2">
+<code class="sig-name descname">get_sorted_initial_pairs_stepwise_2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.get_sorted_initial_pairs_stepwise_2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.get_sorted_initial_pairs_stepwise_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.get_sorted_new_pairs_stepwise">
+<code class="sig-name descname">get_sorted_new_pairs_stepwise</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.get_sorted_new_pairs_stepwise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.get_sorted_new_pairs_stepwise" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.make_estimates">
+<code class="sig-name descname">make_estimates</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.make_estimates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.make_estimates" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.prune">
+<code class="sig-name descname">prune</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.prune"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.prune" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.reduce_dummy_estimates_1">
+<em class="property">static </em><code class="sig-name descname">reduce_dummy_estimates_1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pair_estimates</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.reduce_dummy_estimates_1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.reduce_dummy_estimates_1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.reduce_dummy_estimates_2">
+<em class="property">static </em><code class="sig-name descname">reduce_dummy_estimates_2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pair_estimates</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.reduce_dummy_estimates_2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.reduce_dummy_estimates_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.update_solution">
+<code class="sig-name descname">update_solution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="n">temp_pair</span></em>, <em class="sig-param"><span class="n">old_sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.update_solution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.update_solution" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.MCS.MCS.update_solutions">
+<code class="sig-name descname">update_solutions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_solution</span></em>, <em class="sig-param"><span class="n">n_solutions</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/MCS.html#MCS.update_solutions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.MCS.MCS.update_solutions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-SMArt.alchemy.incl">
+<span id="smart-alchemy-incl-module"></span><h2>SMArt.alchemy.incl module<a class="headerlink" href="#module-SMArt.alchemy.incl" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="SMArt.alchemy.incl.AlchemicalSolution">
+<em class="property">class </em><code class="sig-prename descclassname">SMArt.alchemy.incl.</code><code class="sig-name descname">AlchemicalSolution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tops</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#AlchemicalSolution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.AlchemicalSolution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#SMArt.alchemy.incl.AlchemicalSolution_base" title="SMArt.alchemy.incl.AlchemicalSolution_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.alchemy.incl.AlchemicalSolution_base</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="SMArt.alchemy.incl.AlchemicalSolution_base">
+<em class="property">class </em><code class="sig-prename descclassname">SMArt.alchemy.incl.</code><code class="sig-name descname">AlchemicalSolution_base</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tops</span></em>, <em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="n">available_atoms</span></em>, <em class="sig-param"><span class="n">flag_top_not_in_sol</span></em>, <em class="sig-param"><span class="n">sol_atoms_map</span></em>, <em class="sig-param"><span class="n">tried_pairs</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#AlchemicalSolution_base"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.AlchemicalSolution_base" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.AlchemicalSolution_base.add_match2sol">
+<code class="sig-name descname">add_match2sol</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">matched_pair</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#AlchemicalSolution_base.add_match2sol"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.AlchemicalSolution_base.add_match2sol" title="Permalink to this definition">¶</a></dt>
+<dd><p>adds a matched pair (of atoms) to the current solution and creates a new one
+updates the other important variables (all from self.__init__ and tried_pairs)
+:param matched_pair:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.AlchemicalSolution_base.copy">
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#AlchemicalSolution_base.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.AlchemicalSolution_base.copy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.AlchemicalSolution_base.copy4update">
+<code class="sig-name descname">copy4update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#AlchemicalSolution_base.copy4update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.AlchemicalSolution_base.copy4update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.AlchemicalSolution_base.copy4update_new_sol_df">
+<code class="sig-name descname">copy4update_new_sol_df</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_sol_df</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#AlchemicalSolution_base.copy4update_new_sol_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.AlchemicalSolution_base.copy4update_new_sol_df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.AlchemicalSolution_base.copy_add_state">
+<code class="sig-name descname">copy_add_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#AlchemicalSolution_base.copy_add_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.AlchemicalSolution_base.copy_add_state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.AlchemicalSolution_base.find_common_atom_pair">
+<code class="sig-name descname">find_common_atom_pair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">top_atom0_index</span></em>, <em class="sig-param"><span class="n">top1_index</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#AlchemicalSolution_base.find_common_atom_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.AlchemicalSolution_base.find_common_atom_pair" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.AlchemicalSolution_base.find_sol_atom">
+<code class="sig-name descname">find_sol_atom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">top_atom0_index</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#AlchemicalSolution_base.find_sol_atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.AlchemicalSolution_base.find_sol_atom" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.AlchemicalSolution_base.states2df">
+<code class="sig-name descname">states2df</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#AlchemicalSolution_base.states2df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.AlchemicalSolution_base.states2df" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.AlchemicalSolution_base.transform_top_index_atom">
+<code class="sig-name descname">transform_top_index_atom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">top_index_atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#AlchemicalSolution_base.transform_top_index_atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.AlchemicalSolution_base.transform_top_index_atom" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.AlchemicalSolution_base.transform_top_index_atom_pair">
+<code class="sig-name descname">transform_top_index_atom_pair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">matched_pair</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#AlchemicalSolution_base.transform_top_index_atom_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.AlchemicalSolution_base.transform_top_index_atom_pair" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.AlchemicalSolution_base.update_copy_sol_toptp">
+<code class="sig-name descname">update_copy_sol_toptp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_sol</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#AlchemicalSolution_base.update_copy_sol_toptp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.AlchemicalSolution_base.update_copy_sol_toptp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.AlchemicalSolution_base.update_copy_sol_toptp_add_state">
+<code class="sig-name descname">update_copy_sol_toptp_add_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_sol</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#AlchemicalSolution_base.update_copy_sol_toptp_add_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.AlchemicalSolution_base.update_copy_sol_toptp_add_state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.AlchemicalSolution_base.update_tried_pairs">
+<code class="sig-name descname">update_tried_pairs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#AlchemicalSolution_base.update_tried_pairs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.AlchemicalSolution_base.update_tried_pairs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="SMArt.alchemy.incl.Branch">
+<em class="property">class </em><code class="sig-prename descclassname">SMArt.alchemy.incl.</code><code class="sig-name descname">Branch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">roots</span></em>, <em class="sig-param"><span class="n">parents</span></em>, <em class="sig-param"><span class="n">neigh_count</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#Branch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.Branch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.Branch.calculate_branch_pair_estimate">
+<em class="property">static </em><code class="sig-name descname">calculate_branch_pair_estimate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">branches</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#Branch.calculate_branch_pair_estimate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.Branch.calculate_branch_pair_estimate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.Branch.calculate_neigh_count_pair_estimate">
+<em class="property">classmethod </em><code class="sig-name descname">calculate_neigh_count_pair_estimate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">neigh_count_pair</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#Branch.calculate_neigh_count_pair_estimate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.Branch.calculate_neigh_count_pair_estimate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.Branch.calculate_pair_estimate">
+<code class="sig-name descname">calculate_pair_estimate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other_branch</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#Branch.calculate_pair_estimate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.Branch.calculate_pair_estimate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.Branch.calculate_stacked_neigh_count_pair_estimate">
+<em class="property">static </em><code class="sig-name descname">calculate_stacked_neigh_count_pair_estimate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stacked_neigh_count</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#Branch.calculate_stacked_neigh_count_pair_estimate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.Branch.calculate_stacked_neigh_count_pair_estimate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.Branch.combine_mutually_exclusive_neigh_count_list">
+<em class="property">static </em><code class="sig-name descname">combine_mutually_exclusive_neigh_count_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">neigh_count_list</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#Branch.combine_mutually_exclusive_neigh_count_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.Branch.combine_mutually_exclusive_neigh_count_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculates combined neigh_count from a list of neigh_count, such that it takes max at each position
+:param neigh_count_list:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.Branch.combine_mutually_exclusive_neigh_count_list_with_max_Nv">
+<em class="property">static </em><code class="sig-name descname">combine_mutually_exclusive_neigh_count_list_with_max_Nv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">neigh_count_list</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#Branch.combine_mutually_exclusive_neigh_count_list_with_max_Nv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.Branch.combine_mutually_exclusive_neigh_count_list_with_max_Nv" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculates combined neigh_count from a list of neigh_count, such that it takes max at each position
+returns also the max Nv from the neigh count lists
+:param neigh_count_list:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.Branch.combine_neigh_count">
+<code class="sig-name descname">combine_neigh_count</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other_branch</span></em>, <em class="sig-param"><span class="n">flag_other_neigh_count</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#Branch.combine_neigh_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.Branch.combine_neigh_count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.Branch.combine_neigh_count_list">
+<em class="property">static </em><code class="sig-name descname">combine_neigh_count_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">neigh_count_list</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#Branch.combine_neigh_count_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.Branch.combine_neigh_count_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.Branch.sum_neigh_count">
+<code class="sig-name descname">sum_neigh_count</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other_branch</span></em>, <em class="sig-param"><span class="n">flag_other_neigh_count</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#Branch.sum_neigh_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.Branch.sum_neigh_count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.Branch.sum_neigh_count_list">
+<em class="property">static </em><code class="sig-name descname">sum_neigh_count_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">neigh_count_list</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#Branch.sum_neigh_count_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.Branch.sum_neigh_count_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.Branch.sum_neigh_count_list_branches">
+<em class="property">static </em><code class="sig-name descname">sum_neigh_count_list_branches</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">branches</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#Branch.sum_neigh_count_list_branches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.Branch.sum_neigh_count_list_branches" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="SMArt.alchemy.incl.TopGraphProperties">
+<em class="property">class </em><code class="sig-prename descclassname">SMArt.alchemy.incl.</code><code class="sig-name descname">TopGraphProperties</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">g</span></em>, <em class="sig-param"><span class="n">available_Vs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">non_available_Vs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">in_solution_Vs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">in_solution_dummy_match_Vs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">remove_V_in_branch</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>graph properties: rings, different branches, dummy-match estimates etc…</p>
+<dl>
+<dt>attributes within g:</dt><dd><p>rings, rings_map
+within each ring:</p>
+<blockquote>
+<div><p>breaks, breaks_map, break_parents, independent_parts, independent_parts_map, independent_parts_graph</p>
+</div></blockquote>
+</dd>
+<dt>attributes within the instance:</dt><dd><p>g, available_Vs, non_available_Vs
+first_non_ring_neighbours
+branches, ring_branches - true branches
+combined_FromRing_branches - for each ring / atom in r, a combined branch to all parents that are not in r
+each of ring_branches</p>
+<blockquote>
+<div><p>combined_linear_branch - max of neighbouring combined_FromRing_branches within the r
+fake_branches - it’s a full branch having a single parent within the r</p>
+</div></blockquote>
+<p>break_branches - for each ring
+combined_FromRing_branches - branch that is a combination off branches going out of the r
+combined_branches, linear_combined_branches - for each atom, combination of all available branches</p>
+<blockquote>
+<div><p>if v in ring, linear_combined_branches is a bit different as it only takes first neighbours within r</p>
+</div></blockquote>
+<p>dummy_estimates</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.check_branches">
+<code class="sig-name descname">check_branches</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.check_branches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.check_branches" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.check_separate_groups">
+<code class="sig-name descname">check_separate_groups</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">groups</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.check_separate_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.check_separate_groups" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.combine_neigh_count_Nv_VinB_general">
+<code class="sig-name descname">combine_neigh_count_Nv_VinB_general</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">V_in_branch</span></em>, <em class="sig-param"><span class="n">neigh_count_list</span></em>, <em class="sig-param"><span class="n">Nv_sum</span></em>, <em class="sig-param"><span class="n">temp_branch</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.combine_neigh_count_Nv_VinB_general"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.combine_neigh_count_Nv_VinB_general" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.combine_neigh_count_Nv_general">
+<code class="sig-name descname">combine_neigh_count_Nv_general</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">neigh_count_list</span></em>, <em class="sig-param"><span class="n">Nv_sum</span></em>, <em class="sig-param"><span class="n">temp_branch</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.combine_neigh_count_Nv_general"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.combine_neigh_count_Nv_general" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_FromRing_branches_recursive">
+<code class="sig-name descname">get_FromRing_branches_recursive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">v</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_FromRing_branches_recursive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_FromRing_branches_recursive" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_FromRing_nonring_branches_recursive">
+<code class="sig-name descname">get_FromRing_nonring_branches_recursive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_FromRing_nonring_branches_recursive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_FromRing_nonring_branches_recursive" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_FromRing_ring_branches_recursive">
+<code class="sig-name descname">get_FromRing_ring_branches_recursive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">v</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_FromRing_ring_branches_recursive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_FromRing_ring_branches_recursive" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_branch_Vpair">
+<code class="sig-name descname">get_branch_Vpair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v0</span></em>, <em class="sig-param"><span class="n">v1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_branch_Vpair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_branch_Vpair" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_branch_roots_parents">
+<code class="sig-name descname">get_branch_roots_parents</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">roots</span></em>, <em class="sig-param"><span class="n">parents</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_branch_roots_parents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_branch_roots_parents" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_branches">
+<code class="sig-name descname">get_branches</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_branches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_branches" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_combined_neigh_count_Nv">
+<code class="sig-name descname">get_combined_neigh_count_Nv</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_combined_neigh_count_Nv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_combined_neigh_count_Nv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_dummy_branch">
+<code class="sig-name descname">get_dummy_branch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_dummy_branch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_dummy_branch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_dummy_match_estimates">
+<code class="sig-name descname">get_dummy_match_estimates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_dummy_match_estimates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_dummy_match_estimates" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_dummy_match_estimates_in_solution">
+<code class="sig-name descname">get_dummy_match_estimates_in_solution</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_dummy_match_estimates_in_solution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_dummy_match_estimates_in_solution" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_first_non_ring_neighbour">
+<code class="sig-name descname">get_first_non_ring_neighbour</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_first_non_ring_neighbour"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_first_non_ring_neighbour" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_max_Nv_combB_vDummy">
+<code class="sig-name descname">get_max_Nv_combB_vDummy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_max_Nv_combB_vDummy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_max_Nv_combB_vDummy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_neigh_count_Vpair">
+<code class="sig-name descname">get_neigh_count_Vpair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v0</span></em>, <em class="sig-param"><span class="n">v1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_neigh_count_Vpair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_neigh_count_Vpair" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_neigh_count_from_generator">
+<em class="property">static </em><code class="sig-name descname">get_neigh_count_from_generator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">BFS_generator</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_neigh_count_from_generator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_neigh_count_from_generator" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_neigh_count_roots_parents">
+<code class="sig-name descname">get_neigh_count_roots_parents</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">roots</span></em>, <em class="sig-param"><span class="n">parents</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_neigh_count_roots_parents"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_neigh_count_roots_parents" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_nonring_branch_recursive">
+<code class="sig-name descname">get_nonring_branch_recursive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v0</span></em>, <em class="sig-param"><span class="n">v1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_nonring_branch_recursive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_nonring_branch_recursive" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_ring_branch_recursive">
+<code class="sig-name descname">get_ring_branch_recursive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v0</span></em>, <em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_ring_branch_recursive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_ring_branch_recursive" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_ring_break_branches">
+<code class="sig-name descname">get_ring_break_branches</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_ring_break_branches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_ring_break_branches" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_ring_combined_FromRing_branch_recursive">
+<code class="sig-name descname">get_ring_combined_FromRing_branch_recursive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">v</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_ring_combined_FromRing_branch_recursive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_ring_combined_FromRing_branch_recursive" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_ring_combined_linear_branch_recursive">
+<code class="sig-name descname">get_ring_combined_linear_branch_recursive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">v</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_ring_combined_linear_branch_recursive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_ring_combined_linear_branch_recursive" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_ring_combined_linear_branch_tot_Nv">
+<code class="sig-name descname">get_ring_combined_linear_branch_tot_Nv</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_ring_combined_linear_branch_tot_Nv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_ring_combined_linear_branch_tot_Nv" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_ring_ring_branch_from_generator_VinB_recursive">
+<code class="sig-name descname">get_ring_ring_branch_from_generator_VinB_recursive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">roots</span></em>, <em class="sig-param"><span class="n">parents</span></em>, <em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">BFS_generator</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_ring_ring_branch_from_generator_VinB_recursive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_ring_ring_branch_from_generator_VinB_recursive" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_ring_ring_branch_from_generator_recursive">
+<code class="sig-name descname">get_ring_ring_branch_from_generator_recursive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">roots</span></em>, <em class="sig-param"><span class="n">parents</span></em>, <em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">V_in_branch</span></em>, <em class="sig-param"><span class="n">BFS_generator</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_ring_ring_branch_from_generator_recursive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_ring_ring_branch_from_generator_recursive" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_ring_sorted_RLCB">
+<code class="sig-name descname">get_ring_sorted_RLCB</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_ring_sorted_RLCB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_ring_sorted_RLCB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_separate_groups">
+<code class="sig-name descname">get_separate_groups</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_separate_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_separate_groups" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_separate_groups_brute_force">
+<code class="sig-name descname">get_separate_groups_brute_force</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_separate_groups_brute_force"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_separate_groups_brute_force" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_separate_groups_old">
+<code class="sig-name descname">get_separate_groups_old</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_separate_groups_old"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_separate_groups_old" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_sorted_combined_branches">
+<code class="sig-name descname">get_sorted_combined_branches</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_sorted_combined_branches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_sorted_combined_branches" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.get_v_dummy_match_estimate">
+<code class="sig-name descname">get_v_dummy_match_estimate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v_dummy</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.get_v_dummy_match_estimate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.get_v_dummy_match_estimate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.remove_V_in_branch">
+<code class="sig-name descname">remove_V_in_branch</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.remove_V_in_branch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.remove_V_in_branch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.update_neigh_count">
+<em class="property">static </em><code class="sig-name descname">update_neigh_count</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">l</span></em>, <em class="sig-param"><span class="n">collect_res</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.update_neigh_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.update_neigh_count" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.update_neigh_count_Nv_VinB_general">
+<code class="sig-name descname">update_neigh_count_Nv_VinB_general</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">V_in_branch</span></em>, <em class="sig-param"><span class="n">neigh_count_list</span></em>, <em class="sig-param"><span class="n">Nv_sum</span></em>, <em class="sig-param"><span class="n">temp_branch</span></em>, <em class="sig-param"><span class="n">l</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.update_neigh_count_Nv_VinB_general"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.update_neigh_count_Nv_VinB_general" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.update_neigh_count_Nv_general">
+<code class="sig-name descname">update_neigh_count_Nv_general</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">neigh_count_list</span></em>, <em class="sig-param"><span class="n">Nv_sum</span></em>, <em class="sig-param"><span class="n">temp_branch</span></em>, <em class="sig-param"><span class="n">l</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.update_neigh_count_Nv_general"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.update_neigh_count_Nv_general" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.alchemy.incl.TopGraphProperties.update_neigh_count_VinB">
+<em class="property">classmethod </em><code class="sig-name descname">update_neigh_count_VinB</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">l</span></em>, <em class="sig-param"><span class="n">collect_res</span></em>, <em class="sig-param"><span class="n">V_in_branch</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/incl.html#TopGraphProperties.update_neigh_count_VinB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.incl.TopGraphProperties.update_neigh_count_VinB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-SMArt.alchemy.top_matching_fnc">
+<span id="smart-alchemy-top-matching-fnc-module"></span><h2>SMArt.alchemy.top_matching_fnc module<a class="headerlink" href="#module-SMArt.alchemy.top_matching_fnc" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.add_DUM_exclusions">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">add_DUM_exclusions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="n">ff_dumm</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#add_DUM_exclusions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.add_DUM_exclusions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.add_atom_a_type_to_row">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">add_atom_a_type_to_row</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol_at</span></em>, <em class="sig-param"><span class="n">at_a_type</span></em>, <em class="sig-param"><span class="n">st_at</span></em>, <em class="sig-param"><span class="n">ptp_atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#add_atom_a_type_to_row"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.add_atom_a_type_to_row" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.add_atom_m_to_row">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">add_atom_m_to_row</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol_at</span></em>, <em class="sig-param"><span class="n">at_m</span></em>, <em class="sig-param"><span class="n">st_at</span></em>, <em class="sig-param"><span class="n">ptp_atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#add_atom_m_to_row"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.add_atom_m_to_row" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.add_atom_pch_to_row">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">add_atom_pch_to_row</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol_at</span></em>, <em class="sig-param"><span class="n">at_p_ch</span></em>, <em class="sig-param"><span class="n">st_at</span></em>, <em class="sig-param"><span class="n">ptp_atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#add_atom_pch_to_row"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.add_atom_pch_to_row" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.add_atom_to_row">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">add_atom_to_row</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol_at</span></em>, <em class="sig-param"><span class="n">top_atom_id</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#add_atom_to_row"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.add_atom_to_row" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.add_new_excl_pair">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">add_new_excl_pair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="n">sol_atom_pair</span></em>, <em class="sig-param"><span class="n">temp_state</span></em>, <em class="sig-param"><span class="n">top_i</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#add_new_excl_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.add_new_excl_pair" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.add_new_toptp_atom">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">add_new_toptp_atom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="n">row_idx</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#add_new_toptp_atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.add_new_toptp_atom" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.add_state2EP_ND_states">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">add_state2EP_ND_states</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="n">sol_interaction</span></em>, <em class="sig-param"><span class="n">temp_state</span></em>, <em class="sig-param"><span class="n">top_idx</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#add_state2EP_ND_states"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.add_state2EP_ND_states" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.find_ND_state_tops_set">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">find_ND_state_tops_set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ND_states</span></em>, <em class="sig-param"><span class="n">state_top_i</span></em>, <em class="sig-param"><span class="n">top_i</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#find_ND_state_tops_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.find_ND_state_tops_set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.find_atom_order">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">find_atom_order</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#find_atom_order"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.find_atom_order" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.find_best_ptp_matches">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">find_best_ptp_matches</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">int_list0</span></em>, <em class="sig-param"><span class="n">int_list1</span></em>, <em class="sig-param"><span class="n">flag_improper</span></em>, <em class="sig-param"><span class="n">top_01</span></em>, <em class="sig-param"><span class="n">atoms_01_map</span></em>, <em class="sig-param"><span class="n">ptp_score_kwargs</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#find_best_ptp_matches"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.find_best_ptp_matches" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.find_interactions_ptp">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">find_interactions_ptp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">at0</span></em>, <em class="sig-param"><span class="n">at1</span></em>, <em class="sig-param"><span class="n">top_01</span></em>, <em class="sig-param"><span class="n">top_pair_ind</span></em>, <em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="n">done_interactions</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#find_interactions_ptp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.find_interactions_ptp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.gen_int_container_01_list">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">gen_int_container_01_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">at0</span></em>, <em class="sig-param"><span class="n">at1</span></em>, <em class="sig-param"><span class="n">top_01</span></em>, <em class="sig-param"><span class="n">top_pair_ind</span></em>, <em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#gen_int_container_01_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.gen_int_container_01_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>generator for interaction containers to be checked for matches</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.gen_int_container_01_list_new">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">gen_int_container_01_list_new</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">at0</span></em>, <em class="sig-param"><span class="n">at1</span></em>, <em class="sig-param"><span class="n">top_01</span></em>, <em class="sig-param"><span class="n">top_pair_ind</span></em>, <em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#gen_int_container_01_list_new"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.gen_int_container_01_list_new" title="Permalink to this definition">¶</a></dt>
+<dd><p>generator for interaction containers to be checked for matches</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.generate_atom_states">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">generate_atom_states</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="n">ff_dumm</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#generate_atom_states"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.generate_atom_states" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.generate_atom_top_state">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">generate_atom_top_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="n">other_state</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#generate_atom_top_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.generate_atom_top_state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.generate_excl_from_EP">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">generate_excl_from_EP</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#generate_excl_from_EP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.generate_excl_from_EP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.generate_int_states">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">generate_int_states</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#generate_int_states"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.generate_int_states" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.generate_multi_state_top">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">generate_multi_state_top</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="n">top_state</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#generate_multi_state_top"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.generate_multi_state_top" title="Permalink to this definition">¶</a></dt>
+<dd><p>generates multi state topology (and ptp topology) based on the solution
+:param sol: solution (from MCS)
+:param top_state: state to use to generate the topology (0 default)
+:kwargs</p>
+<blockquote>
+<div><p>add_DUM_exclusions: adds exclusions betweeen dummies from different states (True by default)
+flag_EP2excl: generates exclusions and pairse from EP
+flag_bond_constraints: generates constraints to all bonds except the perturbed ones</p>
+<dl class="simple">
+<dt>also to be passed on to the following functions:</dt><dd><p>generate_atom_states, generate_int_states, find_atom_order</p>
+</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.generate_ptp_excl_pair_single_atom">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">generate_ptp_excl_pair_single_atom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="n">row_idx</span></em>, <em class="sig-param"><span class="n">top_i</span></em>, <em class="sig-param"><span class="n">done_sol_atom_pairs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#generate_ptp_excl_pair_single_atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.generate_ptp_excl_pair_single_atom" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.generate_toptp">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">generate_toptp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">N_tops</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">tops</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">sol</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#generate_toptp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.generate_toptp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.get_exclusion_pair_state_from_EP">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">get_exclusion_pair_state_from_EP</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">at1</span></em>, <em class="sig-param"><span class="n">at2</span></em>, <em class="sig-param"><span class="n">top</span></em>, <em class="sig-param"><span class="n">top_state</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#get_exclusion_pair_state_from_EP"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.get_exclusion_pair_state_from_EP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.get_generator_ptp_excl_pair_single_atom">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">get_generator_ptp_excl_pair_single_atom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="n">row_idx</span></em>, <em class="sig-param"><span class="n">top_i</span></em>, <em class="sig-param"><span class="n">done_sol_atom_pairs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#get_generator_ptp_excl_pair_single_atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.get_generator_ptp_excl_pair_single_atom" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.get_res_atom_names_v1">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">get_res_atom_names_v1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#get_res_atom_names_v1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.get_res_atom_names_v1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.get_res_common_atoms">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">get_res_common_atoms</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">tops</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#get_res_common_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.get_res_common_atoms" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.get_residues_v1">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">get_residues_v1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#get_residues_v1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.get_residues_v1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.get_state_names">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">get_state_names</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#get_state_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.get_state_names" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.get_sys_title">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">get_sys_title</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#get_sys_title"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.get_sys_title" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.merge_EP_ND_states">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">merge_EP_ND_states</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="n">sol_interaction</span></em>, <em class="sig-param"><span class="n">sol_interaction2</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#merge_EP_ND_states"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.merge_EP_ND_states" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.update_ptp">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">update_ptp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="n">top_atom_pair</span></em>, <em class="sig-param"><span class="n">old_sol</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#update_ptp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.update_ptp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.update_ptp_excl_pair_atom_atom_pair">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">update_ptp_excl_pair_atom_atom_pair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="n">row_idx</span></em>, <em class="sig-param"><span class="n">top_atom_pair</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#update_ptp_excl_pair_atom_atom_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.update_ptp_excl_pair_atom_atom_pair" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.update_ptp_excl_pair_row_atom_pair">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">update_ptp_excl_pair_row_atom_pair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="n">top_atom</span></em>, <em class="sig-param"><span class="n">sol_atom</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#update_ptp_excl_pair_row_atom_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.update_ptp_excl_pair_row_atom_pair" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.update_ptp_excl_pair_row_row_pair">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">update_ptp_excl_pair_row_row_pair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="n">sol_atoms_pair</span></em>, <em class="sig-param"><span class="n">top_atom_list_01</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#update_ptp_excl_pair_row_row_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.update_ptp_excl_pair_row_row_pair" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.top_matching_fnc.update_ptp_interactions">
+<code class="sig-prename descclassname">SMArt.alchemy.top_matching_fnc.</code><code class="sig-name descname">update_ptp_interactions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sol</span></em>, <em class="sig-param"><span class="n">top_atom_list_01</span></em>, <em class="sig-param"><span class="n">done_interactions</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy/top_matching_fnc.html#update_ptp_interactions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.top_matching_fnc.update_ptp_interactions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-SMArt.alchemy">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-SMArt.alchemy" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="SMArt.alchemy.generate_2state_top">
+<code class="sig-prename descclassname">SMArt.alchemy.</code><code class="sig-name descname">generate_2state_top</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mcs</span></em>, <em class="sig-param"><span class="n">solution</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">top_state</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">other_state</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy.html#generate_2state_top"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.generate_2state_top" title="Permalink to this definition">¶</a></dt>
+<dd><p>generates a pairwise topology based on a given MCS solution
+:param mcs: MCS instance used to enumerate possible solutions
+:param solution: index of the solution (from mcs.solutions list)
+:param top_state: topology state (0 by default)
+:param other_state: perturbation state (1 by default)
+:param kwargs: kwargs to pass onto SMArt.alchemy.top_matching_fnc.generate_multi_state_top function
+:return:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.generate_EDS_top">
+<code class="sig-prename descclassname">SMArt.alchemy.</code><code class="sig-name descname">generate_EDS_top</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mcs</span></em>, <em class="sig-param"><span class="n">solution</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">flag_EDS_mass</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">find_other_state</span><span class="o">=</span><span class="default_value">'any'</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy.html#generate_EDS_top"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.generate_EDS_top" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.get_EDS">
+<code class="sig-prename descclassname">SMArt.alchemy.</code><code class="sig-name descname">get_EDS</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">tops</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy.html#get_EDS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.get_EDS" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>tops</strong> – </p></li>
+<li><p><strong>kwargs</strong> – flag_stepwise - add topologies stepwise (True)
+flag_prune_EDS_match_mass
+dihedral_match_v
+find_other_state</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>MCS instance with solutions (run generate_EDS_top(mcs) to get the EDS topology)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.get_ptp_ligands">
+<code class="sig-prename descclassname">SMArt.alchemy.</code><code class="sig-name descname">get_ptp_ligands</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">top1</span></em>, <em class="sig-param"><span class="n">top2</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy.html#get_ptp_ligands"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.get_ptp_ligands" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>top1</strong> – </p></li>
+<li><p><strong>top2</strong> – </p></li>
+<li><p><strong>kwargs</strong> – flag_get_res_common_atoms - common atoms for residues with same names and len(atoms) - False as default
+flag_top_update - use topology information (True as default)
+flag_top_prune - which prune function to use (None as default; alternative ‘bond’ - makes sure no bonds are perturbed)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>MCS instance with solutions (run generate_2state_top(mcs) to get the topology)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.alchemy.point_mutation">
+<code class="sig-prename descclassname">SMArt.alchemy.</code><code class="sig-name descname">point_mutation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">top1</span></em>, <em class="sig-param"><span class="n">top2</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/alchemy.html#point_mutation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.alchemy.point_mutation" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>top1</strong> – </p></li>
+<li><p><strong>top2</strong> – </p></li>
+<li><p><strong>kwargs</strong> – flag_get_res_common_atoms - common atoms for residues with same names and len(atoms) - True as default
+flag_top_update - use topology information (True as default)
+flag_top_prune - which prune function to use (None as default; alternative ‘bond’ - makes sure no bonds are perturbed)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>MCS instance with solutions (run generate_2state_top(mcs) to get the topology)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="SMArt.graph.html" class="btn btn-neutral float-right" title="SMArt.graph package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="SMArt.html" class="btn btn-neutral float-left" title="SMArt package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Drazen Petrov.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,1212 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>SMArt.md.incl &mdash; SMArt v1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> SMArt
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">SMArt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Tutorial/index.html">Tutorial</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">SMArt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../md.html">SMArt.md</a> &raquo;</li>
+        
+      <li>SMArt.md.incl</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for SMArt.md.incl</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">SMArt.incl</span> <span class="kn">import</span> <span class="n">os</span><span class="p">,</span> <span class="n">math</span><span class="p">,</span> <span class="n">np</span><span class="p">,</span> <span class="n">__VersionCompatibility</span><span class="p">,</span> <span class="n">Defaults</span><span class="p">,</span> <span class="n">do_warn</span>
+<span class="kn">from</span> <span class="nn">SMArt.md.gromacs.io.incl_md_only</span> <span class="kn">import</span> <span class="n">gmInteractionTypeWriter</span><span class="p">,</span> <span class="n">gmCMAPWriter</span>
+
+<span class="n">kb</span> <span class="o">=</span> <span class="mf">0.00831451</span>
+
+<span class="k">def</span> <span class="nf">d_periodic</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">,</span> <span class="n">l</span><span class="p">):</span>
+    <span class="n">temp_diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">p2</span> <span class="o">-</span><span class="n">p1</span><span class="p">)</span> <span class="o">%</span> <span class="n">l</span>
+    <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">temp_diff</span><span class="p">,</span> <span class="n">l</span> <span class="o">-</span> <span class="n">temp_diff</span><span class="p">)</span>
+
+<span class="n">_gr_title_gm_system</span> <span class="o">=</span> <span class="s1">&#39;sys_title&#39;</span>
+<span class="n">_file_type_ext_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">ifp</span><span class="o">=</span><span class="s1">&#39;FF&#39;</span><span class="p">,</span> <span class="n">mtb</span><span class="o">=</span><span class="s1">&#39;BB&#39;</span><span class="p">,</span> <span class="n">cnf</span><span class="o">=</span><span class="s1">&#39;conf&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DescriptionPart"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.DescriptionPart">[docs]</a><span class="k">class</span> <span class="nc">DescriptionPart</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;in gromos for title and in gromacs for system/first line of gro file&quot;&quot;&quot;</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="n">_gr_title_gm_system</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">file_type</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">form</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">lines</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="n">lines</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">file_type</span> <span class="o">=</span> <span class="n">file_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">form</span> <span class="o">=</span> <span class="n">form</span>
+
+<div class="viewcode-block" id="DescriptionPart.add_line"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.DescriptionPart.add_line">[docs]</a>    <span class="k">def</span> <span class="nf">add_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_add_source</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f_path</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">additional_txt</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">f_path</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_line</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">from &#39;</span> <span class="o">+</span> <span class="n">f_path</span> <span class="o">+</span> <span class="s1">&#39; (</span><span class="si">{:}</span><span class="s1">)</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">additional_txt</span><span class="p">))</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">file_extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">f_path</span><span class="p">)</span>
+            <span class="n">file_extension</span> <span class="o">=</span> <span class="n">file_extension</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">file_type</span> <span class="o">=</span> <span class="n">_file_type_ext_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">file_extension</span><span class="p">,</span> <span class="n">file_extension</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_line</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">from string input (</span><span class="si">{:}</span><span class="s1">)</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">additional_txt</span><span class="p">))</span></div>
+
+<span class="k">def</span> <span class="nf">_add_DescriptionPart_from_fpath</span><span class="p">(</span><span class="n">temp_description</span><span class="p">,</span> <span class="n">f_path</span><span class="p">,</span> <span class="n">additional_txt</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">temp_description</span><span class="o">.</span><span class="n">add_line</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">from &#39;</span> <span class="o">+</span> <span class="n">f_path</span> <span class="o">+</span> <span class="s1">&#39; (</span><span class="si">{:}</span><span class="s1">)</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">additional_txt</span><span class="p">))</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">file_extension</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">f_path</span><span class="p">)</span>
+    <span class="n">file_extension</span> <span class="o">=</span> <span class="n">file_extension</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="n">temp_description</span><span class="o">.</span><span class="n">file_type</span> <span class="o">=</span> <span class="n">_file_type_ext_map</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">file_extension</span><span class="p">,</span> <span class="n">file_extension</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_add_DescriptionPart</span><span class="p">(</span><span class="n">temp_stream</span><span class="p">,</span> <span class="n">additional_txt</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">temp_description</span> <span class="o">=</span> <span class="n">DescriptionPart</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">temp_stream</span><span class="o">.</span><span class="n">f_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">temp_description</span><span class="o">.</span><span class="n">add_line</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">from string input (</span><span class="si">{:}</span><span class="s1">)</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">additional_txt</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_add_DescriptionPart_from_fpath</span><span class="p">(</span><span class="n">temp_description</span><span class="p">,</span> <span class="n">temp_stream</span><span class="o">.</span><span class="n">f_path</span><span class="p">,</span> <span class="n">additional_txt</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">temp_description</span>
+
+<span class="k">def</span> <span class="nf">check_ind_f_params</span><span class="p">(</span><span class="n">param1</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;does the checking for individual parameters&quot;&quot;&quot;</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">param1</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">param2</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">!=</span><span class="mf">0.</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mi">15</span><span class="p">:</span>
+                <span class="n">params</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="mf">0.</span>
+    <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="mf">0.</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">!=</span><span class="mf">0.</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">rel_diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">((</span><span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">rel_diff</span> <span class="o">&gt;</span> <span class="n">cutoff</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+<span class="k">def</span> <span class="nf">__check_if_eq</span><span class="p">(</span><span class="n">param1</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">fnc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">,</span> <span class="n">check_type</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;checking params equality&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">param1</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="n">param1</span> <span class="o">=</span> <span class="p">(</span><span class="n">param1</span><span class="p">,)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">param2</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+        <span class="n">param2</span> <span class="o">=</span> <span class="p">(</span><span class="n">param2</span><span class="p">,)</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">param1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">param2</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">check_type</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">param1</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">(</span><span class="n">param2</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">param1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">float</span><span class="p">)</span> <span class="ow">and</span> <span class="n">param1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">!=</span><span class="n">param2</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">fnc</span><span class="p">(</span><span class="n">param1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">param2</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+<span class="k">def</span> <span class="nf">check_if_eq_np</span><span class="p">(</span><span class="n">param1</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">check_type</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">__check_if_eq</span><span class="p">(</span><span class="n">param1</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">fnc</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">,</span> <span class="n">check_type</span><span class="o">=</span><span class="n">check_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="check_if_eq"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.check_if_eq">[docs]</a><span class="k">def</span> <span class="nf">check_if_eq</span><span class="p">(</span><span class="n">param1</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">,</span> <span class="n">check_type</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">flag_np</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">flag_np</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">__check_if_eq</span><span class="p">(</span><span class="n">param1</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">fnc</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">,</span> <span class="n">check_type</span><span class="o">=</span><span class="n">check_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">__check_if_eq</span><span class="p">(</span><span class="n">param1</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">fnc</span><span class="o">=</span><span class="n">check_ind_f_params</span><span class="p">,</span> <span class="n">check_type</span><span class="o">=</span><span class="n">check_type</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="n">cutoff</span><span class="p">)</span></div>
+
+<span class="n">_p_type_code</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;f&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">:</span> <span class="nb">int</span><span class="p">}</span>
+
+<span class="k">def</span> <span class="nf">_atoms_tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">na</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_add_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">atoms</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">at</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_atoms_tuple</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="Dummy"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.Dummy">[docs]</a><span class="k">class</span> <span class="nc">Dummy</span><span class="p">:</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">p_ch</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">a_type</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">coord</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Interaction"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.Interaction">[docs]</a><span class="k">class</span> <span class="nc">Interaction</span><span class="p">(</span><span class="n">__VersionCompatibility</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;base class for each interaction type (bonds, angles...)</span>
+<span class="sd">    each interaction type should be a new class inheriting from this class and defining na</span>
+<span class="sd">    where na stands for number of atoms - 2 for bonds, 3 for angles, etc.</span>
+<span class="sd">    attrib</span>
+<span class="sd">        atoms - real atoms (e.g. from topology or building block</span>
+<span class="sd">        na - number of atoms</span>
+<span class="sd">        _sol - A, B - but could have more as well</span>
+<span class="sd">        int_type - interaction type (e.g. BondType)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#__slots__ = (&#39;atoms&#39;, &#39;_sol&#39;, &#39;na&#39;, &#39;int_type&#39;, &#39;container2write&#39;)</span>
+
+    <span class="n">add_atom</span> <span class="o">=</span> <span class="n">_add_atom</span>
+    <span class="n">_atoms_tuple</span> <span class="o">=</span> <span class="n">_atoms_tuple</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">int_type</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">states</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">int_type</span> <span class="o">=</span> <span class="n">int_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">na</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">int_type</span><span class="o">.</span><span class="n">na</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">container2write</span> <span class="o">=</span> <span class="n">int_type</span><span class="o">.</span><span class="n">find_int_container2write</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">atoms</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="n">atoms</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_atoms_tuple</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">states</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">states</span> <span class="o">=</span> <span class="n">states</span>  <span class="c1"># interaction parameters [state1, state2,...]; state = (fnc type, type code, topB params)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">states</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="Interaction.add_state"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.Interaction.add_state">[docs]</a>    <span class="k">def</span> <span class="nf">add_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">int_type</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">states</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="c1"># state = interaction parameters (fnc type, type code, params)</span></div>
+
+<div class="viewcode-block" id="Interaction.check_atoms_int_match"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.Interaction.check_atoms_int_match">[docs]</a>    <span class="k">def</span> <span class="nf">check_atoms_int_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span> <span class="c1"># not sure if this is correct....</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">int_type</span><span class="o">.</span><span class="n">_cls_check_atoms_int_match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+         <span class="c1"># not sure if this is correct.... atom types of self.atoms might be needed</span>
+
+
+<span class="kn">from</span> <span class="nn">SMArt.md.gro2gro.g2g</span> <span class="kn">import</span> <span class="n">IntType_g2g</span>
+
+
+<div class="viewcode-block" id="InteractionType"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.InteractionType">[docs]</a><span class="k">class</span> <span class="nc">InteractionType</span><span class="p">(</span><span class="n">gmInteractionTypeWriter</span><span class="p">,</span> <span class="n">IntType_g2g</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;base class for each interaction type (bonds, angles...)</span>
+<span class="sd">    each interaction type should be a new class inheriting from this class and defining na, p_type and flag</span>
+<span class="sd">    p_type is variable type for each of the parameters, for dihedrals (float, float, int)</span>
+<span class="sd">    flag is gromacs-related flag representing if a parameter is allowed in ptp change -  (for dihedrals (1,1,0))&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">int_code</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fnc_type</span> <span class="o">=</span> <span class="s1">&#39;gr_fnc&#39;</span><span class="p">,</span> <span class="n">atoms</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fnc_type</span> <span class="o">=</span> <span class="n">fnc_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_p_type_flag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fnc</span><span class="p">[</span><span class="n">fnc_type</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p_type</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flag</span><span class="p">):</span>
+            <span class="n">temp_m</span> <span class="o">=</span> <span class="s2">&quot;class &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;: len(p_type) != len(flag)&quot;</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">temp_m</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">int_code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">params</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">atoms</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span><span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_atom</span><span class="p">(</span><span class="o">*</span><span class="n">atoms</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_atom</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__just_for_readability</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fnc</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">na</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+
+    <span class="n">add_atom</span> <span class="o">=</span> <span class="n">_add_atom</span>
+    <span class="n">_atoms_tuple</span> <span class="o">=</span> <span class="n">_atoms_tuple</span>
+
+<div class="viewcode-block" id="InteractionType.get_form"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.InteractionType.get_form">[docs]</a>    <span class="k">def</span> <span class="nf">get_form</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">temp_form</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;gr&#39;</span><span class="p">,</span> <span class="s1">&#39;gm&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fnc_type</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">temp_form</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">temp_form</span>
+        <span class="k">return</span> <span class="s1">&#39;gm&#39;</span> <span class="c1"># correct at the moment, but should be fixed with the change in InteratcionType fnc_types</span></div>
+
+<div class="viewcode-block" id="InteractionType.check_eq_params"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.InteractionType.check_eq_params">[docs]</a>    <span class="k">def</span> <span class="nf">check_eq_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params2</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">,</span> <span class="n">check_type</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">flag_np</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">flag_np</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">check_if_eq</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">params2</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">check_type</span><span class="o">=</span><span class="n">check_type</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">check_if_eq_np</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">params2</span><span class="p">,</span> <span class="n">check_type</span> <span class="o">=</span> <span class="n">check_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="InteractionType.check_eq_ptp_flag_params"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.InteractionType.check_eq_ptp_flag_params">[docs]</a>    <span class="k">def</span> <span class="nf">check_eq_ptp_flag_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params2</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="mf">0.00001</span><span class="p">,</span> <span class="n">check_type</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">flag_np</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">)</span><span class="o">!=</span><span class="nb">len</span><span class="p">(</span><span class="n">params2</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">flag_params1</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">flag_params2</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">temp_param</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">==</span><span class="kc">False</span><span class="p">:</span>
+                <span class="n">flag_params1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_param</span><span class="p">)</span>
+                <span class="n">flag_params2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">params2</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">flag_np</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">check_if_eq</span><span class="p">(</span><span class="n">flag_params1</span><span class="p">,</span> <span class="n">flag_params2</span><span class="p">,</span> <span class="n">cutoff</span><span class="o">=</span><span class="n">cutoff</span><span class="p">,</span> <span class="n">check_type</span><span class="o">=</span><span class="n">check_type</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">check_if_eq_np</span><span class="p">(</span><span class="n">flag_params1</span><span class="p">,</span> <span class="n">flag_params2</span><span class="p">,</span> <span class="n">check_type</span> <span class="o">=</span> <span class="n">check_type</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__calc_diff_params</span><span class="p">(</span><span class="n">param1</span><span class="p">,</span> <span class="n">param2</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">param1</span> <span class="o">-</span> <span class="n">param2</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+
+<div class="viewcode-block" id="InteractionType.calc_ptp_score"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.InteractionType.calc_ptp_score">[docs]</a>    <span class="k">def</span> <span class="nf">calc_ptp_score</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">int_type2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">int_type2</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">inf</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">params2</span> <span class="o">=</span> <span class="n">int_type2</span><span class="o">.</span><span class="n">p</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_ptp&#39;</span><span class="p">):</span><span class="c1"># use only allowed flags</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">param1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="n">score</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__calc_diff_params</span><span class="p">(</span><span class="n">param1</span><span class="p">,</span> <span class="n">params2</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+        <span class="k">elif</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;params_order&#39;</span><span class="p">):</span><span class="c1"># order params according to flags</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;params_order&#39;</span><span class="p">):</span>
+                <span class="n">score</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__calc_diff_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">params2</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+        <span class="k">elif</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_ptp_order&#39;</span><span class="p">):</span><span class="c1"># order params according to flags</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">param1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="n">score</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__calc_diff_params</span><span class="p">(</span><span class="n">param1</span><span class="p">,</span> <span class="n">params2</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">score</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__calc_diff_params</span><span class="p">(</span><span class="n">param1</span><span class="p">,</span> <span class="n">params2</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="n">score</span></div>
+
+<div class="viewcode-block" id="InteractionType.check_number_of_params"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.InteractionType.check_number_of_params">[docs]</a>    <span class="k">def</span> <span class="nf">check_number_of_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p_type</span><span class="p">):</span>
+            <span class="n">exc_m</span> <span class="o">=</span> <span class="s1">&#39;wrong number of parameters given</span><span class="se">\n</span><span class="s1">&#39;</span> \
+                <span class="s1">&#39;</span><span class="si">{0:d}</span><span class="s1"> given - </span><span class="si">{1:d}</span><span class="s1"> expected&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p_type</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">exc_m</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="InteractionType.set_params"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.InteractionType.set_params">[docs]</a>    <span class="k">def</span> <span class="nf">set_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;sets parameters for an interaction type - len(params) has to be the same as len(p_type)&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">replace</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">do_warn</span><span class="p">(</span><span class="s2">&quot;parameters already defined, use replace=True if you want to replace them&quot;</span><span class="p">)</span>
+                <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_params</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_number_of_params</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="InteractionType.add_params"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.InteractionType.add_params">[docs]</a>    <span class="k">def</span> <span class="nf">add_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">flag_check_len</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">flag_len_break</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;adds successively parameters to the interaction type</span>
+<span class="sd">        len(params) could be one or more, even more than len(p_type) in combination with flag_len&quot;&quot;&quot;</span>
+        <span class="n">temp_pos</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">end_pos</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p_type</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">temp_pos</span> <span class="o">==</span> <span class="n">end_pos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">params</span><span class="p">:</span>
+                <span class="n">do_warn</span><span class="p">(</span><span class="s2">&quot;all parameters already defined&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="n">params</span><span class="p">,)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="o">==</span> <span class="n">unicode</span><span class="p">:</span> <span class="c1"># python2</span>
+                <span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="n">params</span><span class="p">,)</span>
+        <span class="k">except</span><span class="p">:</span><span class="k">pass</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">temp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_type</span><span class="p">[</span><span class="n">temp_pos</span><span class="p">](</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p_type</span><span class="p">[</span><span class="n">temp_pos</span><span class="p">])</span> <span class="o">+</span> <span class="s2">&quot; expected - interaction parameter: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">temp_pos</span> <span class="o">==</span> <span class="n">end_pos</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">flag_len_break</span><span class="p">:</span>
+                    <span class="k">return</span>
+            <span class="n">temp_pos</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">flag_check_len</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_number_of_params</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="InteractionType.check_param"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.InteractionType.check_param">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">check_param</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">p_type</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="n">p_type</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">p_type</span> <span class="o">==</span> <span class="nb">float</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;float expected;&quot;</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="s2">&quot;given&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;integer expected;&quot;</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="s2">&quot;given&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">temp</span></div>
+
+<div class="viewcode-block" id="InteractionType.add_atom_types"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.InteractionType.add_atom_types">[docs]</a>    <span class="k">def</span> <span class="nf">add_atom_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="n">atoms</span></div>
+
+<div class="viewcode-block" id="InteractionType.add_p_type_flag"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.InteractionType.add_p_type_flag">[docs]</a>    <span class="k">def</span> <span class="nf">add_p_type_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p_type</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">code</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fnc</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fnc_type</span><span class="p">]</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">code</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">h</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">p_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_p_type_code</span><span class="p">[</span><span class="n">code</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">flag</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">code</span><span class="p">[</span><span class="n">h</span> <span class="o">+</span> <span class="n">i</span><span class="p">]))</span></div>
+
+<div class="viewcode-block" id="InteractionType.check_at_types"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.InteractionType.check_at_types">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">check_at_types</span><span class="p">(</span><span class="n">at1</span><span class="p">,</span> <span class="n">at2</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">at1</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">at1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;X&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">at1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">at2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">a_t</span><span class="o">.</span><span class="n">b_id</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">continue</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="InteractionType.check_atom_types"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.InteractionType.check_atom_types">[docs]</a>    <span class="k">def</span> <span class="nf">check_atom_types</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">ratoms</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_at_types</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_at_types</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="n">ratoms</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="InteractionType.find_int_container2write"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.InteractionType.find_int_container2write">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">find_int_container2write</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;int_container2write&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">int_container2write</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;container2write&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">container2write</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;intDB_&#39;</span> <span class="o">+</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_check_atoms_int_match_presence</span><span class="p">(</span><span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">at</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">int_atoms</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_check_atoms_int_match_ordered</span><span class="p">(</span><span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1">#assert len(int_atoms) == len(atoms)</span>
+        <span class="n">allowed_perturbations</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;allowed_perturbations&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">allowed_perturbations</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">allowed_perturbations</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">int_atoms</span><span class="p">)))]</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;atoms_reversed&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+                <span class="n">rev_pert</span> <span class="o">=</span> <span class="n">allowed_perturbations</span><span class="p">[</span><span class="mi">0</span><span class="p">][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">allowed_perturbations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rev_pert</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">temp_pert</span> <span class="ow">in</span> <span class="n">allowed_perturbations</span><span class="p">:</span>
+            <span class="n">flag</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">temp_pert</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">atoms</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">!=</span> <span class="n">int_atoms</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="n">flag</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="n">flag</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="InteractionType.check_atoms_int_match"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.InteractionType.check_atoms_int_match">[docs]</a>    <span class="k">def</span> <span class="nf">check_atoms_int_match</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_types</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cls_check_atoms_int_match</span><span class="p">(</span><span class="n">atom_types</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="ExclusionType"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.ExclusionType">[docs]</a><span class="k">class</span> <span class="nc">ExclusionType</span><span class="p">(</span><span class="n">InteractionType</span><span class="p">,</span> <span class="n">Defaults</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    exclusion type - but also carries info on 1-4 pair</span>
+<span class="sd">    # 0 normal wdv</span>
+<span class="sd">    # 1 excluded</span>
+<span class="sd">    # 2 pair</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<span class="c1">#    container2write = &#39;exclusion_types&#39;</span>
+<span class="c1">#    int_container2write = &#39;exclusions&#39;</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;exclusions&#39;</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">fnc</span> <span class="o">=</span> <span class="p">{</span><span class="kc">None</span><span class="p">:</span> <span class="s1">&#39;i1&#39;</span><span class="p">}</span> <span class="c1"># check this?</span>
+    <span class="n">fnc</span><span class="p">[</span><span class="s1">&#39;gr_fnc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;i1&#39;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_cls_check_atoms_int_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_check_atoms_int_match_presence</span><span class="p">(</span><span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span></div>
+
+<span class="n">ExclusionType</span><span class="o">.</span><span class="n">_add_class_defaults</span><span class="p">({</span><span class="s1">&#39;gr2gm_fnc&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span> <span class="n">flag_set</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ExclusionPairType"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.ExclusionPairType">[docs]</a><span class="k">class</span> <span class="nc">ExclusionPairType</span><span class="p">(</span><span class="n">InteractionType</span><span class="p">,</span> <span class="n">Defaults</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    exclusion type - but also carries info on 1-4 pair</span>
+<span class="sd">    # 0 normal wdv</span>
+<span class="sd">    # 1 excluded</span>
+<span class="sd">    # 2 pair</span>
+
+<span class="sd">    # in GROMOS ptp (PERTATOMPAIR block) these would be the codes:</span>
+<span class="sd">    # 0 excluded</span>
+<span class="sd">    # 1 normal vdw</span>
+<span class="sd">    # 2 pair</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;excl_pair&#39;</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">fnc</span> <span class="o">=</span> <span class="p">{</span><span class="kc">None</span><span class="p">:</span> <span class="s1">&#39;i1&#39;</span><span class="p">}</span> <span class="c1"># check this?</span>
+    <span class="n">fnc</span><span class="p">[</span><span class="s1">&#39;gr_fnc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;i1&#39;</span>
+    <span class="n">_code_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span> <span class="c1"># this one translates the internal codes to GROMOS PERTATOMPAIR block codes</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_cls_check_atoms_int_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_check_atoms_int_match_presence</span><span class="p">(</span><span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span></div>
+
+<span class="n">ExclusionPairType</span><span class="o">.</span><span class="n">_add_class_defaults</span><span class="p">({</span><span class="s1">&#39;gr2gm_fnc&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span> <span class="n">flag_set</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">generate_params_khq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">khq</span><span class="p">):</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flag</span><span class="p">)</span> <span class="c1"># PTP flag</span>
+    <span class="k">for</span> <span class="n">i1</span><span class="p">,</span> <span class="n">i2</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_khq_pos_fnc_map</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fnc_type</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">i2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">params</span><span class="p">[</span><span class="n">i2</span><span class="p">]</span> <span class="o">=</span> <span class="n">khq</span><span class="p">[</span><span class="n">i1</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">add_params</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">get_khq</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">khq</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_khq_pos_fnc_map</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">fnc_type</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">khq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">khq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">khq</span>
+
+<span class="n">_deg2rad</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">_deg2rad_2</span> <span class="o">=</span> <span class="n">_deg2rad</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">_rad2deg</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">_rad2deg_2</span> <span class="o">=</span> <span class="n">_rad2deg</span><span class="o">**</span><span class="mi">2</span>
+
+
+<div class="viewcode-block" id="BondType"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.BondType">[docs]</a><span class="k">class</span> <span class="nc">BondType</span><span class="p">(</span><span class="n">InteractionType</span><span class="p">,</span> <span class="n">Defaults</span><span class="p">):</span>
+    <span class="c1">#__slots__ = ()</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;bonds&#39;</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">fnc</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;ff11&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="s2">&quot;ff11&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">:</span> <span class="s2">&quot;fff111&quot;</span><span class="p">,</span> <span class="s2">&quot;4&quot;</span><span class="p">:</span> <span class="s2">&quot;fff000&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;6&quot;</span><span class="p">:</span> <span class="s2">&quot;ff11&quot;</span><span class="p">,</span> <span class="s2">&quot;7&quot;</span><span class="p">:</span> <span class="s2">&quot;ff00&quot;</span><span class="p">,</span> <span class="s2">&quot;8&quot;</span><span class="p">:</span> <span class="s2">&quot;if01&quot;</span><span class="p">,</span> <span class="s2">&quot;9&quot;</span><span class="p">:</span> <span class="s2">&quot;if01&quot;</span><span class="p">,</span> <span class="s2">&quot;10&quot;</span><span class="p">:</span> <span class="s2">&quot;ffff1111&quot;</span><span class="p">}</span>
+    <span class="n">fnc</span><span class="p">[</span><span class="s1">&#39;gr_fnc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;fff111&#39;</span>
+
+    <span class="n">_gr_gm_pos_fnc_map</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># b0, kh, kq</span>
+    <span class="n">_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;4&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;5&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;6&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;7&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;8&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;9&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;10&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;gr_fnc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">generate_params_khq</span> <span class="o">=</span> <span class="n">generate_params_khq</span>
+    <span class="n">get_khq</span> <span class="o">=</span> <span class="n">get_khq</span>
+
+<div class="viewcode-block" id="BondType.convert_harm_quad"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.BondType.convert_harm_quad">[docs]</a>    <span class="k">def</span> <span class="nf">convert_harm_quad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">b_khq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gr_gm_params</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">b_khq</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">b_khq</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">b_khq</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">b_khq</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">b_khq</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">b_khq</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">b_khq</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">b_khq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span>
+        <span class="k">elif</span> <span class="n">b_khq</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">b_khq</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">b_khq</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">b_khq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1">#assert check_ind_f_params(b_khq[2], b_khq[1] / (2 * b_khq[0] ** 2)), &#39;k_harm != 2*k_quad * b0**2&#39;</span>
+            <span class="k">assert</span> <span class="n">check_if_eq_np</span><span class="p">(</span><span class="n">b_khq</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">b_khq</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">b_khq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)),</span> <span class="s1">&#39;k_harm != 2*k_quad * b0**2&#39;</span>
+        <span class="k">return</span> <span class="n">b_khq</span></div>
+
+<div class="viewcode-block" id="BondType.gr2gm"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.BondType.gr2gm">[docs]</a>    <span class="k">def</span> <span class="nf">gr2gm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">gm_int_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gr2gm_int_type</span><span class="p">(</span><span class="n">int_code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">b_khq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_harm_quad</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">gm_int_type</span><span class="o">.</span><span class="n">generate_params_gr_gm</span><span class="p">(</span><span class="n">b_khq</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gm_int_type</span></div>
+
+<div class="viewcode-block" id="BondType.gm2gr"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.BondType.gm2gr">[docs]</a>    <span class="k">def</span> <span class="nf">gm2gr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">b_khq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_harm_quad</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">b_khq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">b_khq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;b0&#39;</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;int_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;int_code&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">gr_int_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gm2gr_int_type</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">gr_int_type</span><span class="o">.</span><span class="n">generate_params_gr_gm</span><span class="p">(</span><span class="n">b_khq</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gr_int_type</span></div>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_cls_check_atoms_int_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_check_atoms_int_match_presence</span><span class="p">(</span><span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span></div>
+
+<span class="n">BondType</span><span class="o">.</span><span class="n">_add_class_defaults</span><span class="p">({</span><span class="s1">&#39;gr2gm_fnc&#39;</span><span class="p">:</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;gr2gm_def_pref&#39;</span><span class="p">:</span> <span class="s1">&#39;gb_&#39;</span><span class="p">},</span> <span class="n">flag_set</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="AngleType"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.AngleType">[docs]</a><span class="k">class</span> <span class="nc">AngleType</span><span class="p">(</span><span class="n">InteractionType</span><span class="p">,</span> <span class="n">Defaults</span><span class="p">):</span>
+    <span class="c1">#__slots__ = ()</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;angles&#39;</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">fnc</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="s1">&#39;ff11&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">:</span> <span class="s1">&#39;ff11&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">:</span> <span class="s1">&#39;fff000&#39;</span><span class="p">,</span> <span class="s1">&#39;4&#39;</span><span class="p">:</span> <span class="s1">&#39;ffff0000&#39;</span><span class="p">,</span> <span class="s1">&#39;5&#39;</span><span class="p">:</span> <span class="s1">&#39;ffff1111&#39;</span><span class="p">,</span> <span class="s1">&#39;6&#39;</span><span class="p">:</span> <span class="s1">&#39;fffff00000&#39;</span><span class="p">,</span> <span class="s1">&#39;8&#39;</span><span class="p">:</span> <span class="s1">&#39;if01&#39;</span><span class="p">}</span>
+    <span class="n">fnc</span><span class="p">[</span><span class="s1">&#39;gr_fnc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;fff111&#39;</span>
+
+    <span class="n">generate_params_khq</span> <span class="o">=</span> <span class="n">generate_params_khq</span>
+    <span class="n">get_khq</span> <span class="o">=</span> <span class="n">get_khq</span>
+
+    <span class="n">_gr_gm_pos_fnc_map</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># a0, kh, kq</span>
+    <span class="n">_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;4&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;5&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;6&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;8&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;10&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="n">_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;gr_fnc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AngleType.convert_harm_quad"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.AngleType.convert_harm_quad">[docs]</a>    <span class="k">def</span> <span class="nf">convert_harm_quad</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_cutoff</span> <span class="o">=</span> <span class="mf">0.001</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">q2h</span><span class="p">(</span><span class="n">a_khq</span><span class="p">,</span> <span class="n">kt</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">acos_dom_fix</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">v</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">temp_fluc_cosa</span> <span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">kt</span> <span class="o">/</span> <span class="n">a_khq</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">temp_cos_a0</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">a_khq</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="n">temp_a1</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">acos_dom_fix</span><span class="p">(</span><span class="n">temp_cos_a0</span> <span class="o">+</span> <span class="n">temp_fluc_cosa</span><span class="p">)))</span>
+            <span class="n">temp_fac1</span> <span class="o">=</span> <span class="n">d_periodic</span><span class="p">(</span><span class="n">temp_a1</span><span class="p">,</span> <span class="n">a_khq</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">180</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+            <span class="c1">#temp_fac1 = (math.degrees(math.acos(acos_dom_fix(temp_cos_a0 + temp_fluc_cosa))) - a_khq[0]) ** 2</span>
+            <span class="n">temp_a2</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">acos_dom_fix</span><span class="p">(</span><span class="n">temp_cos_a0</span> <span class="o">-</span> <span class="n">temp_fluc_cosa</span><span class="p">)))</span>
+            <span class="n">temp_fac2</span> <span class="o">=</span> <span class="n">d_periodic</span><span class="p">(</span><span class="n">temp_a2</span><span class="p">,</span> <span class="n">a_khq</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">180</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+            <span class="c1">#temp_fac2 = (math.degrees(math.acos(temp_cos_a0 - temp_fluc_cosa)) - a_khq[0]) ** 2</span>
+            <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">kt</span> <span class="o">/</span> <span class="p">(</span><span class="n">temp_fac1</span> <span class="o">+</span> <span class="n">temp_fac2</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">h2q</span><span class="p">(</span><span class="n">a_khq</span><span class="p">,</span> <span class="n">kt</span><span class="p">):</span>
+            <span class="n">temp_fluc_a</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">kt</span> <span class="o">/</span> <span class="n">a_khq</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">temp_a1</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">a_khq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">temp_fluc_a</span><span class="p">)</span>
+            <span class="n">temp_a2</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">a_khq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">temp_fluc_a</span><span class="p">)</span>
+            <span class="n">temp_cos_a0</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="n">a_khq</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+            <span class="k">return</span> <span class="mi">2</span><span class="o">*</span><span class="n">kt</span> <span class="o">/</span> <span class="p">((</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">temp_a1</span><span class="p">)</span> <span class="o">-</span> <span class="n">temp_cos_a0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">temp_a2</span><span class="p">)</span> <span class="o">-</span> <span class="n">temp_cos_a0</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">T</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+        <span class="n">kt</span> <span class="o">=</span> <span class="n">kb</span> <span class="o">*</span> <span class="n">T</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;cutoff&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">check_cutoff</span>
+        <span class="n">a_khq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gr_gm_params</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">a_khq</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">a_khq</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">a_khq</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">a_khq</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">a_khq</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">a_khq</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">q2h</span><span class="p">(</span><span class="n">a_khq</span><span class="p">,</span> <span class="n">kt</span><span class="p">)</span>
+            <span class="c1">#a_khq[1] = a_khq[2] * (math.sin(math.radians(a_khq[0])) * _rad2deg)**2</span>
+        <span class="k">elif</span> <span class="n">a_khq</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">a_khq</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">h2q</span><span class="p">(</span><span class="n">a_khq</span><span class="p">,</span> <span class="n">kt</span><span class="p">)</span>
+<span class="c1">#            a_khq[2] = a_khq[1] / (math.sin(math.radians(a_khq[0])) * _rad2deg)**2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">kq</span> <span class="o">=</span> <span class="n">h2q</span><span class="p">(</span><span class="n">a_khq</span><span class="p">,</span> <span class="n">kt</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">check_ind_f_params</span><span class="p">(</span><span class="n">a_khq</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">kq</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">k_quad != h2q(k_harm) with T = &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+            <span class="c1">#assert check_if_eq_np(a_khq[2], kq, **kwargs), self.id + &#39;\tk_quad != h2q(k_harm) with T = &#39; + str(T)</span>
+        <span class="k">return</span> <span class="n">a_khq</span></div>
+
+<div class="viewcode-block" id="AngleType.gr2gm"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.AngleType.gr2gm">[docs]</a>    <span class="k">def</span> <span class="nf">gr2gm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">gm_int_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gr2gm_int_type</span><span class="p">(</span><span class="n">int_code</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">a_khq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_harm_quad</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">gm_int_type</span><span class="o">.</span><span class="n">generate_params_gr_gm</span><span class="p">(</span><span class="n">a_khq</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gm_int_type</span></div>
+
+<div class="viewcode-block" id="AngleType.gm2gr"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.AngleType.gm2gr">[docs]</a>    <span class="k">def</span> <span class="nf">gm2gr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">a_khq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert_harm_quad</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">a_khq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">a_khq</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;a0&#39;</span><span class="p">,</span> <span class="mf">120.</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;int_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;int_code&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">gr_int_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gm2gr_int_type</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">gr_int_type</span><span class="o">.</span><span class="n">generate_params_gr_gm</span><span class="p">(</span><span class="n">a_khq</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gr_int_type</span></div>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_cls_check_atoms_int_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_check_atoms_int_match_ordered</span><span class="p">(</span><span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<span class="n">AngleType</span><span class="o">.</span><span class="n">_add_class_defaults</span><span class="p">({</span><span class="s1">&#39;gr2gm_fnc&#39;</span><span class="p">:</span><span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;gr2gm_def_pref&#39;</span><span class="p">:</span> <span class="s1">&#39;ga_&#39;</span><span class="p">},</span> <span class="n">flag_set</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Dihedral_Check_atoms_int"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.Dihedral_Check_atoms_int">[docs]</a><span class="k">class</span> <span class="nc">Dihedral_Check_atoms_int</span><span class="p">(</span><span class="n">InteractionType</span><span class="p">,</span> <span class="n">Defaults</span><span class="p">):</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_check_atoms_int_match1</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">atoms</span> <span class="o">=</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_check_atoms_int_match_ordered</span><span class="p">(</span><span class="n">int_atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">atoms</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_check_atoms_int_match2</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_check_atoms_int_match_ordered</span><span class="p">(</span><span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_cls_check_atoms_int_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="s1">&#39;_check_atoms_int_match&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">))(</span><span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DihedralType"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.DihedralType">[docs]</a><span class="k">class</span> <span class="nc">DihedralType</span><span class="p">(</span><span class="n">Dihedral_Check_atoms_int</span><span class="p">):</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="mi">4</span>
+
+    <span class="k">def</span> <span class="nf">_gm_check_dih_imp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">DihedralType</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fnc_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dih_imp</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">=</span> <span class="n">ImproperType</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">=</span> <span class="n">DihedralType</span>
+
+    <span class="c1">#&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DihedralType</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gm_check_dih_imp</span><span class="p">()</span></div>
+    <span class="c1">#&quot;&quot;&quot;</span>
+
+
+<span class="n">fnc_dih</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;ffi110&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="s2">&quot;ff11&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">:</span> <span class="s2">&quot;ffffff111111&quot;</span><span class="p">,</span> <span class="s2">&quot;4&quot;</span><span class="p">:</span> <span class="s2">&quot;ffi110&quot;</span><span class="p">,</span> <span class="s2">&quot;5&quot;</span><span class="p">:</span> <span class="s2">&quot;ffff1111&quot;</span><span class="p">,</span> <span class="s2">&quot;8&quot;</span><span class="p">:</span> <span class="s2">&quot;if01&quot;</span><span class="p">,</span> <span class="s2">&quot;9&quot;</span><span class="p">:</span> <span class="s2">&quot;ffi110&quot;</span><span class="p">,</span>
+           <span class="s1">&#39;10&#39;</span><span class="p">:</span><span class="s1">&#39;fffff00000&#39;</span><span class="p">,</span> <span class="s1">&#39;11&#39;</span><span class="p">:</span><span class="s1">&#39;ff00&#39;</span><span class="p">}</span>
+<span class="n">fnc_dih</span><span class="p">[</span><span class="s1">&#39;gr_fnc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ffi111&#39;</span>
+<span class="n">dih_gr_gm_pos_fnc_map</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># da0, k, m, d0_imp, k_imp</span>
+<span class="n">dih_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">dih_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">0</span> <span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># improper dihedral</span>
+<span class="n">dih_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">dih_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;4&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="c1"># same as 1, but for gmx this counts as improper dihedral</span>
+<span class="n">dih_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;5&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">dih_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;8&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">dih_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;9&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">dih_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;10&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">dih_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;11&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">dih_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;gr_fnc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ImproperType"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.ImproperType">[docs]</a><span class="k">class</span> <span class="nc">ImproperType</span><span class="p">(</span><span class="n">DihedralType</span><span class="p">,</span> <span class="n">Defaults</span><span class="p">):</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_cls_check_atoms_int_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_check_atoms_int_match_presence</span><span class="p">(</span><span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span></div>
+
+<span class="n">_DihedralType_defs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;fnc&#39;</span><span class="p">:</span><span class="n">fnc_dih</span><span class="p">,</span> <span class="s1">&#39;container2write&#39;</span><span class="p">:</span><span class="s1">&#39;dihedrals&#39;</span><span class="p">,</span> <span class="s1">&#39;_gr_gm_pos_fnc_map&#39;</span><span class="p">:</span><span class="n">dih_gr_gm_pos_fnc_map</span><span class="p">}</span>
+<span class="n">DihedralType</span><span class="o">.</span><span class="n">_add_defaults</span><span class="p">(</span><span class="n">_DihedralType_defs</span><span class="p">,</span> <span class="n">flag_set</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">_DihedralType_class_defs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;gr2gm_fnc&#39;</span><span class="p">:</span><span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;gr2gm_def_pref&#39;</span><span class="p">:</span> <span class="s1">&#39;gd_&#39;</span><span class="p">,</span> <span class="s1">&#39;dih_imp&#39;</span><span class="p">:(</span><span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;4&#39;</span><span class="p">)}</span>
+<span class="c1">#_DihedralType_class_defs = {&#39;gr2gm_fnc&#39;:&#39;1&#39;, &#39;gr2gm_def_pref&#39;: &#39;gd_&#39;, &#39;dih_imp&#39;:(&#39;2&#39;)}</span>
+<span class="n">_DihedralType_class_defs</span><span class="p">[</span><span class="s1">&#39;gr2gm_def_pref_fnc_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;2&#39;</span><span class="p">:</span><span class="s1">&#39;gi_&#39;</span><span class="p">}</span>
+<span class="n">_DihedralType_class_defs</span><span class="p">[</span><span class="s1">&#39;gm2gr_int_type_fnc_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;2&#39;</span><span class="p">:</span><span class="n">ImproperType</span><span class="p">,</span> <span class="s1">&#39;4&#39;</span><span class="p">:</span><span class="n">DihedralType</span><span class="p">}</span>
+<span class="n">DihedralType</span><span class="o">.</span><span class="n">_add_class_defaults</span><span class="p">(</span><span class="n">_DihedralType_class_defs</span><span class="p">,</span> <span class="n">flag_set</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">fnc_imp</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">DihedralType</span><span class="o">.</span><span class="n">fnc</span><span class="p">)</span>
+<span class="n">fnc_imp</span><span class="p">[</span><span class="s1">&#39;gr_fnc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ff11&#39;</span>
+<span class="n">imp_gr_gm_pos_fnc_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dih_gr_gm_pos_fnc_map</span><span class="p">)</span>
+<span class="n">imp_gr_gm_pos_fnc_map</span><span class="p">[</span><span class="s1">&#39;gr_fnc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">_ImproperType_defs</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;fnc&#39;</span><span class="p">:</span><span class="n">fnc_imp</span><span class="p">,</span> <span class="s1">&#39;container2write&#39;</span><span class="p">:</span><span class="s1">&#39;impropers&#39;</span><span class="p">,</span> <span class="s1">&#39;_gr_gm_pos_fnc_map&#39;</span><span class="p">:</span><span class="n">imp_gr_gm_pos_fnc_map</span><span class="p">}</span>
+<span class="n">_ImproperType_defs</span><span class="p">[</span><span class="s1">&#39;gr2gm_param_trans_fnc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span> <span class="o">*</span> <span class="n">_deg2rad_2</span><span class="p">)</span>
+<span class="n">_ImproperType_defs</span><span class="p">[</span><span class="s1">&#39;gm2gr_param_trans_fnc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span> <span class="o">*</span> <span class="n">_rad2deg_2</span><span class="p">)</span>
+<span class="n">ImproperType</span><span class="o">.</span><span class="n">_add_defaults</span><span class="p">(</span><span class="n">_ImproperType_defs</span><span class="p">,</span> <span class="n">flag_set</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1">#ImproperType._add_class_defaults({&#39;gr2gm_fnc&#39;:&#39;2&#39;, &#39;gr2gm_int_type&#39;:DihedralType, &#39;gr2gm_def_pref&#39;: &#39;gi_&#39;}, flag_set=True)</span>
+<span class="n">ImproperType</span><span class="o">.</span><span class="n">_add_class_defaults</span><span class="p">({</span><span class="s1">&#39;gr2gm_fnc&#39;</span><span class="p">:</span><span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;gr2gm_def_pref&#39;</span><span class="p">:</span> <span class="s1">&#39;gi_&#39;</span><span class="p">},</span> <span class="n">flag_set</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">convert_se2c612</span><span class="p">(</span><span class="n">se</span><span class="p">):</span>
+    <span class="n">s6</span> <span class="o">=</span> <span class="n">se</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="mi">6</span>
+    <span class="n">c6</span> <span class="o">=</span> <span class="n">s6</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">*</span> <span class="n">se</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">c12</span> <span class="o">=</span> <span class="n">c6</span> <span class="o">*</span> <span class="n">s6</span>
+    <span class="k">return</span> <span class="n">c6</span><span class="p">,</span> <span class="n">c12</span>
+
+
+<span class="k">def</span> <span class="nf">convert_C612_2_se</span><span class="p">(</span><span class="n">c612</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">c612</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span>
+    <span class="n">s6</span> <span class="o">=</span> <span class="p">(</span><span class="n">c612</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">c612</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">s6</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="mf">6.</span><span class="p">)</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">c612</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="n">s6</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span>
+
+
+<span class="k">class</span> <span class="nc">_vdWTypeBase</span><span class="p">(</span><span class="n">InteractionType</span><span class="p">,</span> <span class="n">Defaults</span><span class="p">):</span>
+    <span class="c1">#__slots__ = (&#39;c612&#39;, &#39;se&#39;)</span>
+
+    <span class="k">def</span> <span class="nf">convert2se</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c612</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">replace</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">c612</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">c612</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="n">c612</span><span class="p">,</span> <span class="n">replace</span> <span class="o">=</span> <span class="n">replace</span><span class="p">)</span>
+        <span class="n">s</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">convert_C612_2_se</span><span class="p">(</span><span class="n">c612</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c612</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">se</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="p">,</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span><span class="p">,</span> <span class="n">e</span>
+
+    <span class="k">def</span> <span class="nf">convert2c612</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">se</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">replace</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">se</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">se</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="n">se</span><span class="p">,</span> <span class="n">replace</span> <span class="o">=</span> <span class="n">replace</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">se</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span>
+        <span class="n">c6</span><span class="p">,</span> <span class="n">c12</span> <span class="o">=</span> <span class="n">convert_se2c612</span><span class="p">(</span><span class="n">se</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c612</span> <span class="o">=</span> <span class="p">(</span><span class="n">c6</span><span class="p">,</span> <span class="n">c12</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">c6</span><span class="p">,</span> <span class="n">c12</span>
+
+    <span class="k">def</span> <span class="nf">get_radius</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">se</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="k">def</span> <span class="nf">gm2gr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;int_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;int_code&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;atoms&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;atoms&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+        <span class="n">comb_rule</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;comb_rule&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">comb_rule</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">comb_rule</span> <span class="o">==</span> <span class="s1">&#39;1&#39;</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert2c612</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;params&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">c612</span>
+        <span class="n">gm_int_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_gm2gr_int_type</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">gm_int_type</span>
+
+
+<div class="viewcode-block" id="vdWType"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.vdWType">[docs]</a><span class="k">class</span> <span class="nc">vdWType</span><span class="p">(</span><span class="n">_vdWTypeBase</span><span class="p">):</span>
+    <span class="c1">#__slots__ = ()</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;vdw_normal&#39;</span>
+    <span class="n">fnc</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;ff11&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="s2">&quot;fff111&quot;</span><span class="p">}</span>
+    <span class="n">fnc</span><span class="p">[</span><span class="s1">&#39;gr_fnc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ff11&#39;</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="mi">2</span></div>
+
+
+<span class="n">vdWType</span><span class="o">.</span><span class="n">_add_class_defaults</span><span class="p">({</span><span class="s1">&#39;gr2gm_fnc&#39;</span><span class="p">:</span><span class="s1">&#39;1&#39;</span><span class="p">},</span> <span class="n">flag_set</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="PairType"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.PairType">[docs]</a><span class="k">class</span> <span class="nc">PairType</span><span class="p">(</span><span class="n">_vdWTypeBase</span><span class="p">):</span>
+    <span class="c1">#__slots__ = ()</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;vdw_pairs&#39;</span>
+    <span class="n">fnc</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;ff11&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="s2">&quot;ffff0000&quot;</span><span class="p">}</span>
+    <span class="n">fnc</span><span class="p">[</span><span class="s1">&#39;gr_fnc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ff11&#39;</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_cls_check_atoms_int_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_check_atoms_int_match_presence</span><span class="p">(</span><span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span></div>
+
+<span class="n">PairType</span><span class="o">.</span><span class="n">_add_class_defaults</span><span class="p">({</span><span class="s1">&#39;gr2gm_fnc&#39;</span><span class="p">:</span><span class="s1">&#39;1&#39;</span><span class="p">},</span> <span class="n">flag_set</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="PairNBType"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.PairNBType">[docs]</a><span class="k">class</span> <span class="nc">PairNBType</span><span class="p">(</span><span class="n">InteractionType</span><span class="p">,</span> <span class="n">Defaults</span><span class="p">):</span>
+    <span class="c1">#__slots__ = ()</span>
+    <span class="n">fnc</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;ffff0000&quot;</span><span class="p">}</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="mi">2</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_cls_check_atoms_int_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_check_atoms_int_match_presence</span><span class="p">(</span><span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="vdWAtomPairType"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.vdWAtomPairType">[docs]</a><span class="k">class</span> <span class="nc">vdWAtomPairType</span><span class="p">(</span><span class="n">__VersionCompatibility</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;vdw&#39;</span></div>
+
+
+<div class="viewcode-block" id="MassType"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.MassType">[docs]</a><span class="k">class</span> <span class="nc">MassType</span><span class="p">(</span><span class="n">__VersionCompatibility</span><span class="p">):</span>
+    <span class="c1">#__slots__ = (&#39;id&#39;, &#39;m&#39;, &#39;at_id&#39;)</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;m_type&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mass_id</span><span class="p">,</span> <span class="n">mass</span><span class="p">,</span> <span class="n">atom_name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">mass_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">m</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">mass</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">at_id</span> <span class="o">=</span> <span class="n">atom_name</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="AtomType"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.AtomType">[docs]</a><span class="k">class</span> <span class="nc">AtomType</span><span class="p">(</span><span class="n">__VersionCompatibility</span><span class="p">):</span>
+    <span class="c1">#__slots__ = (&#39;id&#39;, &#39;name&#39;, &#39;vdw&#39;, &#39;c612&#39;, &#39;rules&#39;)</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;a_type&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom_id</span><span class="p">,</span> <span class="n">atom_name</span><span class="p">,</span> <span class="n">c612</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">rules</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">vdw</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bond_atom_id</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">format_type</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>  <span class="c1"># atom_id = atom number!</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">atom_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">b_id</span> <span class="o">=</span> <span class="n">bond_atom_id</span> <span class="c1"># gromacs thing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">atom_name</span>
+        <span class="k">if</span> <span class="n">c612</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">c612</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">rules</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rules</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">vdw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">vdw</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c612</span> <span class="o">=</span> <span class="n">c612</span>
+        <span class="k">if</span> <span class="n">rules</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">rules</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rules</span> <span class="o">=</span> <span class="n">rules</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vdw</span> <span class="o">=</span> <span class="n">vdw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">format_type</span> <span class="o">=</span> <span class="n">format_type</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_type</span> <span class="o">+</span> <span class="s1">&#39;_id&#39;</span><span class="p">,</span> <span class="n">atom_id</span><span class="p">)</span>
+
+<div class="viewcode-block" id="AtomType.convert_se_2_c612"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.AtomType.convert_se_2_c612">[docs]</a>    <span class="k">def</span> <span class="nf">convert_se_2_c612</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">temp_c612</span> <span class="o">=</span> <span class="n">convert_se2c612</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vdw</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">se_c612</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vdw</span><span class="p">)</span> <span class="o">+</span> <span class="n">temp_c612</span></div>
+
+<div class="viewcode-block" id="AtomType.convert_c612_2_se"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.AtomType.convert_c612_2_se">[docs]</a>    <span class="k">def</span> <span class="nf">convert_c612_2_se</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">temp_se</span> <span class="o">=</span> <span class="n">convert_C612_2_se</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vdw</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">se_c612</span> <span class="o">=</span> <span class="n">temp_se</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vdw</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AtomType.add_genborn"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.AtomType.add_genborn">[docs]</a>    <span class="k">def</span> <span class="nf">add_genborn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>  <span class="c1"># defines genborn params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">genborn</span> <span class="o">=</span> <span class="n">params</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BondAtomType"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.BondAtomType">[docs]</a><span class="k">class</span> <span class="nc">BondAtomType</span><span class="p">(</span><span class="nb">str</span><span class="p">):</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;b_a_type&#39;</span></div>
+
+
+<div class="viewcode-block" id="ConstraintType"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.ConstraintType">[docs]</a><span class="k">class</span> <span class="nc">ConstraintType</span><span class="p">(</span><span class="n">InteractionType</span><span class="p">,</span> <span class="n">Defaults</span><span class="p">):</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;constraints&#39;</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">fnc</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;f1&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="s2">&quot;f1&quot;</span><span class="p">}</span> <span class="c1"># 1 - adds exclusions; 2 - doesn&#39;t</span>
+    <span class="n">fnc</span><span class="p">[</span><span class="s1">&#39;gr_fnc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;f1&#39;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_cls_check_atoms_int_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_check_atoms_int_match_presence</span><span class="p">(</span><span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span></div>
+
+<span class="n">ConstraintType</span><span class="o">.</span><span class="n">_add_class_defaults</span><span class="p">({</span><span class="s1">&#39;gr2gm_fnc&#39;</span><span class="p">:</span><span class="s1">&#39;1&#39;</span><span class="p">},</span> <span class="n">flag_set</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="SettleType"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.SettleType">[docs]</a><span class="k">class</span> <span class="nc">SettleType</span><span class="p">(</span><span class="n">InteractionType</span><span class="p">):</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;settles&#39;</span>
+    <span class="n">fnc</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;ff00&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="VirtualSite2Type"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.VirtualSite2Type">[docs]</a><span class="k">class</span> <span class="nc">VirtualSite2Type</span><span class="p">(</span><span class="n">InteractionType</span><span class="p">):</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;VS2&#39;</span>
+    <span class="n">fnc</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;f0&quot;</span><span class="p">}</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_cls_check_atoms_int_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_check_atoms_int_match_presence</span><span class="p">(</span><span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VirtualSite3Type"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.VirtualSite3Type">[docs]</a><span class="k">class</span> <span class="nc">VirtualSite3Type</span><span class="p">(</span><span class="n">InteractionType</span><span class="p">):</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;VS3&#39;</span>
+    <span class="n">fnc</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;ff00&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="s2">&quot;ff00&quot;</span><span class="p">,</span> <span class="s2">&quot;3&quot;</span><span class="p">:</span> <span class="s2">&quot;ff00&quot;</span><span class="p">,</span> <span class="s2">&quot;4&quot;</span><span class="p">:</span> <span class="s2">&quot;fff000&quot;</span><span class="p">}</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_cls_check_atoms_int_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_check_atoms_int_match_presence</span><span class="p">(</span><span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VirtualSite4Type"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.VirtualSite4Type">[docs]</a><span class="k">class</span> <span class="nc">VirtualSite4Type</span><span class="p">(</span><span class="n">InteractionType</span><span class="p">):</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;VS4&#39;</span>
+    <span class="n">fnc</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="s2">&quot;ff00&quot;</span><span class="p">}</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_cls_check_atoms_int_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_check_atoms_int_match_presence</span><span class="p">(</span><span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VirtualSitenType"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.VirtualSitenType">[docs]</a><span class="k">class</span> <span class="nc">VirtualSitenType</span><span class="p">(</span><span class="n">InteractionType</span><span class="p">):</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="c1">#gmx_parse_format =</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;VSn&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fnc_type</span><span class="p">,</span> <span class="n">int_code</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">f</span> <span class="o">=</span> <span class="n">fnc_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_cls_check_atoms_int_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_check_atoms_int_match_presence</span><span class="p">(</span><span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Position_r"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.Position_r">[docs]</a><span class="k">class</span> <span class="nc">Position_r</span><span class="p">(</span><span class="n">InteractionType</span><span class="p">):</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;posres&#39;</span>
+    <span class="n">fnc</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;fff111&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">:</span> <span class="s2">&quot;ff00&quot;</span><span class="p">}</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_cls_check_atoms_int_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_check_atoms_int_match_presence</span><span class="p">(</span><span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Distance_r"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.Distance_r">[docs]</a><span class="k">class</span> <span class="nc">Distance_r</span><span class="p">(</span><span class="n">InteractionType</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    distance restraints</span>
+<span class="sd">    extra gromos attributes: gr_extra_atoms, gr_atom_types; gr_distres_dis_const (in top)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;disres&#39;</span>
+    <span class="n">fnc</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;iiiffff0000000&quot;</span><span class="p">}</span> <span class="c1">####### probably wrong</span>
+    <span class="n">fnc</span><span class="p">[</span><span class="s1">&#39;gr_fnc&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ffi000&#39;</span> <span class="c1">############ probably wrong</span>
+
+<div class="viewcode-block" id="Distance_r.gr2gm"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.Distance_r.gr2gm">[docs]</a>    <span class="k">def</span> <span class="nf">gr2gm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            index - gromacs dist res index - specifies to which group of dist res this one belongs to</span>
+<span class="sd">            fac - factor with which the force constant will be multiplied (fc_gm = gr_weight / fac)</span>
+<span class="sd">            r2 - parameter after which the potential energy becomes linear</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index_param</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">index_param</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">r2</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;r2&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+        <span class="n">fac</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fac&#39;</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">r012</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">r2</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">r012</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">r012</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">r2</span><span class="p">]</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">r012</span><span class="p">)</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">fac</span><span class="p">)</span>
+        <span class="n">temp_dr_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_gr2gm_int_type_class</span><span class="p">()(</span><span class="n">fnc_type</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span><span class="p">)</span>
+        <span class="n">temp_dr_type</span><span class="o">.</span><span class="n">add_params</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">temp_dr_type</span></div>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_cls_check_atoms_int_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_check_atoms_int_match_presence</span><span class="p">(</span><span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Dihedral_r"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.Dihedral_r">[docs]</a><span class="k">class</span> <span class="nc">Dihedral_r</span><span class="p">(</span><span class="n">Dihedral_Check_atoms_int</span><span class="p">):</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;dihres&#39;</span>
+    <span class="n">fnc</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;ff11&quot;</span><span class="p">}</span></div>
+
+
+<div class="viewcode-block" id="Orientation_r"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.Orientation_r">[docs]</a><span class="k">class</span> <span class="nc">Orientation_r</span><span class="p">(</span><span class="n">InteractionType</span><span class="p">):</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;orires&#39;</span>
+    <span class="n">fnc</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;ffffff000000&quot;</span><span class="p">}</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_cls_check_atoms_int_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_check_atoms_int_match_presence</span><span class="p">(</span><span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Angle_r"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.Angle_r">[docs]</a><span class="k">class</span> <span class="nc">Angle_r</span><span class="p">(</span><span class="n">InteractionType</span><span class="p">):</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;angres&#39;</span>
+    <span class="n">fnc</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;ffi110&quot;</span><span class="p">}</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_cls_check_atoms_int_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">allowed_perturbations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">fac1</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">fac2</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">first_pair</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">][::</span><span class="n">fac1</span><span class="p">]</span>
+                <span class="n">second_pair</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">][::</span><span class="n">fac2</span><span class="p">]</span>
+                <span class="n">first_pair</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">second_pair</span><span class="p">)</span>
+                <span class="n">allowed_perturbations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">first_pair</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_check_atoms_int_match_ordered</span><span class="p">(</span><span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">allowed_perturbations</span><span class="o">=</span><span class="n">allowed_perturbations</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Angle_r_z"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.Angle_r_z">[docs]</a><span class="k">class</span> <span class="nc">Angle_r_z</span><span class="p">(</span><span class="n">InteractionType</span><span class="p">):</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;angresz&#39;</span>
+    <span class="n">fnc</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;1&quot;</span><span class="p">:</span> <span class="s2">&quot;ffi110&quot;</span><span class="p">}</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_cls_check_atoms_int_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_check_atoms_int_match_presence</span><span class="p">(</span><span class="n">int_atoms</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span></div>
+
+
+<span class="c1"># cmap done separately</span>
+<div class="viewcode-block" id="cmap"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.cmap">[docs]</a><span class="k">class</span> <span class="nc">cmap</span><span class="p">(</span><span class="n">InteractionType</span><span class="p">,</span> <span class="n">gmCMAPWriter</span><span class="p">):</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">container2write</span> <span class="o">=</span> <span class="s1">&#39;cmap&#39;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">int_code</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">fnc_type</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="n">atoms</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">grid_ind</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fnc_type</span> <span class="o">=</span> <span class="n">fnc_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid_ind</span> <span class="o">=</span> <span class="n">grid_ind</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p_type</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">grid_ind</span><span class="p">:</span>
+            <span class="n">grid_ind</span> <span class="o">=</span> <span class="p">[</span><span class="mi">24</span><span class="p">,</span> <span class="mi">24</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">grid_ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">grid_ind</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">p_type</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">flag</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">int_code</span> <span class="o">=</span> <span class="n">int_code</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p_string</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">params</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">atoms</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">atoms</span><span class="p">,</span><span class="s1">&#39;__iter__&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_atom</span><span class="p">(</span><span class="o">*</span><span class="n">atoms</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_atom</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span></div>
+
+<span class="k">def</span> <span class="nf">__check_interaction_type_class</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="s1">&#39;__mro__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">InteractionType</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="vm">__mro__</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+
+<div class="viewcode-block" id="AvailableInteractionTypes"><a class="viewcode-back" href="../../../SMArt.md.html#SMArt.md.data_st.AvailableInteractionTypes">[docs]</a><span class="k">class</span> <span class="nc">AvailableInteractionTypes</span><span class="p">:</span>
+    <span class="n">_available_int_types</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+    <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;Type&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">__check_interaction_type_class</span><span class="p">(</span><span class="nb">locals</span><span class="p">()[</span><span class="n">k</span><span class="p">])</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">k</span><span class="o">!=</span> <span class="s1">&#39;InteractionType&#39;</span><span class="p">:</span>
+            <span class="n">AvailableInteractionTypes</span><span class="o">.</span><span class="n">_available_int_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">AvailableInteractionTypes</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="nb">locals</span><span class="p">()[</span><span class="n">k</span><span class="p">])</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">AvailableInteractionTypes</span><span class="o">.</span><span class="n">_available_int_types</span><span class="p">)</span>
+<span class="n">__all__</span><span class="o">.</span><span class="n">extend</span><span class="p">((</span><span class="s1">&#39;AvailableInteractionTypes&#39;</span><span class="p">,</span> <span class="s1">&#39;InteractionType&#39;</span><span class="p">,</span> <span class="s1">&#39;Interaction&#39;</span><span class="p">,</span> <span class="s1">&#39;DescriptionPart&#39;</span><span class="p">,</span> <span class="s1">&#39;check_if_eq&#39;</span><span class="p">,</span> <span class="s1">&#39;Dummy&#39;</span><span class="p">))</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Drazen Petrov.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

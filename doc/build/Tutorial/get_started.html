@@ -1,0 +1,1241 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>SMArt &mdash; SMArt v1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Perturbation topologies" href="perturbation_topologies.html" />
+    <link rel="prev" title="SMArt.tests.test_graph package" href="../SMArt.tests.test_graph.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> SMArt
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">SMArt</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">SMArt</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Welcome-to-Simulation-&amp;-Modelling-Art">Welcome to Simulation &amp; Modelling Art</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#importing">importing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#parsing-/-writing">parsing / writing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#GROMOS">GROMOS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Force-field">Force field</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Topology">Topology</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#some-operations-with-the-topology-object">some operations with the topology object</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#GROMACS">GROMACS</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Force field</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Topology</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#g2g-(converting-between-GROMOS-and-GROMACS-formats)">g2g (converting between GROMOS and GROMACS formats)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#some-additional-features">some additional features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="perturbation_topologies.html">Perturbation topologies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="perturbation_topologies.html#Alternative-MCS-search-options">Alternative MCS search options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="perturbation_topologies.html#EDS-topology">EDS topology</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">SMArt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>SMArt</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/Tutorial/get_started.ipynb.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="SMArt">
+<h1>SMArt<a class="headerlink" href="#SMArt" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="Welcome-to-Simulation-&amp;-Modelling-Art">
+<h2>Welcome to Simulation &amp; Modelling Art<a class="headerlink" href="#Welcome-to-Simulation-&-Modelling-Art" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="importing">
+<h3>importing<a class="headerlink" href="#importing" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">SMArt_fd = os.path.abspath(os.getcwd())</span>
+<span class="sd">for _ in range(2):</span>
+<span class="sd">    SMArt_fd = os.path.split(smart_fd)[0]</span>
+<span class="sd">sys.path.insert(0, smart_fd)</span>
+<span class="sd">#&quot;&quot;&quot;</span>
+<span class="c1"># if SMArt not in the path, uncomment the code above</span>
+
+<span class="kn">import</span> <span class="nn">SMArt</span>
+<span class="n">data_fd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">SMArt</span><span class="o">.</span><span class="vm">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="s1">&#39;..&#39;</span><span class="p">,</span> <span class="s1">&#39;doc&#39;</span><span class="p">,</span> <span class="s1">&#39;some_data&#39;</span><span class="p">))</span>
+
+<span class="kn">from</span> <span class="nn">SMArt.md</span> <span class="kn">import</span> <span class="n">parse_top</span><span class="p">,</span> <span class="n">parse_ff</span> <span class="c1"># functions to parse different files (e.g. topology or force field)</span>
+<span class="kn">from</span> <span class="nn">SMArt.md</span> <span class="kn">import</span> <span class="n">FF</span><span class="p">,</span> <span class="n">Topology</span><span class="p">,</span> <span class="n">Configuration</span> <span class="c1"># examples of some of the most important classes</span>
+
+<span class="c1">#help(SMArt) # to get some general info on the package</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="parsing-/-writing">
+<h2>parsing / writing<a class="headerlink" href="#parsing-/-writing" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="GROMOS">
+<h3>GROMOS<a class="headerlink" href="#GROMOS" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># just defining some paths to the data</span>
+<span class="n">out_fd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s1">&#39;out_data&#39;</span><span class="p">))</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">out_fd</span><span class="p">):</span><span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">out_fd</span><span class="p">)</span>
+<span class="n">fd_gromos</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_fd</span><span class="p">,</span> <span class="s1">&#39;gromos&#39;</span><span class="p">)</span>
+
+</pre></div>
+</div>
+</div>
+<div class="section" id="Force-field">
+<h4>Force field<a class="headerlink" href="#Force-field" title="Permalink to this headline">¶</a></h4>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># parsing</span>
+<span class="n">ifp_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fd_gromos</span><span class="p">,</span> <span class="s1">&#39;54a8.ifp&#39;</span><span class="p">)</span>
+<span class="n">ff_gr</span> <span class="o">=</span> <span class="n">parse_ff</span><span class="p">(</span><span class="n">ifp_file</span><span class="p">)</span>
+<span class="c1"># same as</span>
+<span class="c1">#ff_gr = FF(ifp_file)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># data of any object is stored in _containers</span>
+<span class="n">ff_gr</span><span class="o">.</span><span class="n">_containers</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;sys_title&#39;,
+ &#39;m_type&#39;,
+ &#39;gr_bonds&#39;,
+ &#39;gr_angles&#39;,
+ &#39;gr_impropers&#39;,
+ &#39;gr_dihedrals&#39;,
+ &#39;a_type&#39;,
+ &#39;vdw&#39;]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># mass types</span>
+<span class="n">ff_gr</span><span class="o">.</span><span class="n">m_type</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+OrderedDict([(&#39;1&#39;, 1 1.008),
+             (&#39;3&#39;, 3 13.019),
+             (&#39;4&#39;, 4 14.027),
+             (&#39;5&#39;, 5 15.035),
+             (&#39;6&#39;, 6 16.043),
+             (&#39;12&#39;, 12 12.011),
+             (&#39;14&#39;, 14 14.0067),
+             (&#39;16&#39;, 16 15.9994),
+             (&#39;19&#39;, 19 18.9984),
+             (&#39;23&#39;, 23 22.9898),
+             (&#39;24&#39;, 24 24.305),
+             (&#39;28&#39;, 28 28.08),
+             (&#39;31&#39;, 31 30.9738),
+             (&#39;32&#39;, 32 32.06),
+             (&#39;35&#39;, 35 35.453),
+             (&#39;39&#39;, 39 39.948),
+             (&#39;40&#39;, 40 40.08),
+             (&#39;56&#39;, 56 55.847),
+             (&#39;63&#39;, 63 63.546),
+             (&#39;65&#39;, 65 65.37),
+             (&#39;80&#39;, 80 79.904)])
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ff_gr</span><span class="o">.</span><span class="n">m_type</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">]</span> <span class="c1"># mass type 1</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+1 1.008
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ff_gr</span><span class="o">.</span><span class="n">a_type</span><span class="p">[</span><span class="s1">&#39;2&#39;</span><span class="p">]</span> <span class="c1"># atom type 2</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+2 OM
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ff_gr</span><span class="o">.</span><span class="n">gr_bonds</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">]</span> <span class="c1"># bond type 2</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+BondType (15700000.0, 314000.0, 0.1)
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Topology">
+<h4>Topology<a class="headerlink" href="#Topology" title="Permalink to this headline">¶</a></h4>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">top_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fd_gromos</span><span class="p">,</span> <span class="s1">&#39;villin&#39;</span><span class="p">,</span> <span class="s1">&#39;wt.top&#39;</span><span class="p">)</span>
+<span class="c1">#top_gr = parse_top(top_file)</span>
+<span class="c1"># same as</span>
+<span class="n">top_gr</span> <span class="o">=</span> <span class="n">Topology</span><span class="p">(</span><span class="n">top_file</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">top_gr</span><span class="o">.</span><span class="n">ff</span><span class="o">.</span><span class="n">_containers</span> <span class="c1"># the topology object contains the force field data as well</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;a_type&#39;, &#39;gr_bonds&#39;, &#39;gr_angles&#39;, &#39;gr_impropers&#39;, &#39;gr_dihedrals&#39;, &#39;vdw&#39;]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">top_gr</span><span class="o">.</span><span class="n">_containers</span> <span class="c1"># data stored in:</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;sys_title&#39;,
+ &#39;ff&#39;,
+ &#39;residues&#39;,
+ &#39;cg&#39;,
+ &#39;excl_pair&#39;,
+ &#39;bonds&#39;,
+ &#39;angles&#39;,
+ &#39;impropers&#39;,
+ &#39;dihedrals&#39;]
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># write out FF ifp file</span>
+<span class="n">out_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_fd</span><span class="p">,</span> <span class="s1">&#39;new_ff.ifp&#39;</span><span class="p">)</span>
+<span class="n">ff_gr</span><span class="o">.</span><span class="n">write_ff</span><span class="p">(</span><span class="n">out_file</span><span class="p">,</span> <span class="n">format_type</span> <span class="o">=</span> <span class="s1">&#39;gr&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># write out top file</span>
+<span class="n">out_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_fd</span><span class="p">,</span> <span class="s1">&#39;new_top.top&#39;</span><span class="p">)</span>
+<span class="n">top_gr</span><span class="o">.</span><span class="n">write_top</span><span class="p">(</span><span class="n">out_file</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="some-operations-with-the-topology-object">
+<h4>some operations with the topology object<a class="headerlink" href="#some-operations-with-the-topology-object" title="Permalink to this headline">¶</a></h4>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">len</span><span class="p">(</span><span class="n">top_gr</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+389
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">top_gr</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">atoms</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[1 H1, 2 H2, 3 N, 4 H3, 5 CA, 6 CB, 7 CG, 8 SD, 9 CE, 10 C, 11 O]
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># reduce topolgy to first 11 atoms (first residue)</span>
+<span class="n">red_top</span> <span class="o">=</span> <span class="n">top_gr</span><span class="o">.</span><span class="n">reduce_top</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">12</span><span class="p">)])</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">red_top</span><span class="o">.</span><span class="n">residues</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+OrderedDict([(&#39;1&#39;, &lt;SMArt.md.data_st.Residue at 0x7fdaa40b1fd0&gt;)])
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">red_top</span><span class="o">.</span><span class="n">atoms</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+OrderedDict([(&#39;1&#39;, 1 H1),
+             (&#39;2&#39;, 2 H2),
+             (&#39;3&#39;, 3 N),
+             (&#39;4&#39;, 4 H3),
+             (&#39;5&#39;, 5 CA),
+             (&#39;6&#39;, 6 CB),
+             (&#39;7&#39;, 7 CG),
+             (&#39;8&#39;, 8 SD),
+             (&#39;9&#39;, 9 CE),
+             (&#39;10&#39;, 10 C),
+             (&#39;11&#39;, 11 O)])
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">out_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_fd</span><span class="p">,</span> <span class="s1">&#39;new_red_top.top&#39;</span><span class="p">)</span>
+<span class="n">red_top</span><span class="o">.</span><span class="n">write_top</span><span class="p">(</span><span class="n">out_file</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="GROMACS">
+<h3>GROMACS<a class="headerlink" href="#GROMACS" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id1">
+<h4>Force field<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ff_gm</span> <span class="o">=</span> <span class="n">parse_ff</span><span class="p">(</span><span class="s1">&#39;./gromos54a7.ff/forcefield.itp&#39;</span><span class="p">,</span> <span class="n">format_type</span> <span class="o">=</span> <span class="s1">&#39;gm&#39;</span><span class="p">)</span> <span class="c1"># default for format_type is &#39;gr&#39; for GROMOS</span>
+<span class="c1"># note that the force-field files can be automatically found from the gmx (if installed) - otherwise, provide the full path</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">list</span><span class="p">(</span><span class="n">ff_gm</span><span class="o">.</span><span class="n">defines</span><span class="o">.</span><span class="n">items</span><span class="p">())[:</span><span class="mi">10</span><span class="p">]</span> <span class="c1"># list of definitions</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[(&#39;_FF_GROMOS96&#39;, []),
+ (&#39;_FF_GROMOS54A7&#39;, []),
+ (&#39;gb_1&#39;, [&#39;0.1000&#39;, &#39;1.5700e+07&#39;]),
+ (&#39;gb_2&#39;, [&#39;0.1000&#39;, &#39;1.8700e+07&#39;]),
+ (&#39;gb_3&#39;, [&#39;0.1090&#39;, &#39;1.2300e+07&#39;]),
+ (&#39;gb_4&#39;, [&#39;0.112&#39;, &#39;3.7000e+07&#39;]),
+ (&#39;gb_5&#39;, [&#39;0.1230&#39;, &#39;1.6600e+07&#39;]),
+ (&#39;gb_6&#39;, [&#39;0.1250&#39;, &#39;1.3400e+07&#39;]),
+ (&#39;gb_7&#39;, [&#39;0.1320&#39;, &#39;1.2000e+07&#39;]),
+ (&#39;gb_8&#39;, [&#39;0.1330&#39;, &#39;8.8700e+06&#39;])]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ff_gm</span><span class="o">.</span><span class="n">_containers</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;_segments&#39;,
+ &#39;sys_title&#39;,
+ &#39;a_type&#39;,
+ &#39;gm_vdw_normal&#39;,
+ &#39;gm_vdw_pairs&#39;,
+ &#39;gm_constraints&#39;,
+ &#39;gm_bonds&#39;,
+ &#39;gm_angles&#39;,
+ &#39;gm_dihedrals&#39;]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ff_gm</span><span class="o">.</span><span class="n">gm_bonds</span> <span class="c1"># bonde types</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[BondType (0.204, 5030000.0), BondType (0.198, 640000.0)]
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="id2">
+<h4>Topology<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fd_gromacs</span> <span class="o">=</span> <span class="n">fd_gromos</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_fd</span><span class="p">,</span> <span class="s1">&#39;gromacs&#39;</span><span class="p">)</span>
+<span class="n">top_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">fd_gromacs</span><span class="p">,</span> <span class="s1">&#39;gromos&#39;</span><span class="p">,</span> <span class="s1">&#39;topol.top&#39;</span><span class="p">)</span> <span class="c1"># GROMACS topology using the GROMOS force field</span>
+<span class="n">top_gm</span> <span class="o">=</span> <span class="n">parse_top</span><span class="p">(</span><span class="n">top_file</span><span class="p">,</span> <span class="n">format_type</span> <span class="o">=</span> <span class="s1">&#39;gm&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">top_gm</span><span class="o">.</span><span class="n">_containers</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;_segments&#39;, &#39;sys_title&#39;, &#39;ff&#39;, &#39;molecule_types&#39;, &#39;molecules&#39;]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">top_gm</span><span class="o">.</span><span class="n">molecules</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[Protein_chain_A Protein_chain_A 1]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">top_gm</span><span class="o">.</span><span class="n">molecule_types</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+OrderedDict([(&#39;Protein_chain_A&#39;, Protein_chain_A Protein_chain_A),
+             (&#39;SOL&#39;, SOL SOL),
+             (&#39;CU1&#39;, CU1 CU1),
+             (&#39;CU&#39;, CU CU),
+             (&#39;ZN&#39;, ZN ZN),
+             (&#39;MG&#39;, MG MG),
+             (&#39;CA&#39;, CA CA),
+             (&#39;NA&#39;, NA NA),
+             (&#39;CL&#39;, CL CL)])
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">mol_type</span> <span class="o">=</span> <span class="n">top_gm</span><span class="o">.</span><span class="n">molecule_types</span><span class="p">[</span><span class="s1">&#39;Protein_chain_A&#39;</span><span class="p">]</span>
+<span class="n">mol_type</span><span class="o">.</span><span class="n">_containers</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[&#39;residues&#39;,
+ &#39;cg&#39;,
+ &#39;bonds&#39;,
+ &#39;vdw_pairs&#39;,
+ &#39;angles&#39;,
+ &#39;dihedrals&#39;,
+ &#39;impropers&#39;,
+ &#39;excl_pair&#39;]
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">out_fd</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ff_gm</span><span class="o">.</span><span class="n">write_ff</span><span class="p">(</span><span class="s1">&#39;gmx_ff.itp&#39;</span><span class="p">,</span> <span class="n">from_str</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">flag_segment_order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">flag_split_non_bonded</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">flag_if</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">format_type</span> <span class="o">=</span> <span class="s1">&#39;gm&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">top_gm</span><span class="o">.</span><span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;gm_top.top&#39;</span><span class="p">,</span> <span class="n">format_type</span> <span class="o">=</span> <span class="s1">&#39;gm&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="g2g-(converting-between-GROMOS-and-GROMACS-formats)">
+<h2>g2g (converting between GROMOS and GROMACS formats)<a class="headerlink" href="#g2g-(converting-between-GROMOS-and-GROMACS-formats)" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># gromos to gromacs</span>
+<span class="n">ff_gr</span><span class="o">.</span><span class="n">gr2gm</span><span class="p">()</span>
+<span class="n">top_gr</span><span class="o">.</span><span class="n">gr2gm</span><span class="p">()</span>
+<span class="c1"># gromacs to gromos</span>
+<span class="n">ff_gm</span><span class="o">.</span><span class="n">gm2gr</span><span class="p">()</span>
+<span class="n">top_gm</span><span class="o">.</span><span class="n">gm2gr</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># write out into files</span>
+<span class="n">ff_gr</span><span class="o">.</span><span class="n">write_ff</span><span class="p">(</span><span class="s1">&#39;gr2gm_ff.itp&#39;</span><span class="p">,</span> <span class="n">format_type</span> <span class="o">=</span> <span class="s1">&#39;gm&#39;</span><span class="p">)</span>
+<span class="n">top_gr</span><span class="o">.</span><span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;gr2gm_top.top&#39;</span><span class="p">,</span> <span class="n">from_str</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">flag_segment_order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">flag_if</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">flag_include</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">sep_ff2itp</span><span class="o">=</span><span class="s1">&#39;top_ff.itp&#39;</span><span class="p">,</span> <span class="n">flag_defines_first_include</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">sep_mol2itp</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">format_type</span><span class="o">=</span><span class="s1">&#39;gm&#39;</span><span class="p">)</span>
+
+<span class="n">ff_gm</span><span class="o">.</span><span class="n">write_ff</span><span class="p">(</span><span class="s1">&#39;gm2gr_ff.ifp&#39;</span><span class="p">,</span> <span class="n">format_type</span> <span class="o">=</span> <span class="s1">&#39;gr&#39;</span><span class="p">)</span>
+<span class="n">top_gm</span><span class="o">.</span><span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;gm2gr_top.top&#39;</span><span class="p">,</span> <span class="n">format_type</span> <span class="o">=</span> <span class="s1">&#39;gr&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="some-additional-features">
+<h1>some additional features<a class="headerlink" href="#some-additional-features" title="Permalink to this headline">¶</a></h1>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># find rings</span>
+<span class="n">mol_type</span><span class="o">.</span><span class="n">find_rings</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+([177 CD1, 181 CE1, 185 CZ, 183 CE2, 179 CD2, 176 CG],
+ [242 CE3,
+  246 CZ3,
+  248 CH2,
+  244 CZ2,
+  241 CE2,
+  238 CD2,
+  236 CD1,
+  239 NE1,
+  235 CG],
+ [377 CD1, 381 CE1, 385 CZ, 383 CE2, 379 CD2, 376 CG],
+ [216 CA, 217 CB, 218 CG, 219 CD, 215 N],
+ [106 CD1, 110 CE1, 114 CZ, 112 CE2, 108 CD2, 105 CG],
+ [62 CD1, 66 CE1, 70 CZ, 68 CE2, 64 CD2, 61 CG])
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">at</span> <span class="o">=</span> <span class="n">mol_type</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">mol_type</span><span class="o">.</span><span class="n">BFS_l</span><span class="p">(</span><span class="n">at</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span> <span class="c1"># 3rd neighbours</span>
+<span class="n">el</span><span class="p">,</span> <span class="n">pl</span> <span class="o">=</span> <span class="n">mol_type</span><span class="o">.</span><span class="n">_generate_atom_excl_pair_list</span><span class="p">()</span>
+<span class="n">pl</span><span class="p">[</span><span class="n">at</span><span class="p">]</span> <span class="c1"># list of 1-4 pairs</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[12 N, 11 O, 7 CG]
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[7 CG, 11 O, 12 N]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">mol_type</span><span class="o">.</span><span class="n">BFS_l</span><span class="p">(</span><span class="n">at</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span> <span class="c1"># first neighbours</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[3 H2, 5 CA, 2 H1, 4 H3]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">mol_type</span><span class="o">.</span><span class="n">BFS_d</span><span class="p">(</span><span class="n">at</span><span class="p">,</span> <span class="mi">3</span><span class="p">)))</span> <span class="c1"># all up to 3rd neighbours (including itself)</span>
+<span class="nb">print</span><span class="p">([</span><span class="n">at</span><span class="p">]</span> <span class="o">+</span> <span class="n">el</span><span class="p">[</span><span class="n">at</span><span class="p">]</span> <span class="o">+</span> <span class="n">pl</span><span class="p">[</span><span class="n">at</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[1 N, 3 H2, 5 CA, 2 H1, 4 H3, 10 C, 6 CB, 12 N, 11 O, 7 CG]
+[1 N, 2 H1, 3 H2, 4 H3, 5 CA, 6 CB, 10 C, 7 CG, 11 O, 12 N]
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1">#&quot;&quot;&quot;</span>
+<span class="c1"># remove all backed-up files</span>
+<span class="kn">import</span> <span class="nn">glob</span>
+<span class="k">for</span> <span class="n">f_path</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;#bck*&#39;</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">f_path</span><span class="p">)</span>
+<span class="c1">#&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="perturbation_topologies.html" class="btn btn-neutral float-right" title="Perturbation topologies" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../SMArt.tests.test_graph.html" class="btn btn-neutral float-left" title="SMArt.tests.test_graph package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Drazen Petrov.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,5 +1,7 @@
 Simulation and Modelling Art (SMArt)
 =====
+[![Documentation](https://img.shields.io/badge/Documentation-here-white.svg)](https://drazen-petrov.github.io/SMArt/)
+
 
 This toolkit is aimed at facilitating setup and analysis of MD simulations, e.g. perturbation free energy calculations.
 

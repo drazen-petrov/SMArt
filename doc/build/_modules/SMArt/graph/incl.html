@@ -1,0 +1,925 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>SMArt.graph.incl &mdash; SMArt v1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> SMArt
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">SMArt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../Tutorial/index.html">Tutorial</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">SMArt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>SMArt.graph.incl</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for SMArt.graph.incl</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">G - graph defined as a dictionary (G.adj)</span>
+<span class="sd">v - vertex</span>
+<span class="sd">e - edges</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">SMArt.incl</span> <span class="kn">import</span> <span class="n">defaultdict</span><span class="p">,</span> <span class="n">__VersionCompatibility</span><span class="p">,</span> <span class="n">np</span><span class="p">,</span> <span class="n">pd</span><span class="p">,</span> <span class="n">minimize</span><span class="p">,</span> <span class="n">plt</span><span class="p">,</span> <span class="n">deque</span>
+<span class="kn">from</span> <span class="nn">SMArt.geometry</span> <span class="kn">import</span> <span class="n">generate_new_coordinates</span>
+
+
+<div class="viewcode-block" id="Graph"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Graph">[docs]</a><span class="k">class</span> <span class="nc">Graph</span><span class="p">(</span><span class="n">__VersionCompatibility</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;graph defined as a dictionary (adjacency list)&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adj_dict_edges</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag_edges</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">adj_type</span><span class="o">=</span><span class="n">defaultdict</span><span class="p">,</span> <span class="n">adj_format_new_vertex</span><span class="o">=</span><span class="nb">set</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param adj_dict_edges:</span>
+<span class="sd">        :param flag_edges:</span>
+<span class="sd">        :param adj_type:</span>
+<span class="sd">        :param adj_format_new_vertex:</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">             set_adj_type - change the type of self.adj - dict is default</span>
+<span class="sd">             set_adj_format - change the type of each element in the self.adj - tuple is default</span>
+<span class="sd">             fnc2add - used for self._set_adj_type_format</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_adj_type_format</span><span class="p">(</span><span class="n">adj_type</span><span class="p">,</span> <span class="n">adj_format_new_vertex</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">adj_dict_edges</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">flag_edges</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">edges2adj</span><span class="p">(</span><span class="n">adj_dict_edges</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">adj_dict_edges</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;set_adj_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;set_adj_type&#39;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;set_adj_format&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;set_adj_format&#39;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_adj_type_format</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_set_adj_type_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adj_type</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">adj_format_new_vertex</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        used in principle only at the initialization - sets the type of the self.adj and type for new elements</span>
+<span class="sd">        :param adj_type:</span>
+<span class="sd">        :param adj_format_new_vertex:</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            fnc2add - if adj_format_new_vertex is custom-made class, fnc2add would be a function that adds new elements</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">adj_format_new_vertex</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__adj_format_new_vertex</span> <span class="o">=</span> <span class="n">adj_format_new_vertex</span>
+            <span class="k">if</span> <span class="n">adj_format_new_vertex</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__fnc2add</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fnc2add&#39;</span><span class="p">)</span>
+                <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fnc2add</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_Graph__adj_format_new_vertex&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__adj_format_new_vertex</span> <span class="o">=</span> <span class="nb">set</span>
+        <span class="k">if</span> <span class="n">adj_type</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__adj_type</span> <span class="o">=</span> <span class="n">adj_type</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;adj&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">adj</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">if</span> <span class="n">adj_type</span> <span class="ow">is</span> <span class="n">defaultdict</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">adj</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__adj_format_new_vertex</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">adj</span> <span class="o">=</span> <span class="n">adj_type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__adj_type</span> <span class="o">==</span> <span class="n">defaultdict</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__adj_format_new_vertex</span> <span class="o">==</span> <span class="nb">set</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_edge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_edge_defaultdict_set</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__adj_format_new_vertex</span> <span class="o">==</span> <span class="nb">set</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_edge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_edge_set</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__adj_format_new_vertex</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_edge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_edge_list</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_edge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_add_edge_general</span>
+
+    <span class="k">def</span> <span class="nf">_add_edge_defaultdict_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">v_another</span> <span class="o">=</span> <span class="n">edge</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">v_another</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_edge_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">v_another</span> <span class="o">=</span> <span class="n">edge</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">edge</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="n">v_another</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">v_another</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_edge_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">v_another</span> <span class="o">=</span> <span class="n">edge</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">edge</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="n">v_another</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">v_another</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="n">i</span><span class="p">]]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v_another</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_edge_general</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">v_another</span> <span class="o">=</span> <span class="n">edge</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">edge</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__adj_format_new_vertex</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">v_another</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="n">i</span><span class="p">]]:</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="n">i</span><span class="p">]],</span> <span class="bp">self</span><span class="o">.</span><span class="n">__fnc2add</span><span class="p">)(</span><span class="n">v_another</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Graph.set_adj_type_format"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Graph.set_adj_type_format">[docs]</a>    <span class="k">def</span> <span class="nf">set_adj_type_format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">set_adj_type</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">set_adj_format</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param set_adj_type: self.adj type</span>
+<span class="sd">        :param set_adj_format:  type of each element in self.adj</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">set_adj_type</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_adj_type_format</span><span class="p">(</span><span class="n">adj_type</span><span class="o">=</span><span class="n">set_adj_type</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">set_adj_format</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">set_adj_format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">v</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Graph.check_G"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Graph.check_G">[docs]</a>    <span class="k">def</span> <span class="nf">check_G</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;check if adjacency list is correct&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">v2</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">v</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">v2</span><span class="p">]:</span> <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Graph.get_edges"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Graph.get_edges">[docs]</a>    <span class="k">def</span> <span class="nf">get_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;from graph to edges - generator&quot;&quot;&quot;</span>
+        <span class="n">checked_v</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">:</span>
+            <span class="n">checked_v</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">v_n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">v</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">v_n</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">checked_v</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v_n</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Graph.add_edge"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Graph.add_edge">[docs]</a>    <span class="k">def</span> <span class="nf">add_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">v_another</span> <span class="o">=</span> <span class="n">edge</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">v_another</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Graph.add_edges"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Graph.add_edges">[docs]</a>    <span class="k">def</span> <span class="nf">add_edges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edges</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">edges</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Graph.remove_edge"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Graph.remove_edge">[docs]</a>    <span class="k">def</span> <span class="nf">remove_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edge</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+            <span class="n">v_another</span> <span class="o">=</span> <span class="n">edge</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">edge</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">v_another</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Graph.edges2adj"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Graph.edges2adj">[docs]</a>    <span class="k">def</span> <span class="nf">edges2adj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">edges</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;from edges to adjacency dictionary&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_edges</span><span class="p">(</span><span class="n">edges</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Graph.update_adj"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Graph.update_adj">[docs]</a>    <span class="k">def</span> <span class="nf">update_adj</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">additional_adj</span><span class="p">):</span>
+        <span class="n">tempG</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="n">additional_adj</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">tempG</span><span class="o">.</span><span class="n">get_edges</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Graph.sub_graph"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Graph.sub_graph">[docs]</a>    <span class="k">def</span> <span class="nf">sub_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        creates a subgraph</span>
+<span class="sd">        :param vertices:</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            adj_fromat (set, tuple)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_adj</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">vertices</span><span class="p">:</span>
+            <span class="n">new_adj</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">at_neigh</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">v</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">at_neigh</span> <span class="ow">in</span> <span class="n">vertices</span><span class="p">:</span>
+                    <span class="n">new_adj</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">at_neigh</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_directed&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">GraphDirected</span><span class="p">(</span><span class="n">new_adj</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Graph</span><span class="p">(</span><span class="n">new_adj</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__get_stack_visited</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;stack_visited&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;stack_visited&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="s1">&#39;visited&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">visited</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;visited&#39;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">visited</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_v_list&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_stack_level&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+                <span class="n">stack</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">)))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">stack</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;visited_from_stack&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+                <span class="n">visited</span> <span class="o">|=</span> <span class="nb">set</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_stack_level&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+                <span class="n">stack</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([(</span><span class="n">v</span><span class="p">,</span> <span class="mi">0</span><span class="p">)])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">stack</span> <span class="o">=</span> <span class="n">deque</span><span class="p">([</span><span class="n">v</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;visited_from_stack&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+                <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">stack</span><span class="p">,</span> <span class="n">visited</span>
+
+    <span class="k">def</span> <span class="nf">_BFS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Breath-first search - generator (no levels)</span>
+<span class="sd">        :param v:</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            flag_stack_level [True]</span>
+<span class="sd">            flag_v_list</span>
+<span class="sd">            stack_visited</span>
+<span class="sd">            visited</span>
+<span class="sd">            visited_from_stack [True]</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;flag_stack_level&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">stack</span><span class="p">,</span> <span class="n">visited</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_stack_visited</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">stack</span><span class="p">:</span>
+            <span class="n">cur</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">cur</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+                    <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">cur</span>
+
+<div class="viewcode-block" id="Graph.BFS"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Graph.BFS">[docs]</a>    <span class="k">def</span> <span class="nf">BFS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Breath-first search - generator</span>
+<span class="sd">        :param v:</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            flag_stack_level [True]</span>
+<span class="sd">            flag_v_list</span>
+<span class="sd">            stack_visited</span>
+<span class="sd">            visited</span>
+<span class="sd">            visited_from_stack [True]</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stack</span><span class="p">,</span> <span class="n">visited</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_stack_visited</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">stack</span><span class="p">:</span>
+            <span class="n">cur</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">cur</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+                    <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">cur</span><span class="p">,</span> <span class="n">l</span></div>
+
+<div class="viewcode-block" id="Graph.BFS_d"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Graph.BFS_d">[docs]</a>    <span class="k">def</span> <span class="nf">BFS_d</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Breath-first search with depth - finds first d neighbours (all from 1 to d)</span>
+<span class="sd">        :param v:</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            flag_stack_level [True]</span>
+<span class="sd">            flag_v_list</span>
+<span class="sd">            stack_visited</span>
+<span class="sd">            visited</span>
+<span class="sd">            visited_from_stack [True]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">cur</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">BFS</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">l</span> <span class="o">&gt;</span> <span class="n">d</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="k">yield</span> <span class="n">cur</span></div>
+
+<div class="viewcode-block" id="Graph.BFS_l"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Graph.BFS_l">[docs]</a>    <span class="k">def</span> <span class="nf">BFS_l</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Breath-first search with level - finds all l-th neighbours (not including &lt;l)</span>
+<span class="sd">        :param v:</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            flag_stack_level [True]</span>
+<span class="sd">            flag_v_list</span>
+<span class="sd">            stack_visited</span>
+<span class="sd">            visited</span>
+<span class="sd">            visited_from_stack [True]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">cur</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">BFS</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">l</span> <span class="o">&lt;</span> <span class="n">level</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="n">level</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">cur</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">break</span></div>
+
+<div class="viewcode-block" id="Graph.BFS_f"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Graph.BFS_f">[docs]</a>    <span class="k">def</span> <span class="nf">BFS_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Breath-first search - with an on-the-fly-function</span>
+
+<span class="sd">example:</span>
+<span class="sd">def f(*args, **kwargs):</span>
+<span class="sd">        cur = kwargs[&#39;BFS_local&#39;][0]</span>
+<span class="sd">        kwargs[&quot;all_v&quot;].append(cur)</span>
+<span class="sd">G.BFS_f(v,f,all_v=[])</span>
+
+<span class="sd">returns ((), {&#39;all_v&#39;:[v1,v2,v3,...]})</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stack</span><span class="p">,</span> <span class="n">visited</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_stack_visited</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">stack</span><span class="p">:</span>
+            <span class="n">cur</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">cur</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+                    <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;BFS_local&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cur</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">stack</span><span class="p">,</span> <span class="n">visited</span><span class="p">)</span>
+            <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span></div>
+
+<div class="viewcode-block" id="Graph.BFS_d_f"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Graph.BFS_d_f">[docs]</a>    <span class="k">def</span> <span class="nf">BFS_d_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Breath-first search with depth (see BFS_d) - together with an on-the-fly-function</span>
+
+<span class="sd">example:</span>
+<span class="sd">def f(*args, **kwargs):</span>
+<span class="sd">        cur = kwargs[&#39;BFS_local&#39;][0]</span>
+<span class="sd">        kwargs[&quot;all_v&quot;].append(cur)</span>
+<span class="sd">self.BFS_d_f(v,d,f,all_v=[])</span>
+
+<span class="sd">returns ((), {&#39;all_v&#39;:[v1,v2,v3,...]})&quot;&quot;&quot;</span>
+        <span class="n">stack</span><span class="p">,</span> <span class="n">visited</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_stack_visited</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">stack</span><span class="p">:</span>
+            <span class="n">cur</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">l</span> <span class="o">&gt;</span> <span class="n">d</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">cur</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+                    <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;BFS_local&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cur</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">stack</span><span class="p">,</span> <span class="n">visited</span><span class="p">)</span>
+            <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span></div>
+
+<div class="viewcode-block" id="Graph.dist"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Graph.dist">[docs]</a>    <span class="k">def</span> <span class="nf">dist</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;distance between v1 and v2&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">cur</span><span class="p">,</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">BFS</span><span class="p">(</span><span class="n">v1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">cur</span> <span class="o">==</span> <span class="n">v2</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">l</span></div>
+
+<div class="viewcode-block" id="Graph.DFS"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Graph.DFS">[docs]</a>    <span class="k">def</span> <span class="nf">DFS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Depth-first search - generator&quot;&quot;&quot;</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;flag_stack_level&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;visited_from_stack&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">stack</span><span class="p">,</span> <span class="n">visited</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_stack_visited</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">stack</span><span class="p">:</span>
+            <span class="n">cur</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">cur</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+                <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cur</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">cur</span><span class="p">]:</span>
+                    <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="k">yield</span> <span class="n">cur</span></div>
+
+<div class="viewcode-block" id="Graph.DFS_f"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Graph.DFS_f">[docs]</a>    <span class="k">def</span> <span class="nf">DFS_f</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Depth-first search - with an on-the-fly-function</span>
+
+<span class="sd">example:</span>
+<span class="sd">def f(*args, **kwargs):</span>
+<span class="sd">    cur = kwargs[&#39;DFS_local&#39;][0]</span>
+<span class="sd">    kwargs[&quot;all_v&quot;].append(cur)</span>
+<span class="sd">self.DFS_f(v,f,all_v=[])</span>
+<span class="sd">returns ((), {&#39;all_v&#39;:[v1,v2,v3,...]})</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;visited_from_stack&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">stack</span><span class="p">,</span> <span class="n">visited</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_stack_visited</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">stack</span><span class="p">:</span>
+            <span class="n">cur</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">cur</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+                <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="p">[:</span><span class="n">l</span><span class="p">]</span>
+                <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cur</span><span class="p">)</span>
+                <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cur</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">cur</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]:</span>
+                        <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;DFS_local&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">cur</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">stack</span><span class="p">,</span> <span class="n">visited</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+                <span class="n">f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span></div>
+
+<div class="viewcode-block" id="Graph.get_Gs"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Graph.get_Gs">[docs]</a>    <span class="k">def</span> <span class="nf">get_Gs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;if G is not connected, finds separate Gs&quot;&quot;&quot;</span>
+        <span class="n">Vs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">while</span> <span class="n">Vs</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">Vs</span><span class="p">))</span>
+            <span class="n">temp_vs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">DFS</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+                <span class="n">temp_vs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+                <span class="n">Vs</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_graph</span><span class="p">(</span><span class="n">temp_vs</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_find_rings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag_root_at</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;finds all rings in a graph&quot;&quot;&quot;</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+        <span class="n">rings</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span><span class="p">]</span>
+        <span class="n">stack</span><span class="p">,</span> <span class="n">visited</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_stack_visited</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">v</span><span class="p">]:</span>
+            <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="k">while</span> <span class="n">stack</span><span class="p">:</span>
+            <span class="n">cur</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="p">[:</span><span class="n">l</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">cur</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+                <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cur</span><span class="p">)</span>
+                <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cur</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">cur</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]:</span>
+                        <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">cur</span> <span class="ow">in</span> <span class="n">path</span><span class="p">:</span>
+                <span class="n">new_ring</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">r_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">rings</span><span class="p">)):</span>
+                        <span class="k">if</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">rings</span><span class="p">[</span><span class="n">r_i</span><span class="p">]:</span>
+                            <span class="k">if</span> <span class="n">flag_root_at</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">rings</span><span class="p">[</span><span class="n">r_i</span><span class="p">])</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">path</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                                    <span class="k">continue</span>
+                                <span class="k">if</span> <span class="n">j</span><span class="o">==</span><span class="n">cur</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">rings</span><span class="p">[</span><span class="n">r_i</span><span class="p">])</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">new_ring</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                                    <span class="k">continue</span>
+                            <span class="n">rings</span><span class="p">[</span><span class="n">r_i</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">new_ring</span><span class="p">)</span>
+                            <span class="n">new_ring</span> <span class="o">=</span> <span class="n">rings</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">r_i</span><span class="p">)</span>
+                            <span class="k">break</span>
+                    <span class="k">if</span> <span class="n">j</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_ring</span><span class="p">:</span>
+                        <span class="n">new_ring</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">cur</span><span class="p">:</span>
+                        <span class="k">break</span>
+                <span class="n">rings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_ring</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">visited</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">rings</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="Graph.find_rings"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Graph.find_rings">[docs]</a>    <span class="k">def</span> <span class="nf">find_rings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag_root_at</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">rings</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">temp_G</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_Gs</span><span class="p">():</span>
+            <span class="n">rings</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">temp_G</span><span class="o">.</span><span class="n">_find_rings</span><span class="p">(</span><span class="n">flag_root_at</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">rings</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Graph.find_rings_graph"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Graph.find_rings_graph">[docs]</a>    <span class="k">def</span> <span class="nf">find_rings_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">flag_root_at</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">rings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_rings</span><span class="p">(</span><span class="n">flag_root_at</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rings</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_graph</span><span class="p">(</span><span class="n">r</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Graph.get_2D_repr"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Graph.get_2D_repr">[docs]</a>    <span class="k">def</span> <span class="nf">get_2D_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vertices</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">d_12</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">d_13</span><span class="o">=</span><span class="mf">1.7</span><span class="p">,</span>  <span class="n">Fk</span><span class="o">=</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">rest_pow</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Nmaxiter</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param vertices:</span>
+<span class="sd">        :param kwargs: fig_name, step, init_struc</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fig_name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;fig_name&#39;</span><span class="p">)</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;step&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">init_struc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;init_struc&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">vertices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">vertices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">)</span>
+        <span class="n">temp_G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_graph</span><span class="p">(</span><span class="n">vertices</span><span class="p">,</span> <span class="n">flag_directed</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">parents</span> <span class="o">=</span> <span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">coord_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">),</span> <span class="mi">2</span><span class="p">)),</span> <span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">(</span><span class="n">temp_G</span><span class="o">.</span><span class="n">adj</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;idx&#39;</span><span class="p">))</span>
+        <span class="n">coord_df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">]</span>
+        <span class="n">vertices</span> <span class="o">=</span> <span class="p">[</span><span class="n">vertices</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">grp_add</span><span class="p">,</span> <span class="n">added_paths</span><span class="p">,</span> <span class="n">anchor_points</span> <span class="o">=</span> <span class="n">temp_G</span><span class="o">.</span><span class="n">get_add_missing_groups</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">added_paths</span><span class="p">)):</span>
+            <span class="n">path2add</span><span class="p">,</span> <span class="n">anchor_p</span> <span class="o">=</span> <span class="n">added_paths</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">anchor_points</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">generate_new_coordinates</span><span class="p">(</span><span class="n">path2add</span><span class="p">,</span> <span class="n">anchor_p</span><span class="p">,</span> <span class="n">coord_df</span><span class="p">,</span> <span class="n">v_fact</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">fnc_ring_path</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">vertices</span> <span class="o">+=</span> <span class="n">grp_add</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">sub_temp_G</span> <span class="o">=</span> <span class="n">temp_G</span><span class="o">.</span><span class="n">sub_graph</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+            <span class="n">temp_coorf_df</span> <span class="o">=</span> <span class="n">coord_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">vertices</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">added_paths</span><span class="p">):</span>
+                <span class="n">temp_min</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__do_min</span><span class="p">(</span><span class="n">sub_temp_G</span><span class="p">,</span> <span class="n">temp_coorf_df</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">Nmaxiter</span><span class="p">,</span> <span class="n">d_12</span><span class="p">,</span> <span class="n">d_13</span><span class="p">,</span>  <span class="n">Fk</span><span class="p">,</span> <span class="n">rest_pow</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">temp_min</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__do_min</span><span class="p">(</span><span class="n">sub_temp_G</span><span class="p">,</span> <span class="n">temp_coorf_df</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">Nmaxiter</span><span class="p">,</span> <span class="n">d_12</span><span class="p">,</span> <span class="n">d_13</span><span class="p">,</span>  <span class="n">Fk</span><span class="p">,</span> <span class="n">rest_pow</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">step</span> <span class="ow">and</span> <span class="n">fig_name</span> <span class="ow">and</span> <span class="n">init_struc</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__plot_graph</span><span class="p">(</span><span class="n">temp_G</span><span class="p">,</span> <span class="n">coord_df</span><span class="p">,</span> <span class="n">fig_name</span> <span class="o">+</span> <span class="s1">&#39;_step_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_init.png&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">coord_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">vertices</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_min</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">),</span><span class="mi">2</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">step</span> <span class="ow">and</span> <span class="n">fig_name</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__plot_graph</span><span class="p">(</span><span class="n">temp_G</span><span class="p">,</span> <span class="n">coord_df</span><span class="p">,</span> <span class="n">fig_name</span> <span class="o">+</span> <span class="s1">&#39;_step_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_min.png&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">sub_temp_G</span> <span class="o">=</span> <span class="n">temp_G</span><span class="o">.</span><span class="n">sub_graph</span><span class="p">(</span><span class="n">vertices</span><span class="p">)</span>
+        <span class="n">temp_coorf_df</span> <span class="o">=</span> <span class="n">coord_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">vertices</span><span class="p">]</span>
+        <span class="n">temp_min</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__do_min</span><span class="p">(</span><span class="n">sub_temp_G</span><span class="p">,</span> <span class="n">temp_coorf_df</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">d_12</span><span class="p">,</span> <span class="n">d_13</span><span class="p">,</span> <span class="n">Fk</span><span class="p">,</span> <span class="n">rest_pow</span><span class="p">)</span>
+        <span class="n">coord_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">vertices</span><span class="p">]</span> <span class="o">=</span> <span class="n">temp_min</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">vertices</span><span class="p">),</span><span class="mi">2</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">fig_name</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__plot_graph</span><span class="p">(</span><span class="n">temp_G</span><span class="p">,</span> <span class="n">coord_df</span><span class="p">,</span> <span class="n">fig_name</span> <span class="o">+</span> <span class="s1">&#39;_min.png&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__plot_graph</span><span class="p">(</span><span class="n">temp_G</span><span class="p">,</span> <span class="n">coord_df</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">coord_df</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__plot_graph</span><span class="p">(</span><span class="n">temp_G</span><span class="p">,</span> <span class="n">coord_df</span><span class="p">,</span> <span class="n">ffig</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">flag_name_attribute</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">coord_df</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">coord_df</span><span class="o">.</span><span class="n">y</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">color</span> <span class="o">=</span> <span class="s2">&quot;k&quot;</span><span class="p">)</span>
+        <span class="n">v_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">coord_df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v_list</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">flag_name_attribute</span><span class="p">:</span>
+                <span class="c1">#plt.text(x[i], y[i], getattr(v_list[i], flag_name_attribute), ha=&#39;center&#39;, va=&#39;center&#39;)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">v_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">flag_name_attribute</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1">#plt.text(x[i], y[i], str(v_list[i]), ha=&#39;center&#39;, va=&#39;center&#39;)</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">str</span><span class="p">(</span><span class="n">v_list</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">temp_G</span><span class="o">.</span><span class="n">get_edges</span><span class="p">():</span>
+            <span class="n">temp_coord</span> <span class="o">=</span> <span class="n">coord_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">b</span><span class="p">)]</span>
+            <span class="n">temp_x</span> <span class="o">=</span> <span class="n">temp_coord</span><span class="o">.</span><span class="n">x</span>
+            <span class="n">temp_y</span> <span class="o">=</span> <span class="n">temp_coord</span><span class="o">.</span><span class="n">y</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">temp_x</span><span class="p">,</span> <span class="n">temp_y</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="s1">&#39;equal&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ffig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;flag_show&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+                <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">ffig</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__do_min</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temp_G</span><span class="p">,</span> <span class="n">coord_df</span><span class="p">,</span> <span class="n">cutoff2</span><span class="p">,</span> <span class="n">Nmaxiter</span><span class="p">,</span> <span class="n">d_12</span><span class="p">,</span> <span class="n">d_13</span><span class="p">,</span>  <span class="n">Fk</span><span class="p">,</span> <span class="n">rest_pow</span><span class="p">):</span>
+        <span class="n">l12</span><span class="p">,</span> <span class="n">l13</span><span class="p">,</span> <span class="n">lrest</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_123</span><span class="p">(</span><span class="n">temp_G</span><span class="p">,</span> <span class="n">coord_df</span><span class="p">,</span> <span class="n">cutoff2</span><span class="p">)</span>
+        <span class="n">coord_flat</span> <span class="o">=</span> <span class="n">coord_df</span><span class="o">.</span><span class="n">values</span>
+        <span class="n">coord_flat</span> <span class="o">=</span> <span class="n">coord_flat</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">coord_flat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Nmaxiter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__E</span><span class="p">,</span> <span class="n">coord_flat</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">l12</span><span class="p">,</span> <span class="n">l13</span><span class="p">,</span> <span class="n">lrest</span><span class="p">,</span> <span class="n">d_12</span><span class="p">,</span> <span class="n">d_13</span><span class="p">,</span>  <span class="n">Fk</span><span class="p">,</span> <span class="n">rest_pow</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">minimize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__E</span><span class="p">,</span> <span class="n">coord_flat</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">l12</span><span class="p">,</span> <span class="n">l13</span><span class="p">,</span> <span class="n">lrest</span><span class="p">,</span> <span class="n">d_12</span><span class="p">,</span> <span class="n">d_13</span><span class="p">,</span>  <span class="n">Fk</span><span class="p">,</span> <span class="n">rest_pow</span><span class="p">),</span>
+                           <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;maxiter&#39;</span><span class="p">:</span> <span class="n">Nmaxiter</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">res</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__get_123</span><span class="p">(</span><span class="n">temp_G</span><span class="p">,</span> <span class="n">coord_df</span><span class="p">,</span> <span class="n">cutoff2</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">checked_pairs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">l12</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">l13</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">lrest</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">v_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">coord_df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">v_index_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">v_list</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v_list</span><span class="p">))))</span>
+        <span class="k">for</span> <span class="n">v1</span> <span class="ow">in</span> <span class="n">temp_G</span><span class="o">.</span><span class="n">adj</span><span class="p">:</span>
+            <span class="k">for</span> <span class="p">(</span><span class="n">v2</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span> <span class="ow">in</span> <span class="n">temp_G</span><span class="o">.</span><span class="n">BFS</span><span class="p">(</span><span class="n">v1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">v1</span> <span class="o">!=</span> <span class="n">v2</span><span class="p">:</span>
+                    <span class="n">temp_p</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">((</span><span class="n">v_index_map</span><span class="p">[</span><span class="n">v1</span><span class="p">],</span> <span class="n">v_index_map</span><span class="p">[</span><span class="n">v2</span><span class="p">])))</span>
+                    <span class="k">if</span> <span class="n">temp_p</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">checked_pairs</span><span class="p">:</span>
+                        <span class="n">checked_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_p</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                            <span class="n">l12</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_p</span><span class="p">)</span>
+                        <span class="k">elif</span> <span class="n">l</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                            <span class="n">l13</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_p</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">cutoff2</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">coord_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[[</span><span class="n">v1</span><span class="p">,</span><span class="n">v2</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">cutoff2</span><span class="p">:</span>
+                                    <span class="n">lrest</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_p</span><span class="p">)</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">lrest</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_p</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">l12</span><span class="p">,</span> <span class="n">l13</span><span class="p">,</span> <span class="n">lrest</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__E</span><span class="p">(</span><span class="n">coord_flat</span><span class="p">,</span> <span class="n">l12</span><span class="p">,</span> <span class="n">l13</span><span class="p">,</span> <span class="n">lrest</span><span class="p">,</span> <span class="n">d_12</span><span class="p">,</span> <span class="n">d_13</span><span class="p">,</span>  <span class="n">Fk</span><span class="p">,</span> <span class="n">rest_pow</span><span class="p">):</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">coord</span> <span class="o">=</span> <span class="n">coord_flat</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">coord_flat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">temp_ind_lists</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">l12</span><span class="p">))</span>
+        <span class="n">temp_distances</span> <span class="o">=</span> <span class="n">coord</span><span class="p">[</span><span class="n">temp_ind_lists</span><span class="p">[</span><span class="mi">0</span><span class="p">],]</span> <span class="o">-</span> <span class="n">coord</span><span class="p">[</span><span class="n">temp_ind_lists</span><span class="p">[</span><span class="mi">1</span><span class="p">],]</span>
+        <span class="n">temp_distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">temp_distances</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">E</span> <span class="o">+=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">Fk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">temp_distances</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">d_12</span><span class="p">]</span> <span class="o">*</span> <span class="n">temp_distances</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">l13</span><span class="p">:</span>
+            <span class="n">temp_ind_lists</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">l13</span><span class="p">))</span>
+            <span class="n">temp_distances</span> <span class="o">=</span> <span class="n">coord</span><span class="p">[</span><span class="n">temp_ind_lists</span><span class="p">[</span><span class="mi">0</span><span class="p">],]</span> <span class="o">-</span> <span class="n">coord</span><span class="p">[</span><span class="n">temp_ind_lists</span><span class="p">[</span><span class="mi">1</span><span class="p">],]</span>
+            <span class="n">temp_distances</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">temp_distances</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">E</span> <span class="o">+=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">Fk</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">temp_distances</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">d_13</span><span class="p">]</span> <span class="o">*</span> <span class="n">temp_distances</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">lrest</span><span class="p">:</span>
+            <span class="n">temp_ind_lists</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">lrest</span><span class="p">))</span>
+            <span class="n">temp_distances</span> <span class="o">=</span> <span class="n">coord</span><span class="p">[</span><span class="n">temp_ind_lists</span><span class="p">[</span><span class="mi">0</span><span class="p">],]</span> <span class="o">-</span> <span class="n">coord</span><span class="p">[</span><span class="n">temp_ind_lists</span><span class="p">[</span><span class="mi">1</span><span class="p">],]</span>
+            <span class="n">temp_distances</span> <span class="o">=</span> <span class="n">Fk</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">temp_distances</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">rest_pow</span><span class="p">),</span> <span class="n">axis</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">E</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">temp_distances</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">E</span></div>
+
+
+<div class="viewcode-block" id="Vertex"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Vertex">[docs]</a><span class="k">class</span> <span class="nc">Vertex</span><span class="p">(</span><span class="n">__VersionCompatibility</span><span class="p">):</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">l</span> <span class="o">=</span> <span class="n">l</span> <span class="c1"># level</span>
+        <span class="k">if</span> <span class="n">p</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="p">{</span><span class="n">p</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Vertex.add_p"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Vertex.add_p">[docs]</a>    <span class="k">def</span> <span class="nf">add_p</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">p</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Vertex.add_c"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.Vertex.add_c">[docs]</a>    <span class="k">def</span> <span class="nf">add_c</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">c</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="GraphDirected"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.GraphDirected">[docs]</a><span class="k">class</span> <span class="nc">GraphDirected</span><span class="p">(</span><span class="n">Graph</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adj_dict_edges</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">flag_edges</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">parents</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        directed graph - it could have more than 1 vertex as roots (parents)</span>
+<span class="sd">        :param adj_dict_edges:</span>
+<span class="sd">        :param flag_edges:</span>
+<span class="sd">        :param parents:</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GraphDirected</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">adj_dict_edges</span><span class="p">,</span> <span class="n">flag_edges</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parents</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_parents</span><span class="p">(</span><span class="o">*</span><span class="n">parents</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_parents</span><span class="p">(</span><span class="n">parents</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_p_c</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GraphDirected.directed_BFS"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.GraphDirected.directed_BFS">[docs]</a>    <span class="k">def</span> <span class="nf">directed_BFS</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">BFS</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_v</span><span class="p">,</span> <span class="n">flag_v_list</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphDirected.set_parents"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.GraphDirected.set_parents">[docs]</a>    <span class="k">def</span> <span class="nf">set_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent_v</span> <span class="o">=</span> <span class="n">v</span> <span class="c1"># in principle this should be 1 vertex - but here it&#39;s generalized to many</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_p_c</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphDirected.get_p_c"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.GraphDirected.get_p_c">[docs]</a>    <span class="k">def</span> <span class="nf">get_p_c</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        iterate over vertices and get parents and children</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            level - max level</span>
+<span class="sd">            flag_children_level_map - if and how many levels to add to the map (default 0; -1 adds all levels)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Gv</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">level_max</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;level&#39;</span><span class="p">)</span>
+        <span class="n">visited</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">stack</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">vv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_v</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">Gv</span><span class="p">[</span><span class="n">vv</span><span class="p">]</span> <span class="o">=</span> <span class="n">Vertex</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">vv</span><span class="p">)</span>
+            <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">vv</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="k">while</span> <span class="n">stack</span><span class="p">:</span>
+            <span class="n">cur</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">level_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">l</span><span class="o">==</span><span class="n">level_max</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">cur</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+                    <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">Gv</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Vertex</span><span class="p">(</span><span class="n">l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cur</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">Gv</span><span class="p">[</span><span class="n">cur</span><span class="p">]</span><span class="o">.</span><span class="n">add_c</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">l</span><span class="o">+</span><span class="mi">1</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gv</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">l</span> <span class="ow">and</span> <span class="n">cur</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gv</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">p</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">Gv</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">add_p</span><span class="p">(</span><span class="n">cur</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">Gv</span><span class="p">[</span><span class="n">cur</span><span class="p">]</span><span class="o">.</span><span class="n">add_c</span><span class="p">(</span><span class="n">i</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GraphDirected.get_parents"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.GraphDirected.get_parents">[docs]</a>    <span class="k">def</span> <span class="nf">get_parents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gv</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">p</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gv</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">p</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_parents</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">path</span></div>
+
+<div class="viewcode-block" id="GraphDirected.find_shortest_rpath"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.GraphDirected.find_shortest_rpath">[docs]</a>    <span class="k">def</span> <span class="nf">find_shortest_rpath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">visited</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">stack</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">vv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_v</span><span class="p">:</span>
+            <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">vv</span><span class="p">)</span>
+            <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">vv</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="k">while</span> <span class="n">stack</span><span class="p">:</span>
+            <span class="n">cur</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">cur</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+                    <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">i</span><span class="p">,</span> <span class="n">l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="n">visited</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="c1">#                    self.Gv[i] = Vertex(l + 1, cur)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gv</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">l</span> <span class="o">&gt;=</span> <span class="n">l</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gv</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">l</span> <span class="o">+</span> <span class="n">l</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Gv</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">p</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="n">p1</span><span class="p">,</span> <span class="n">p2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Gv</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+                        <span class="n">path</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_parents</span><span class="p">(</span><span class="n">p1</span><span class="p">)))</span>
+                        <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                        <span class="n">path</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_parents</span><span class="p">(</span><span class="n">p2</span><span class="p">))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">path</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_parents</span><span class="p">(</span><span class="n">cur</span><span class="p">)))</span>
+                        <span class="n">path</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_parents</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+                    <span class="k">if</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                        <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">return</span> <span class="n">path</span></div>
+
+    <span class="k">def</span> <span class="nf">__get_ap_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">anchor_point</span><span class="p">,</span> <span class="n">set_parents_v</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">set_parents_v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">set_parents_v</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">[</span><span class="n">anchor_point</span><span class="p">])</span> <span class="o">&amp;</span> <span class="n">set_parents_v</span>
+
+    <span class="k">def</span> <span class="nf">__check_partial_ring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rings</span><span class="p">,</span> <span class="n">rings_map</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">temp_rings</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">ring_atoms_in_parents</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_v</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">rings_map</span><span class="p">:</span>
+                <span class="n">temp_rings</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">rings_map</span><span class="p">[</span><span class="n">v</span><span class="p">])</span>
+                <span class="n">ring_atoms_in_parents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">atoms_in_parents_complete_rings</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">r_index</span> <span class="ow">in</span> <span class="n">temp_rings</span><span class="p">:</span>
+            <span class="n">atoms_in_parents_complete_rings</span> <span class="o">+=</span> <span class="n">rings</span><span class="p">[</span><span class="n">r_index</span><span class="p">]</span>
+        <span class="k">return</span> <span class="ow">not</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ring_atoms_in_parents</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms_in_parents_complete_rings</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__get_add_missing_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">rings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_rings</span><span class="p">()</span>
+        <span class="n">rings_map</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">rc</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rings</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">ring_vertex</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+                <span class="n">rings_map</span><span class="p">[</span><span class="n">ring_vertex</span><span class="p">]</span> <span class="o">=</span> <span class="n">rc</span>
+        <span class="n">grp_add</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">added_paths</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">anchor_points</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_v</span><span class="p">)</span><span class="o">!=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adj</span><span class="p">):</span>
+            <span class="n">grp_add</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+            <span class="n">anchor_points</span><span class="o">.</span><span class="n">append</span><span class="p">({})</span>
+            <span class="n">added_paths</span><span class="o">.</span><span class="n">append</span><span class="p">({})</span>
+            <span class="c1"># add rind shortes path</span>
+            <span class="n">flag_ring_path</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__check_partial_ring</span><span class="p">(</span><span class="n">rings</span><span class="p">,</span> <span class="n">rings_map</span><span class="p">):</span>
+                <span class="n">temp_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_shortest_rpath</span><span class="p">()</span>
+                <span class="n">temp_path2add</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">temp_anch_points</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">if</span> <span class="n">temp_path</span><span class="p">:</span>
+                    <span class="n">flag_ring_path</span> <span class="o">=</span> <span class="n">rings_map</span><span class="p">[</span><span class="n">temp_path</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+                    <span class="k">for</span> <span class="n">temp_v</span> <span class="ow">in</span> <span class="n">temp_path</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">temp_v</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_v</span><span class="p">:</span>
+                            <span class="n">temp_path2add</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_v</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">temp_anch_points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_v</span><span class="p">)</span>
+                    <span class="n">temp_anch_points</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">temp_anch_points</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">temp_anch_points</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">added_paths</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                        <span class="n">added_paths</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">temp_anch_points</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">added_paths</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">temp_anch_points</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">temp_path2add</span><span class="p">)</span>
+                    <span class="n">grp_add</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">temp_path2add</span><span class="p">)</span>
+            <span class="c1"># add other first neighbours</span>
+            <span class="k">for</span> <span class="n">temp_child</span><span class="p">,</span> <span class="n">level</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">directed_BFS</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">level</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span><span class="k">continue</span>
+                <span class="k">if</span> <span class="n">level</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span><span class="k">break</span>
+                <span class="k">if</span> <span class="n">temp_child</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">grp_add</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">temp_child</span> <span class="ow">in</span> <span class="n">rings_map</span> <span class="ow">and</span> <span class="n">rings_map</span><span class="p">[</span><span class="n">temp_child</span><span class="p">]</span><span class="o">==</span><span class="n">flag_ring_path</span><span class="p">:</span><span class="k">continue</span>
+                    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Gv</span><span class="p">[</span><span class="n">temp_child</span><span class="p">]</span><span class="o">.</span><span class="n">p</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+                    <span class="n">temp_parent</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">Gv</span><span class="p">[</span><span class="n">temp_child</span><span class="p">]</span><span class="o">.</span><span class="n">p</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">grp_add</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_child</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">temp_parent</span><span class="p">,)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">added_paths</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                        <span class="n">added_paths</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][(</span><span class="n">temp_parent</span><span class="p">,)]</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="n">added_paths</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][(</span><span class="n">temp_parent</span><span class="p">,)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">temp_child</span><span class="p">)</span>
+            <span class="n">temp_set_parents</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent_v</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">anchor_point</span> <span class="ow">in</span> <span class="n">added_paths</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">anchor_points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">anchor_point</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">an_p</span> <span class="ow">in</span> <span class="n">anchor_point</span><span class="p">:</span>
+                    <span class="n">anchor_points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">anchor_point</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__get_ap_atoms</span><span class="p">(</span><span class="n">an_p</span><span class="p">,</span> <span class="n">temp_set_parents</span><span class="p">))</span>
+            <span class="n">new_parents</span> <span class="o">=</span> <span class="n">temp_set_parents</span> <span class="o">|</span> <span class="nb">set</span><span class="p">(</span><span class="n">grp_add</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_parents</span><span class="p">(</span><span class="o">*</span><span class="n">new_parents</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">grp_add</span><span class="p">,</span> <span class="n">added_paths</span><span class="p">,</span> <span class="n">anchor_points</span>
+
+
+<div class="viewcode-block" id="GraphDirected.get_add_missing_groups"><a class="viewcode-back" href="../../../SMArt.graph.html#SMArt.graph.incl.GraphDirected.get_add_missing_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_add_missing_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_add_missing_groups</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Drazen Petrov.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

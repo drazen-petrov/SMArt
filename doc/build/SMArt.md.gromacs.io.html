@@ -1,0 +1,684 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>SMArt.md.gromacs.io package &mdash; SMArt v1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="SMArt.md.gromos package" href="SMArt.md.gromos.html" />
+    <link rel="prev" title="SMArt.md.gromacs.FF_DB package" href="SMArt.md.gromacs.FF_DB.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> SMArt
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">SMArt</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="SMArt.html">SMArt package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="SMArt.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="SMArt.alchemy.html">SMArt.alchemy package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="SMArt.graph.html">SMArt.graph package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="SMArt.local_config.html">SMArt.local_config package</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="SMArt.md.html">SMArt.md package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="SMArt.tests.html">SMArt.tests package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="SMArt.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="SMArt.html#module-SMArt.geometry">SMArt.geometry module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="SMArt.html#module-SMArt.incl">SMArt.incl module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="SMArt.html#module-SMArt.mp_fnc">SMArt.mp_fnc module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="SMArt.html#module-SMArt">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">SMArt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="modules.html">SMArt</a> &raquo;</li>
+        
+          <li><a href="SMArt.html">SMArt package</a> &raquo;</li>
+        
+          <li><a href="SMArt.md.html">SMArt.md package</a> &raquo;</li>
+        
+          <li><a href="SMArt.md.gromacs.html">SMArt.md.gromacs package</a> &raquo;</li>
+        
+      <li>SMArt.md.gromacs.io package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/SMArt.md.gromacs.io.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="smart-md-gromacs-io-package">
+<h1>SMArt.md.gromacs.io package<a class="headerlink" href="#smart-md-gromacs-io-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-SMArt.md.gromacs.io.additional_classes">
+<span id="smart-md-gromacs-io-additional-classes-module"></span><h2>SMArt.md.gromacs.io.additional_classes module<a class="headerlink" href="#module-SMArt.md.gromacs.io.additional_classes" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="SMArt.md.gromacs.io.additional_classes.Define">
+<em class="property">class </em><code class="sig-prename descclassname">SMArt.md.gromacs.io.additional_classes.</code><code class="sig-name descname">Define</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">split_line</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">line</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">flag_generate_line</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/additional_classes.html#Define"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.additional_classes.Define" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#SMArt.md.gromacs.io.gm_io_defaults.gm_io_Defaults" title="SMArt.md.gromacs.io.gm_io_defaults.gm_io_Defaults"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.md.gromacs.io.gm_io_defaults.gm_io_Defaults</span></code></a></p>
+<p>gromacs define class
+:var</p>
+<blockquote>
+<div><p>id
+v - values
+s - string (line)</p>
+</div></blockquote>
+<dl class="py attribute">
+<dt id="SMArt.md.gromacs.io.additional_classes.Define.container2write">
+<code class="sig-name descname">container2write</code><em class="property"> = 'defines'</em><a class="headerlink" href="#SMArt.md.gromacs.io.additional_classes.Define.container2write" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.additional_classes.Define.write_define">
+<code class="sig-name descname">write_define</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_str</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/additional_classes.html#Define.write_define"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.additional_classes.Define.write_define" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="SMArt.md.gromacs.io.additional_classes.ParsedSegments">
+<em class="property">class </em><code class="sig-prename descclassname">SMArt.md.gromacs.io.additional_classes.</code><code class="sig-name descname">ParsedSegments</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seg_kw</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">seg_name</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">curr_dir</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">curr_inc</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">curr_if</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">curr_seg_num</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/additional_classes.html#ParsedSegments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.additional_classes.ParsedSegments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#SMArt.md.gromacs.io.gm_io_defaults.gm_io_Defaults" title="SMArt.md.gromacs.io.gm_io_defaults.gm_io_Defaults"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.md.gromacs.io.gm_io_defaults.gm_io_Defaults</span></code></a></p>
+<p>each parsed segment is an instance of this class
+ensures that writing gets done properly
+:attr</p>
+<blockquote>
+<div><p>seg_type (include or define)
+seg_name
+curr_dir - current directive (e.g. [ bonds ])
+curr_inc - current include (included file)
+curr_if - current if statement
+curr_seg_num
+set_curr_stack</p>
+</div></blockquote>
+<dl class="py attribute">
+<dt id="SMArt.md.gromacs.io.additional_classes.ParsedSegments.container2write">
+<code class="sig-name descname">container2write</code><em class="property"> = '_segments'</em><a class="headerlink" href="#SMArt.md.gromacs.io.additional_classes.ParsedSegments.container2write" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.additional_classes.ParsedSegments.get_curr_stack">
+<code class="sig-name descname">get_curr_stack</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/additional_classes.html#ParsedSegments.get_curr_stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.additional_classes.ParsedSegments.get_curr_stack" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.additional_classes.ParsedSegments.gm_ord">
+<em class="property">property </em><code class="sig-name descname">gm_ord</code><a class="headerlink" href="#SMArt.md.gromacs.io.additional_classes.ParsedSegments.gm_ord" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.additional_classes.ParsedSegments.set_curr_stack">
+<code class="sig-name descname">set_curr_stack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">curr_stack</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/additional_classes.html#ParsedSegments.set_curr_stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.additional_classes.ParsedSegments.set_curr_stack" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-SMArt.md.gromacs.io.ana">
+<span id="smart-md-gromacs-io-ana-module"></span><h2>SMArt.md.gromacs.io.ana module<a class="headerlink" href="#module-SMArt.md.gromacs.io.ana" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="SMArt.md.gromacs.io.ana.get_xvg_labels">
+<code class="sig-prename descclassname">SMArt.md.gromacs.io.ana.</code><code class="sig-name descname">get_xvg_labels</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f_path</span></em>, <em class="sig-param"><span class="n">comments</span><span class="o">=</span><span class="default_value">'#', '&#64;'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/ana.html#get_xvg_labels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.ana.get_xvg_labels" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.md.gromacs.io.ana.read_bar_data">
+<code class="sig-prename descclassname">SMArt.md.gromacs.io.ana.</code><code class="sig-name descname">read_bar_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f_path</span></em>, <em class="sig-param"><span class="n">dl_max</span><span class="o">=</span><span class="default_value">0.3</span></em>, <em class="sig-param"><span class="n">comments</span><span class="o">=</span><span class="default_value">'#', '&#64;'</span></em>, <em class="sig-param"><span class="n">skip_stride</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/ana.html#read_bar_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.ana.read_bar_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="SMArt.md.gromacs.io.ana.read_xvg_data">
+<code class="sig-prename descclassname">SMArt.md.gromacs.io.ana.</code><code class="sig-name descname">read_xvg_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f_path</span></em>, <em class="sig-param"><span class="n">comments</span><span class="o">=</span><span class="default_value">'#', '&#64;'</span></em>, <em class="sig-param"><span class="n">skip_stride</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/ana.html#read_xvg_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.ana.read_xvg_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-SMArt.md.gromacs.io.gm_io_defaults">
+<span id="smart-md-gromacs-io-gm-io-defaults-module"></span><h2>SMArt.md.gromacs.io.gm_io_defaults module<a class="headerlink" href="#module-SMArt.md.gromacs.io.gm_io_defaults" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="SMArt.md.gromacs.io.gm_io_defaults.gm_FDs_Defaults">
+<em class="property">class </em><code class="sig-prename descclassname">SMArt.md.gromacs.io.gm_io_defaults.</code><code class="sig-name descname">gm_FDs_Defaults</code><a class="reference internal" href="_modules/SMArt/md/gromacs/io/gm_io_defaults.html#gm_FDs_Defaults"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.gm_io_defaults.gm_FDs_Defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="SMArt.html#SMArt.incl.Defaults" title="SMArt.incl.Defaults"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.incl.Defaults</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="SMArt.md.gromacs.io.gm_io_defaults.gm_FF_Defaults">
+<em class="property">class </em><code class="sig-prename descclassname">SMArt.md.gromacs.io.gm_io_defaults.</code><code class="sig-name descname">gm_FF_Defaults</code><span class="sig-paren">(</span><em class="sig-param">iterable=()</em>, <em class="sig-param">/</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/gm_io_defaults.html#gm_FF_Defaults"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.gm_io_defaults.gm_FF_Defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.gm_io_defaults.gm_FF_Defaults.add_defs">
+<code class="sig-name descname">add_defs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">gm_defaults</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/gm_io_defaults.html#gm_FF_Defaults.add_defs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.gm_io_defaults.gm_FF_Defaults.add_defs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.gm_io_defaults.gm_FF_Defaults.write_defs">
+<code class="sig-name descname">write_defs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/gm_io_defaults.html#gm_FF_Defaults.write_defs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.gm_io_defaults.gm_FF_Defaults.write_defs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="SMArt.md.gromacs.io.gm_io_defaults.gm_io_Defaults">
+<em class="property">class </em><code class="sig-prename descclassname">SMArt.md.gromacs.io.gm_io_defaults.</code><code class="sig-name descname">gm_io_Defaults</code><a class="reference internal" href="_modules/SMArt/md/gromacs/io/gm_io_defaults.html#gm_io_Defaults"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.gm_io_defaults.gm_io_Defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="SMArt.html#SMArt.incl.Defaults" title="SMArt.incl.Defaults"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.incl.Defaults</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-SMArt.md.gromacs.io.incl">
+<span id="smart-md-gromacs-io-incl-module"></span><h2>SMArt.md.gromacs.io.incl module<a class="headerlink" href="#module-SMArt.md.gromacs.io.incl" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="SMArt.md.gromacs.io.incl.GromacsFile">
+<em class="property">class </em><code class="sig-prename descclassname">SMArt.md.gromacs.io.incl.</code><code class="sig-name descname">GromacsFile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f_path</span></em>, <em class="sig-param"><span class="n">write</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">bck_num</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">pre</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">suf</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">flag_bck</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#GromacsFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.GromacsFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="SMArt.html#SMArt.incl.FileStream" title="SMArt.incl.FileStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.incl.FileStream</span></code></a>, <a class="reference internal" href="#SMArt.md.gromacs.io.incl.GromacsStream" title="SMArt.md.gromacs.io.incl.GromacsStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.md.gromacs.io.incl.GromacsStream</span></code></a></p>
+<p>handler class for gromos files - reading / writing functions</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="SMArt.md.gromacs.io.incl.GromacsParser">
+<em class="property">class </em><code class="sig-prename descclassname">SMArt.md.gromacs.io.incl.</code><code class="sig-name descname">GromacsParser</code><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#GromacsParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.GromacsParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="SMArt.html#SMArt.incl.GeneralContainer" title="SMArt.incl.GeneralContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.incl.GeneralContainer</span></code></a>, <a class="reference internal" href="SMArt.html#SMArt.incl.Defaults" title="SMArt.incl.Defaults"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.incl.Defaults</span></code></a></p>
+<p>Genearal parsing functions</p>
+<dl>
+<dt>interesting attrib</dt><dd><dl class="simple">
+<dt>gm_curr_stack - defines stack of directives, defines, IFs, etc.</dt><dd><p>self.curr_dir, self.curr_inc, self.curr_if, self.curr_seg_num</p>
+</dd>
+</dl>
+<p>_gm_curr_fnc
+_gm_curr_int_type
+undefined_directives</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt id="SMArt.md.gromacs.io.incl.GromacsParser.Define">
+<em class="property">class </em><code class="sig-name descname">Define</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">split_line</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">line</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">flag_generate_line</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SMArt.md.gromacs.io.incl.GromacsParser.Define" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#SMArt.md.gromacs.io.gm_io_defaults.gm_io_Defaults" title="SMArt.md.gromacs.io.gm_io_defaults.gm_io_Defaults"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.md.gromacs.io.gm_io_defaults.gm_io_Defaults</span></code></a></p>
+<p>gromacs define class
+:var</p>
+<blockquote>
+<div><p>id
+v - values
+s - string (line)</p>
+</div></blockquote>
+<dl class="py attribute">
+<dt id="SMArt.md.gromacs.io.incl.GromacsParser.Define.container2write">
+<code class="sig-name descname">container2write</code><em class="property"> = 'defines'</em><a class="headerlink" href="#SMArt.md.gromacs.io.incl.GromacsParser.Define.container2write" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.GromacsParser.Define.write_define">
+<code class="sig-name descname">write_define</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">from_str</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SMArt.md.gromacs.io.incl.GromacsParser.Define.write_define" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.GromacsParser.add_define">
+<code class="sig-name descname">add_define</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">split_line</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">line</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">flag_generate_line</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#GromacsParser.add_define"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.GromacsParser.add_define" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kwargs</strong> – split_line = None, line = None, flag_generate_line = True
+add2container kwargs</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.GromacsParser.exchange_defs">
+<em class="property">static </em><code class="sig-name descname">exchange_defs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">l_split</span></em>, <em class="sig-param"><span class="n">defs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#GromacsParser.exchange_defs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.GromacsParser.exchange_defs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.GromacsParser.parse_gm">
+<code class="sig-name descname">parse_gm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parse_from</span></em>, <em class="sig-param"><span class="n">parse_from_file</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#GromacsParser.parse_gm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.GromacsParser.parse_gm" title="Permalink to this definition">¶</a></dt>
+<dd><p>parsing gromacs format
+:param parse_from:
+:param parse_from_file:
+:param kwargs:</p>
+<blockquote>
+<div><p>gm_curr_stack
+defines - gromacs defines
+ignore_title_lines</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="SMArt.md.gromacs.io.incl.GromacsStream">
+<em class="property">class </em><code class="sig-prename descclassname">SMArt.md.gromacs.io.incl.</code><code class="sig-name descname">GromacsStream</code><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#GromacsStream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.GromacsStream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#SMArt.md.gromacs.io.gm_io_defaults.gm_FDs_Defaults" title="SMArt.md.gromacs.io.gm_io_defaults.gm_FDs_Defaults"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.md.gromacs.io.gm_io_defaults.gm_FDs_Defaults</span></code></a>, <a class="reference internal" href="#SMArt.md.gromacs.io.gm_io_defaults.gm_io_Defaults" title="SMArt.md.gromacs.io.gm_io_defaults.gm_io_Defaults"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.md.gromacs.io.gm_io_defaults.gm_io_Defaults</span></code></a></p>
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.GromacsStream.find_directive">
+<em class="property">static </em><code class="sig-name descname">find_directive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">l</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#GromacsStream.find_directive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.GromacsStream.find_directive" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.GromacsStream.lines">
+<code class="sig-name descname">lines</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#GromacsStream.lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.GromacsStream.lines" title="Permalink to this definition">¶</a></dt>
+<dd><p>this is implemented in GromacsFile or GromacsString</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.GromacsStream.next_line">
+<code class="sig-name descname">next_line</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#GromacsStream.next_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.GromacsStream.next_line" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.GromacsStream.read_define">
+<em class="property">static </em><code class="sig-name descname">read_define</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">temp</span></em>, <em class="sig-param"><span class="n">defines</span></em>, <em class="sig-param"><span class="n">line</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">temp_seg</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#GromacsStream.read_define"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.GromacsStream.read_define" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.GromacsStream.read_lines">
+<code class="sig-name descname">read_lines</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">defines</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">curr_stack</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#GromacsStream.read_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.GromacsStream.read_lines" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.GromacsStream.read_undef">
+<em class="property">static </em><code class="sig-name descname">read_undef</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">temp</span></em>, <em class="sig-param"><span class="n">defines</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#GromacsStream.read_undef"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.GromacsStream.read_undef" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.GromacsStream.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s2w</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#GromacsStream.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.GromacsStream.write" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.GromacsStream.write_lines">
+<code class="sig-name descname">write_lines</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lines</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#GromacsStream.write_lines"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.GromacsStream.write_lines" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="SMArt.md.gromacs.io.incl.GromacsString">
+<em class="property">class </em><code class="sig-prename descclassname">SMArt.md.gromacs.io.incl.</code><code class="sig-name descname">GromacsString</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#GromacsString"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.GromacsString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="SMArt.html#SMArt.incl.StringStream" title="SMArt.incl.StringStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.incl.StringStream</span></code></a>, <a class="reference internal" href="#SMArt.md.gromacs.io.incl.GromacsStream" title="SMArt.md.gromacs.io.incl.GromacsStream"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.md.gromacs.io.incl.GromacsStream</span></code></a></p>
+<p>handler class for gromos string - reading / writing functions</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="SMArt.md.gromacs.io.incl.GromacsWriter">
+<em class="property">class </em><code class="sig-prename descclassname">SMArt.md.gromacs.io.incl.</code><code class="sig-name descname">GromacsWriter</code><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#GromacsWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.GromacsWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="SMArt.html#SMArt.incl.GeneralContainer" title="SMArt.incl.GeneralContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.incl.GeneralContainer</span></code></a>, <a class="reference internal" href="SMArt.html#SMArt.incl.Defaults" title="SMArt.incl.Defaults"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.incl.Defaults</span></code></a></p>
+<p>Genearal writing functions</p>
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.GromacsWriter.write_gromacs_format">
+<code class="sig-name descname">write_gromacs_format</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">gs</span></em>, <em class="sig-param"><span class="n">directives</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">flag_include</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">flag_if</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">flag_defines</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">flag_title</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#GromacsWriter.write_gromacs_format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.GromacsWriter.write_gromacs_format" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="SMArt.md.gromacs.io.incl.gmConfigurationIO">
+<em class="property">class </em><code class="sig-prename descclassname">SMArt.md.gromacs.io.incl.</code><code class="sig-name descname">gmConfigurationIO</code><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#gmConfigurationIO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.gmConfigurationIO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#SMArt.md.gromacs.io.incl.GromacsParser" title="SMArt.md.gromacs.io.incl.GromacsParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.md.gromacs.io.incl.GromacsParser</span></code></a>, <a class="reference internal" href="#SMArt.md.gromacs.io.incl.GromacsWriter" title="SMArt.md.gromacs.io.incl.GromacsWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.md.gromacs.io.incl.GromacsWriter</span></code></a></p>
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.gmConfigurationIO.parse_gro">
+<code class="sig-name descname">parse_gro</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f_path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#gmConfigurationIO.parse_gro"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.gmConfigurationIO.parse_gro" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.gmConfigurationIO.write_gro">
+<code class="sig-name descname">write_gro</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f_path</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#gmConfigurationIO.write_gro"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.gmConfigurationIO.write_gro" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="SMArt.md.gromacs.io.incl.gmFFParser">
+<em class="property">class </em><code class="sig-prename descclassname">SMArt.md.gromacs.io.incl.</code><code class="sig-name descname">gmFFParser</code><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#gmFFParser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.gmFFParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#SMArt.md.gromacs.io.incl.GromacsParser" title="SMArt.md.gromacs.io.incl.GromacsParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.md.gromacs.io.incl.GromacsParser</span></code></a></p>
+<dl class="py class">
+<dt id="SMArt.md.gromacs.io.incl.gmFFParser.gm_FF_Defaults">
+<em class="property">class </em><code class="sig-name descname">gm_FF_Defaults</code><span class="sig-paren">(</span><em class="sig-param">iterable=()</em>, <em class="sig-param">/</em><span class="sig-paren">)</span><a class="headerlink" href="#SMArt.md.gromacs.io.incl.gmFFParser.gm_FF_Defaults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.gmFFParser.gm_FF_Defaults.add_defs">
+<code class="sig-name descname">add_defs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">gm_defaults</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SMArt.md.gromacs.io.incl.gmFFParser.gm_FF_Defaults.add_defs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.gmFFParser.gm_FF_Defaults.write_defs">
+<code class="sig-name descname">write_defs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#SMArt.md.gromacs.io.incl.gmFFParser.gm_FF_Defaults.write_defs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.gmFFParser.parse_ff_gm">
+<code class="sig-name descname">parse_ff_gm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parse_from</span></em>, <em class="sig-param"><span class="n">parse_from_file</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#gmFFParser.parse_ff_gm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.gmFFParser.parse_ff_gm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="SMArt.md.gromacs.io.incl.gmFFWriter">
+<em class="property">class </em><code class="sig-prename descclassname">SMArt.md.gromacs.io.incl.</code><code class="sig-name descname">gmFFWriter</code><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#gmFFWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.gmFFWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#SMArt.md.gromacs.io.incl.GromacsWriter" title="SMArt.md.gromacs.io.incl.GromacsWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.md.gromacs.io.incl.GromacsWriter</span></code></a></p>
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.gmFFWriter.write_ff_itp">
+<code class="sig-name descname">write_ff_itp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f_path</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#gmFFWriter.write_ff_itp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.gmFFWriter.write_ff_itp" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f_path</strong> – </p></li>
+<li><p><strong>kwargs</strong> – flag_split_non_bonded = False
+sep2include_files - customizable
+flag_close = True (close gromacs stream)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="SMArt.md.gromacs.io.incl.gmFragmentMoleculeIO">
+<em class="property">class </em><code class="sig-prename descclassname">SMArt.md.gromacs.io.incl.</code><code class="sig-name descname">gmFragmentMoleculeIO</code><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#gmFragmentMoleculeIO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.gmFragmentMoleculeIO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#SMArt.md.gromacs.io.incl.GromacsParser" title="SMArt.md.gromacs.io.incl.GromacsParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.md.gromacs.io.incl.GromacsParser</span></code></a>, <a class="reference internal" href="#SMArt.md.gromacs.io.incl.GromacsWriter" title="SMArt.md.gromacs.io.incl.GromacsWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.md.gromacs.io.incl.GromacsWriter</span></code></a></p>
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.gmFragmentMoleculeIO.write_itp">
+<code class="sig-name descname">write_itp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f_path</span></em>, <em class="sig-param"><span class="n">directives</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#gmFragmentMoleculeIO.write_itp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.gmFragmentMoleculeIO.write_itp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.gmFragmentMoleculeIO.write_molecule_type">
+<code class="sig-name descname">write_molecule_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">gs</span></em>, <em class="sig-param"><span class="n">directives</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#gmFragmentMoleculeIO.write_molecule_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.gmFragmentMoleculeIO.write_molecule_type" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>gs</strong> – </p></li>
+<li><p><strong>directives</strong> – </p></li>
+<li><p><strong>kwargs</strong> – flag_segment_order = True
+flag_general_defines = False(from top e.g) - generates defines2write
+defines2write - container of defines</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="SMArt.md.gromacs.io.incl.gmTopologyIO">
+<em class="property">class </em><code class="sig-prename descclassname">SMArt.md.gromacs.io.incl.</code><code class="sig-name descname">gmTopologyIO</code><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#gmTopologyIO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.gmTopologyIO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#SMArt.md.gromacs.io.incl.GromacsParser" title="SMArt.md.gromacs.io.incl.GromacsParser"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.md.gromacs.io.incl.GromacsParser</span></code></a>, <a class="reference internal" href="#SMArt.md.gromacs.io.incl.GromacsWriter" title="SMArt.md.gromacs.io.incl.GromacsWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.md.gromacs.io.incl.GromacsWriter</span></code></a></p>
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.gmTopologyIO.parse_top_gm">
+<code class="sig-name descname">parse_top_gm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parse_from</span></em>, <em class="sig-param"><span class="n">parse_from_file</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#gmTopologyIO.parse_top_gm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.gmTopologyIO.parse_top_gm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl.gmTopologyIO.write_top_gm">
+<code class="sig-name descname">write_top_gm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f_path</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl.html#gmTopologyIO.write_top_gm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl.gmTopologyIO.write_top_gm" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>f_path</strong> – </p></li>
+<li><p><strong>kwargs</strong> – <p>see write_ff_itp
+sep_ff2itp - separate ff into itp file(s)
+sep_mol2itp - separate molecules to itp files</p>
+<blockquote>
+<div><p>sep_mol2itp = {mol_id1:f_path1}</p>
+</div></blockquote>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-SMArt.md.gromacs.io.incl_md_only">
+<span id="smart-md-gromacs-io-incl-md-only-module"></span><h2>SMArt.md.gromacs.io.incl_md_only module<a class="headerlink" href="#module-SMArt.md.gromacs.io.incl_md_only" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="SMArt.md.gromacs.io.incl_md_only.gmCMAPWriter">
+<em class="property">class </em><code class="sig-prename descclassname">SMArt.md.gromacs.io.incl_md_only.</code><code class="sig-name descname">gmCMAPWriter</code><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl_md_only.html#gmCMAPWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl_md_only.gmCMAPWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#SMArt.md.gromacs.io.gm_io_defaults.gm_io_Defaults" title="SMArt.md.gromacs.io.gm_io_defaults.gm_io_Defaults"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.md.gromacs.io.gm_io_defaults.gm_io_Defaults</span></code></a>, <a class="reference internal" href="#SMArt.md.gromacs.io.incl_md_only.gmInteractionTypeWriter" title="SMArt.md.gromacs.io.incl_md_only.gmInteractionTypeWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.md.gromacs.io.incl_md_only.gmInteractionTypeWriter</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="SMArt.md.gromacs.io.incl_md_only.gmInteractionTypeWriter">
+<em class="property">class </em><code class="sig-prename descclassname">SMArt.md.gromacs.io.incl_md_only.</code><code class="sig-name descname">gmInteractionTypeWriter</code><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl_md_only.html#gmInteractionTypeWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl_md_only.gmInteractionTypeWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="SMArt.html#SMArt.incl.Defaults" title="SMArt.incl.Defaults"><code class="xref py py-class docutils literal notranslate"><span class="pre">SMArt.incl.Defaults</span></code></a></p>
+<dl class="py method">
+<dt id="SMArt.md.gromacs.io.incl_md_only.gmInteractionTypeWriter.gm_params2define">
+<code class="sig-name descname">gm_params2define</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">define_id</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/SMArt/md/gromacs/io/incl_md_only.html#gmInteractionTypeWriter.gm_params2define"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#SMArt.md.gromacs.io.incl_md_only.gmInteractionTypeWriter.gm_params2define" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-SMArt.md.gromacs.io">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-SMArt.md.gromacs.io" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="SMArt.md.gromos.html" class="btn btn-neutral float-right" title="SMArt.md.gromos package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="SMArt.md.gromacs.FF_DB.html" class="btn btn-neutral float-left" title="SMArt.md.gromacs.FF_DB package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Drazen Petrov.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

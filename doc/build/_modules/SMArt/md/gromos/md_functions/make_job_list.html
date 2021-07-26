@@ -1,0 +1,290 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>SMArt.md.gromos.md_functions.make_job_list &mdash; SMArt v1.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../../../" src="../../../../../_static/documentation_options.js"></script>
+        <script src="../../../../../_static/jquery.js"></script>
+        <script src="../../../../../_static/underscore.js"></script>
+        <script src="../../../../../_static/doctools.js"></script>
+        <script src="../../../../../_static/language_data.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    
+    <script type="text/javascript" src="../../../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../../../index.html" class="icon icon-home"> SMArt
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../modules.html">SMArt</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../Tutorial/index.html">Tutorial</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../../index.html">SMArt</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../../../md.html">SMArt.md</a> &raquo;</li>
+        
+      <li>SMArt.md.gromos.md_functions.make_job_list</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for SMArt.md.gromos.md_functions.make_job_list</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">from</span> <span class="nn">SMArt.md.gromos.io.incl</span> <span class="kn">import</span> <span class="n">GromosFile</span>
+
+
+<span class="k">def</span> <span class="nf">_make_job_list</span><span class="p">(</span><span class="n">f_path</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;job list&#39;</span><span class="p">,</span> <span class="n">flag_subdir</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="n">gf</span> <span class="o">=</span> <span class="n">GromosFile</span><span class="p">(</span><span class="n">f_path</span><span class="p">,</span> <span class="n">write</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">gf</span><span class="o">.</span><span class="n">write_block</span><span class="p">(</span><span class="s1">&#39;TITLE&#39;</span><span class="p">,</span> <span class="n">title</span><span class="p">)</span>
+    <span class="n">n_sims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]])</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="s1">&#39;subdir&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+        <span class="n">params</span><span class="p">[</span><span class="s1">&#39;subdir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_sims</span>
+    <span class="k">if</span> <span class="s1">&#39;job_id&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+        <span class="n">params</span><span class="p">[</span><span class="s1">&#39;job_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_sims</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">if</span> <span class="s1">&#39;run_after&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+        <span class="n">params</span><span class="p">[</span><span class="s1">&#39;run_after&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">params</span><span class="p">[</span><span class="s1">&#39;run_after&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;job_id&#39;</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">param_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;job_id&#39;</span><span class="p">,</span> <span class="s1">&#39;run_after&#39;</span><span class="p">,</span> <span class="s1">&#39;subdir&#39;</span><span class="p">):</span>
+        <span class="n">param_keys</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+    <span class="n">param_keys</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;job_id&#39;</span><span class="p">)</span>
+    <span class="n">param_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;subdir&#39;</span><span class="p">)</span>
+    <span class="n">param_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;run_after&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">param_keys</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">9</span><span class="p">:</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="s1">&#39;{:&gt;&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;}&#39;</span>
+            <span class="n">s</span> <span class="o">+=</span> <span class="n">temp</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">l</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{:&gt;10}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">l</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;10&#39;</span>
+    <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_sims</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">param_keys</span><span class="p">:</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="s1">&#39;{:&gt;&#39;</span> <span class="o">+</span> <span class="n">l</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;}&#39;</span>
+            <span class="n">s</span> <span class="o">+=</span> <span class="n">temp</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="n">gf</span><span class="o">.</span><span class="n">write_block</span><span class="p">(</span><span class="s1">&#39;JOBSCRIPTS&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+    <span class="n">gf</span><span class="o">.</span><span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="n">make_job_list</span> <span class="o">=</span> <span class="n">_make_job_list</span>
+
+
+<span class="k">def</span> <span class="nf">_make_T_params</span><span class="p">(</span><span class="n">T_list</span><span class="p">,</span> <span class="n">n_grp</span><span class="p">):</span>
+    <span class="n">temp_d</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;TEMPI&#39;</span><span class="p">:</span> <span class="n">T_list</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_grp</span><span class="p">):</span>
+        <span class="n">temp_d</span><span class="p">[</span><span class="s1">&#39;TEMP0[&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;]&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">T_list</span>
+    <span class="k">return</span> <span class="n">temp_d</span>
+
+
+<div class="viewcode-block" id="make_eq_job_list"><a class="viewcode-back" href="../../../../../SMArt.md.gromos.md_functions.html#SMArt.md.gromos.md_functions.make_job_list.make_eq_job_list">[docs]</a><span class="k">def</span> <span class="nf">make_eq_job_list</span><span class="p">(</span><span class="n">f_path</span><span class="p">,</span> <span class="n">use_posres</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_rot_trans</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">301</span><span class="p">,</span> <span class="mi">50</span><span class="p">))</span>
+    <span class="n">T</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">300</span><span class="p">)</span>
+    <span class="n">press</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">press</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">gen_v</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">gen_v</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">nsteps</span> <span class="o">=</span> <span class="p">[</span><span class="mi">25000</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">nsteps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">100000</span><span class="p">)</span>
+    <span class="n">rnd</span> <span class="o">=</span> <span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000000</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">T</span><span class="p">))]</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">_make_T_params</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">params</span><span class="p">[</span><span class="s1">&#39;NTIVEL&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gen_v</span>
+    <span class="n">params</span><span class="p">[</span><span class="s1">&#39;NSTLIM&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nsteps</span>
+    <span class="n">params</span><span class="p">[</span><span class="s1">&#39;IG&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rnd</span>
+    <span class="n">params</span><span class="p">[</span><span class="s1">&#39;COUPLE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">press</span>
+    <span class="k">if</span> <span class="n">use_posres</span><span class="p">:</span>
+        <span class="n">temp_cpor</span> <span class="o">=</span> <span class="mi">25000</span>
+        <span class="n">params</span><span class="p">[</span><span class="s1">&#39;NTPOR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">params</span><span class="p">[</span><span class="s1">&#39;CPOR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">T</span><span class="p">)):</span>
+            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;CPOR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">temp_cpor</span><span class="p">))</span>
+            <span class="n">params</span><span class="p">[</span><span class="s1">&#39;NTPOR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
+            <span class="n">temp_cpor</span> <span class="o">/=</span> <span class="mi">10</span>
+    <span class="k">if</span> <span class="n">use_rot_trans</span><span class="p">:</span>
+        <span class="n">params</span><span class="p">[</span><span class="s1">&#39;NSCM&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1000</span><span class="p">]</span>
+        <span class="n">params</span><span class="p">[</span><span class="s1">&#39;RTC&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">T</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;CPOR&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">params</span><span class="p">[</span><span class="s1">&#39;NSCM&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+                <span class="n">params</span><span class="p">[</span><span class="s1">&#39;RTC&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">params</span><span class="p">[</span><span class="s1">&#39;NSCM&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">params</span><span class="p">[</span><span class="s1">&#39;RTC&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">_make_job_list</span><span class="p">(</span><span class="n">f_path</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Drazen Petrov.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -16,10 +16,10 @@ parsing
 
 ```python
 from SMArt.md import parse_top, parse_ff
-ff_gr = parse_ff(gromos_ifp_file) # by default, format_type = 'gm'
+ff_gr = parse_ff(gromos_ifp_file) # by default, format_type = 'gr'
 ff_gm = parse_ff (gromacs_ff_itp_file, format_type = 'gm')
 
-top_gr = parse_top(gromos_top_file) # by default, format_type = 'gm'
+top_gr = parse_top(gromos_top_file) # by default, format_type = 'gr'
 top_gm = parse_top(gromacs_top_file, format_type = 'gm')
 ```
 writing

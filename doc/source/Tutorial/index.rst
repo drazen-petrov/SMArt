@@ -2,8 +2,7 @@ Tutorial
 ==========
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 4
+   :glob:
 
-   get_started
-   perturbation_topologies
+   *

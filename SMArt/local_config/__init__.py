@@ -1,5 +1,5 @@
 from SMArt.incl import subprocess, os, do_warn, Defaults
-from .__local_config_data import __bin_paths, _gm_FDs, _gr_FDs
+from .local_config_data import __bin_paths, _gm_FDs, _gr_FDs
 
 if __bin_paths['gmx'] is None:
     __bin_paths['gmx'] = 'gmx'
@@ -24,19 +24,18 @@ except:
 
 if __bin_paths['gpp'] is None:
     try:
-        make_top_path = os.popen('which make_top').readlines()
+        make_top_path = os.popen('which make_top').readlines()[0].strip()
         __bin_paths['gpp'] = os.path.split(make_top_path)[0]
         gr_fd =  os.path.split(make_top_path)[0]
         for i in range(3):
             gr_fd =  os.path.split(gr_fd)[0]
-        print(gr_fd)
     except:
         do_warn('gpp not found')
         __bin_paths['gpp'] = None
 
 if __bin_paths['gxx'] is None:
     try:
-        md_path = os.popen('which md').readlines()
+        md_path = os.popen('which md').readlines()[0].strip()
         __bin_paths['gxx'] = os.path.split(md_path)[0]
     except:
         do_warn('gxx not found')

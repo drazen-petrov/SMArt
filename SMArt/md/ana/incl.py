@@ -1,4 +1,4 @@
-from SMArt.incl import math, np, combinations, Defaults
+from SMArt.incl import math, np, pd, combinations, Defaults
 
 def normalize_RGB(*RGB, fac = 1, col_type=tuple):
     """
@@ -185,6 +185,7 @@ def get_lifetime_trans(states_tser, N_states, state_offset=1, time_tser=None, in
     start_time = 0
     if time_tser is None:
         time_tser = range(len(states_tser))
+    assert min(np.diff(time_tser)) > 0
     for t, st in zip(time_tser, states_tser):
         st -= state_offset
         if st!=current_state:
@@ -197,6 +198,7 @@ def get_lifetime_trans(states_tser, N_states, state_offset=1, time_tser=None, in
             current_state = st
     if include_last_state and t!=start_time:
         life_times[current_state].append(t - start_time)
+    state_trans = pd.DataFrame(state_trans)
     return life_times, state_trans
 
 def _RMSD2(coord1, coord2):

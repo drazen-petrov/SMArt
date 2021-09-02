@@ -1,5 +1,5 @@
 from SMArt.incl import Defaults, _copy_file
-from .__local_defaults import _gromos_block_names, _gromos_dvalues
+from .local_defaults import _gromos_block_names, _gromos_dvalues
 
 
 class GromosBlockNames(Defaults):

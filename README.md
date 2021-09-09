@@ -96,5 +96,5 @@ Additional useful scripts are can be found in `scripts` directory of the package
 
 ## How to cite?
 Please use this reference for citation:<br>
-D Petrov. Perturbation Free-Energy Toolkit: An Automated Alchemical Topology Builder. J. Chem. Inf. Model. 2021. (DOI)[https://pubs.acs.org/doi/10.1021/acs.jcim.1c00428]
+D Petrov. Perturbation Free-Energy Toolkit: An Automated Alchemical Topology Builder. J. Chem. Inf. Model. 2021. ([DOI)](https://pubs.acs.org/doi/10.1021/acs.jcim.1c00428)
 

@@ -167,7 +167,14 @@ class GromosParser(GeneralContainer, GromosDefaults):
         gs._remove_f()
 
     def __read_unknown_block(self, gs, bl_name, **kwargs):
+        temp_f = getattr(self, self.__read_unknown_block_v)
+        temp_f(gs, bl_name, **kwargs)
+
+    def __read_unknown_block_v1(self, gs, bl_name, **kwargs):
         self.undefined_bl[bl_name] = list(gs.block_lines())
+
+    def __read_unknown_block_v2(self, gs, bl_name, **kwargs):
+        self.undefined_bl[bl_name] = list(gs.block_split_fnc)
 
     def __TITLE_v1(self, gs, *args, **kwargs):
         temp_title = DescriptionPart(form = 'gr', **kwargs)
@@ -192,6 +199,7 @@ class GromosParser(GeneralContainer, GromosDefaults):
 
 _GromosParser_defs = {}
 _GromosParser_defs['__parse_gr_v'] = '__parse_gr_v1' # this will take __parse_gr_v1 function
+_GromosParser_defs['__read_unknown_block_v'] = '__read_unknown_block_v1'
 _GromosParser_defs['_TITLE_parser'] = '__TITLE_v1'
 _GromosParser_defs['_FORCEFIELD_parser'] = '__oneliner_block_v1'
 _GromosParser_defs['_MAKETOPVERSION_parser'] = '__oneliner_block_v1'

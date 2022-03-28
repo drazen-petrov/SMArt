@@ -28,13 +28,16 @@ def _get_ptp_2_tops(top1, top2, **kwargs):
         if common_atoms[0]:
             mcs = MCS(top1, top2, common_atoms = common_atoms, available_atoms = available_atoms_groups, **mcs_kwargs)
             s = mcs.initial_sol
-            mcs.make_estimates(s)
-            mcs.calc_score(s)
-            top_matching_fnc.generate_toptp(sol=s)
+            #mcs.make_estimates(s)
+            #mcs.calc_score(s)
+            #top_matching_fnc.generate_toptp(sol=s)
             mcs.enumerate_stepwise_sorted_call(s, **enum_kwargs)
     if mcs is None:
         mcs = MCS(top1, top2, **mcs_kwargs)
-        mcs.enumerate_stepwise_sorted(**enum_kwargs)
+        if mcs.initial_sol._sol.shape[0]:
+            mcs.enumerate_stepwise_sorted_call(mcs.initial_sol, **enum_kwargs)
+        else:
+            mcs.enumerate_stepwise_sorted(**enum_kwargs)
     return mcs
 
 def point_mutation(top1, top2, **kwargs):

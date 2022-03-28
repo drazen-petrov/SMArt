@@ -82,7 +82,11 @@ class MCS(DataDumping):
         self.__generate_initial_sol_TGPs(**kwargs)
         self._top_pairs = tuple([top_pair_ind for top_pair_ind in combinations(self.initial_sol._sol.columns, 2)])
         self.pyramid_neighbours = list(self.__get_pyramid_neighbours())
-
+        if self.initial_sol._sol.shape[0] and self.flag_top_update:
+            initial_sol = self.initial_sol
+            self.make_estimates(initial_sol)
+            self.calc_score(initial_sol)
+            generate_toptp(sol=initial_sol)
         ######################################### initial #########################################
         ######################################### initial topology props #########################################
         ######################################### initial topology props #########################################
@@ -1331,7 +1335,8 @@ class MCS(DataDumping):
                     at2 = Dummy
                     c_dummy += 1
                 temp_pair = self.__merge_top_atom_pair(top_pair_ind, (at1, at2)[::flag_at_flip])
-                yield temp_pair
+                if self.check_match_pair(temp_pair, sol, **kwargs):
+                    yield temp_pair
             assert c_dummy==1
 
     def __get_unsorted_new_pairs_stepwise_1_part(self, sol, **kwargs):

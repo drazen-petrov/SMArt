@@ -1164,7 +1164,7 @@ class topBlocksWriter(GromosWriter):
                 s += '{:>4}{:11.5f}{:11.5f}'.format(*ptp_prop)
                 # get the softness
                 if not kwargs.get('flag_soft_heawy', False) and \
-                        (m_ptp[0] > 1.5 and m_ptp[0] > 1.5 and a_type_ptp[0] != DUM_type and a_type_ptp[0] != DUM_type):
+                        (m_ptp[0] > 1.5 and m_ptp[0] > 1.5 and a_type_ptp[0] != DUM_type and a_type_ptp[1] != DUM_type):
                     s += '{:9d}{:9d}\n'.format(0, 0)
                 else:
                     s += '{:9.2f}{:9.2f}\n'.format(ALJ, ACRF)

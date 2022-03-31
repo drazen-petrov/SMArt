@@ -1664,10 +1664,10 @@ class Trajectory(TrjCnfBlocksParser, TrjCnfBlocksWriter):
         self.time_real_num_dtype = kwargs.get('time_dtype', np.float32)
         self.__adjust_real_num_format()
         self.N_atoms = N_atoms
-        if N_atoms:
-            self.get_frame_dtype()
         self._trj = []
         self.trj = None
+        if N_atoms:
+            self.get_frame_dtype()
         if f_path:
             self.parse_trc(f_path, **kwargs)
 
@@ -1682,16 +1682,54 @@ class Trajectory(TrjCnfBlocksParser, TrjCnfBlocksWriter):
         self.__adjust_num_format(self.real_num_dtype, '_real_num_format')
         self.__adjust_num_format(self.time_real_num_dtype, '_time_real_num_format')
 
-    def get_frame_dtype(self):
+    def _get_frame_dtype_original(self):
         frame_dtype = [('time_step', self.int_num_dtype, (1,)), ('time', np.float32, (1,))]
         frame_dtype.append(('coord', self.real_num_dtype, (self.N_atoms, 3)))
         frame_dtype.extend([('box_type', np.int8, (1,)), ('box', self.real_num_dtype, (4,3))])
         self.frame_dtype = np.dtype(frame_dtype)
         self.trj = np.empty(0, dtype=self.frame_dtype)
 
+    def _get_frame_dtype_simplified(self):
+        frame_dtype = [('time_step', self.int_num_dtype), ('time', np.float32)]
+        frame_dtype.append(('coord', self.real_num_dtype, (self.N_atoms, 3)))
+        frame_dtype.extend([('box_type', np.int8), ('box', self.real_num_dtype, (4,3))])
+        self.frame_dtype = np.dtype(frame_dtype)
+        self.trj = np.empty(0, dtype=self.frame_dtype)
+    
+    def get_frame_dtype(self, fnc2call=None):
+        if fnc2call:
+            fnc2call = getattr(self,fnc2call)
+            fnc2call()
+        else:
+            self._get_frame_dtype_original()
+
     def set_N_frames(self, N_frames):
         self.N_frames = N_frames
         self.trj.resize(N_frames)
+
+    def reduce_N_atoms(self, N_atoms=None, atom_sel=None):
+        """
+        reduce number of atoms
+        :param f_path: N_atoms
+        :param atom_sel: selection of atoms e.g. (1,2,5,8) - will be used to index atoms in the trj array
+        :return: new Trajectory instance
+        """
+        if atom_sel:
+            N_atoms=len(atom_sel)
+            atom_sel = tuple(atom_sel)
+        assert N_atoms is not None
+        new_trj = Trajectory(N_atoms=N_atoms, int_num_dtype=self.int_num_dtype, real_num_dtype=self.real_num_dtype,
+                            time_dtype=self.time_real_num_dtype)
+        new_trj.set_N_frames(self.trj.shape[0])
+        for var_name in self.frame_dtype.names:
+            if var_name=='coord':
+                if atom_sel is None:
+                    new_trj.trj[var_name][:] = self.trj[var_name][:,:N_atoms,:]
+                else:
+                    new_trj.trj[var_name][:] = self.trj[var_name][:,atom_sel,:]
+            else:
+                new_trj.trj[var_name][:] = self.trj[var_name][:]
+        return new_trj.trj
 
     def _gr_add_frame(self):
         temp_frame = np.array((self.time_step, self.time, self.coord, self.box_type, self.box), dtype=self.frame_dtype)

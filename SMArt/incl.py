@@ -795,3 +795,8 @@ class DataDumping:
             if post_dump_load_fnc:
                 post_dump_load_fnc(**kwargs)
         return loaded_data
+
+import argparse
+class ArgParser(argparse.ArgumentParser):
+    def convert_arg_line_to_args(self, arg_line):
+        return arg_line.split()

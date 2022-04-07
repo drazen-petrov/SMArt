@@ -1031,7 +1031,18 @@ def update_LPs_2(LPs, seg_score_flag, converged_segments, dl_min):
             new_LPs_weights[temp_l] += temp_w
     return new_LPs_weights
 
-def get_LPs_times(new_LPs_weights, LPs_times, max_iter_LPs_t, max_iter_t_LP=1., max_t_LP=5., max_total_LPs_t=100., t_step=0.1, min_t_LP=0.5):
+def get_LPs_times(new_LPs_weights, LPs_times, max_iter_LPs_t, max_iter_t_LP=1., max_t_LP=5., max_total_LPs_t=100., min_t_LP=0.5, t_step=0.1):
+    """
+    calculates (suggestions) simulation time (in ns) for all new lamdba points
+    :param new_LPs_weights: dict of new lambda points (keys) and weights for calulations of sim time (values)
+    :param LPs_times: dict of all LPs and simulation times (so far)
+    :param max_iter_LPs_t: max total time for the next iteration (sum of times for all new_LPs)
+    :param max_iter_t_LP: max time for each of the new LPs (in this iteration)
+    :param max_t_LP: max total time for each of the new LPs (this iteration + from LPs_times)
+    :param max_total_LPs_t: max total time for all LPs ad for all iterations
+    :param min_t_LP: min time for each new lambda point (not in LPs_times)
+    :param t_step: simulation time for new LPs is added in steps
+    """
     iter_LPs_times = dict((temp_l, 0) for temp_l in new_LPs_weights)
     t_step = float(t_step)
     weight_step = t_step / max_iter_LPs_t

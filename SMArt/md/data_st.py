@@ -1768,7 +1768,27 @@ class MD_Parameters(GromosParser, GromosWriter):
         self.md_in = template_md_in
         if self.md_in.endswith('imd'):
             self._parse_gr(self.md_in)
-    
+
+    def get_LPs_pred(self):
+        if self.md_in.endswith('mdp'):
+            with open(self.md_in) as f:
+                for l in f:
+                    if l.startswith('fep-lambdas'):
+                        temp = l.split('=')[1]
+                        LPs_pred = get_lset(temp.split())
+                        break
+            return LPs_pred
+
+    def get_dt(self):
+        if self.md_in.endswith('mdp'):
+            with open(self.md_in) as f:
+                for l in f:
+                    if l.startswith('dt'):
+                        temp = l.split('=')[1]
+                        dt = float(temp.split()[0])
+                        break
+            return dt
+
     def change_md_in(self, **kwargs):
         if self.md_in.endswith('mdp'):
             return self.change_mdp(**kwargs)
@@ -1824,16 +1844,6 @@ class MD_Parameters(GromosParser, GromosWriter):
                 bl_params[param] = value
             self.__generate_bl_txt(bl, bl_params, bl_params_per_line)
 
-    def get_LPs_pred(self):
-        if self.md_in.endswith('mdp'):
-            mdp_in = self.md_in
-            f = open(mdp_in)
-            for l in f:
-                if l.startswith('fep-lambdas'):
-                    temp = l.split('=')[1]
-                    LPs_pred = get_lset(temp.split())
-            return LPs_pred
-    
     def write_imd(self, f_path = None, **kwargs):
         gs = self._get_grs_from_fpaht(f_path)
         self.write_gromos_format(gs, 'TITLE')

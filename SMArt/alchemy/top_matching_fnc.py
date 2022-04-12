@@ -984,6 +984,13 @@ def generate_multi_state_top(sol, top_state = 0, **kwargs):
 
     """
     sol.toptp.ff = sol.tops[0].ff
+    if kwargs.get('flag_copy_undefined_bl', True):
+        try:
+            if not hasattr(sol.toptp, 'undefined_bl'):
+                sol.toptp.undefined_bl = {}
+            sol.toptp.undefined_bl.update(sol.tops[0].undefined_bl)
+        except:
+            pass
     #sol.toptp.top_state = top_state
     generate_atom_states(sol, **kwargs)
     #generate_atom_top_state(sol, **kwargs)

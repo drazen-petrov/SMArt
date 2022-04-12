@@ -1068,7 +1068,10 @@ class topBlocksWriter(GromosWriter):
 
     def __write_interaction_atoms_v1(self, bonded_container, gf, bl, *args, **kwargs):
         if bonded_container is None:
-            return
+            if kwargs.get('flag_write_None_bonded_container', True):
+                bonded_container = []
+            else:
+                return
         top_state = kwargs.get('top_state', getattr(self, 'top_state', 0))
         s = str(len(bonded_container)) + '\n'
         for bond in bonded_container:
@@ -1187,8 +1190,12 @@ class topBlocksWriter(GromosWriter):
         gf.write_block(bl, s)
 
     def __write_pert_interaction_v1(self, bonded_container, gf, bl, *args, **kwargs):
+        flag_write_None_bonded_container = kwargs.get('flag_write_None_bonded_container', False)
         if bonded_container is None:
-            return
+            if flag_write_None_bonded_container:
+                bonded_container = []
+            else:
+                return
         N_int_ptp = 0
         s = ''
         for temp_int in bonded_container:
@@ -1200,7 +1207,7 @@ class topBlocksWriter(GromosWriter):
                 for i in range(2):
                     s += '{:>6}'.format(get_id_string(temp_int_ptp[i]))
                 s += '\n'
-        if N_int_ptp==0:
+        if N_int_ptp==0 and not flag_write_None_bonded_container:
             return
         s = str(N_int_ptp) + '\n' + s
         return gf.write_block(bl, s)

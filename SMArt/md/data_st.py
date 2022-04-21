@@ -1657,6 +1657,25 @@ class Configuration(cnfBlocksParser, cnfBlocksWriter, gmConfigurationIO):
                 new_at.id = str(len(new_cnf.atoms))
         return new_cnf
 
+    def find_last_solute(self, **kwargs):
+        """
+        :param kwargs:
+            solv_res_names: residue names for solvent (e.g. (SOLV, H2O))
+        :return:
+            last atom of solute molecules
+        """
+        solv_res_names = kwargs.get('solv_res_names', self.solv_res_names)
+        for at_i, at in enumerate(self.atoms):
+            if at.res_name in solv_res_names:
+                break
+        return at_i
+
+
+_Configuration_defs = {}
+_Configuration_defs['solv_res_names'] = ('SOL', 'SOLV', 'H2O')
+Configuration._add_defaults(_Configuration_defs, flag_set=True)
+
+
 class Trajectory(TrjCnfBlocksParser, TrjCnfBlocksWriter):
     def __init__(self, f_path = None, N_atoms = None, int_num_dtype = np.int32, real_num_dtype = np.float32, **kwargs):
         self.int_num_dtype = int_num_dtype

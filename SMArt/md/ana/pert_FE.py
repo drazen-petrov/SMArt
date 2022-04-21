@@ -1,4 +1,4 @@
-from SMArt.incl import sys, np, pd, Manager, Pool, integrate, bisect_left, bisect_right, Defaults, do_warn, itemgetter
+from SMArt.incl import sys, np, pd, copy, Manager, Pool, integrate, bisect_left, bisect_right, Defaults, do_warn, itemgetter
 from .incl import Real, get_lset
 try:
     from pymbar import MBAR, timeseries
@@ -41,6 +41,20 @@ class LPs_Map:
             if self.LPs_interval[-1] != l1:
                 self.pos_inLPs_LPs_interval_full.append(self.pos_inLPs_LPs_interval[-1] + 1)
             self.LPs_interval_full = [LPs[pos] for pos in self.pos_inLPs_LPs_interval_full] # LPs (simulated) in the interval
+
+    def print_nice(self):
+        s = 'LP_map on interval {:} {:}\n'.format(self.l0, self.l1)
+        s += 'LPs: '+str(self.LPs)+'\n'
+        s += 'LPs_pred: '+str(self.LPs_pred)+'\n'
+        s += 'LPs_interval: '+str(self.LPs_interval)+'\n'
+        s += 'LPs_pred_interval: '+str(self.LPs_pred_interval)+'\n'
+        return s
+
+    def __str__(self):
+        return self.print_nice()
+
+    def __repr__(self):
+        return self.print_nice()
 
     def for_neigh_Es_nfr(self, Es, nfr, n_neigh=1):
         count = sum(nfr[:self.pos_LPs_interval[0]])
@@ -333,14 +347,21 @@ def calc_dg_exTI_lin(exTI_data, LPs_pred=None, flag_get_exTI_data_avg=True, fnc2
     dgdl = []
     for lp in LPs_pred:
         if lp not in exTI_data:
-            pos = bisect_left(LPs, lp)
-            d1 = lp - LPs[pos - 1]
-            d2 = LPs[pos] - lp
-            v1 = exTI_data_avg[LPs[pos - 1]][lp]
-            v2 = exTI_data_avg[LPs[pos]][lp]
-#            dgdl_delta[l] = v2 - v1
-            D_sum = d1 + d2
-            new_dgdl = (v1 * d2 + v2 * d1) / D_sum
+            if LPs[0] < lp < LPs[-1]:
+                pos = bisect_left(LPs, lp)
+                d1 = lp - LPs[pos - 1]
+                d2 = LPs[pos] - lp
+                v1 = exTI_data_avg[LPs[pos - 1]][lp]
+                v2 = exTI_data_avg[LPs[pos]][lp]
+    #            dgdl_delta[l] = v2 - v1
+                D_sum = d1 + d2
+                new_dgdl = (v1 * d2 + v2 * d1) / D_sum
+            elif LPs[0] < lp:
+                new_dgdl = exTI_data_avg[LPs[0]][lp]
+            elif lp < LPs[-1]:
+                new_dgdl = exTI_data_avg[LPs[-1]][lp]
+            else:
+                raise Exception
             dgdl.append(new_dgdl)
         else:
             dgdl.append(exTI_data_avg[lp][lp])
@@ -366,9 +387,12 @@ def calc_exTI_err(exTI_data, LPs_pred = None, flag_get_exTI_data_avg=True, fnc2c
     for lp in LPs_pred:
         pos = bisect_left(LPs, lp)
         if lp not in exTI_data:
-            v1 = exTI_data_avg[LPs[pos - 1]][lp]
-            v2 = exTI_data_avg[LPs[pos]][lp]
-            err = abs(v1 - v2)
+            if LPs[0] < lp < LPs[-1]:
+                v1 = exTI_data_avg[LPs[pos - 1]][lp]
+                v2 = exTI_data_avg[LPs[pos]][lp]
+                err = abs(v1 - v2)
+            else: # if lp not between outer LPs
+                err = 0
             dhdl_err.append(err)
             dhdl_err2.append(err)
         else:
@@ -520,8 +544,9 @@ class dG_err_tols(Defaults):
     def _get_dg_methods_data_frac(dg_err):
         dg_methods = set()
         for temp_data in dg_err['data_frac'].values():
-            for dg_meth in temp_data:
-                dg_methods.add(dg_meth)
+            for tols in temp_data.values():
+                for dg_meth in tols:
+                    dg_methods.add(dg_meth)
         return dg_methods
 
 _dG_err_tols_defs = {}
@@ -540,11 +565,15 @@ def _generate_exTI_data(LPs_map, Es, dEs, nfr_mul, T = 300):
     exTI_data = {}
     for sim_l, temp_Es, temp_dEs, temp_nfr in LPs_map.for_LPs_Es_nfr_mul(Es, nfr_mul, dEs):
         dhdl = _calc_singleLP_exTI_pred_mbar(temp_Es, temp_dEs, LPs_map.LPs_pred, temp_nfr, T=T)
-        combine_exTI(exTI_data, pd.DataFrame(dhdl.reshape((1, dhdl.shape[0])), columns=LPs_map.LPs_pred), sim_l)
+        #temp_data = pd.DataFrame(dhdl.reshape((1, dhdl.shape[0])), columns=LPs_map.LPs_pred)[LPs_map.LPs_pred_interval]
+        temp_data = pd.DataFrame(dhdl.reshape((1, dhdl.shape[0])), columns=LPs_map.LPs_pred)
+        combine_exTI(exTI_data, temp_data, sim_l)
     return exTI_data
 
 
 def _get_dg_seg(dg, LPs_map):
+    if dg is None:
+        return
     if len(dg.shape)==2:
         return dg[LPs_map.pos_LPs_pred_interval[0]][LPs_map.pos_LPs_pred_interval[-1]]
     elif dg.shape[0] == len(LPs_map.LPs_pred):
@@ -640,7 +669,7 @@ def calc_seg_props(LPs_map, Es, dEs, nfr_mul, si_skips=None, T=300, **kwargs):
     if kwargs.get('flag_calc_full_seg_props'):
         segs2calc_LPs_maps[(LPs_map.l0, LPs_map.l1)] = LPs_map
          # this is nice if seg = (0., 1.) - which gives than the full dG and dG_err
-    dg_methods = kwargs.get('dg', {'mbar'})
+    dg_methods = set(kwargs.get('dg', {'mbar'}))
     dg_err_estimators = kwargs.get('dg_err', dG_err_tols.get_default_dg_err_tols())
     dg_methods |= dG_err_tols._get_dg_methods_data_frac(dg_err_estimators)
     exTI_data = kwargs.get('exTI_data')
@@ -818,7 +847,7 @@ def get_segments2test(LPs, LPs_allowed, seg_width_slide = [(0.3, 0.1), (0.2, 0.2
     for i in range(len(LPs_allowed) - 1):
         segs2check.add((LPs_allowed[i], LPs_allowed[i+1]))
     segs2calc = {}
-    segs2calc_dG = []
+    segs2calc_dG_list = []
     for seg_width, seg_slide_step in seg_width_slide:
         temp_start_LPs = get_lset(np.arange(0., 1.0001 - seg_width, seg_slide_step))
         lim_val = (seg_width - seg_slide_step) / 2 # lim value added on both sides of the segment
@@ -843,7 +872,7 @@ def get_segments2test(LPs, LPs_allowed, seg_width_slide = [(0.3, 0.1), (0.2, 0.2
             # save the temp_seg_lim for each temp_LPs (to calculate full dG from the segments)
             temp_LPs = _get_LPs_in_seg(LPs, temp_seg)
             temp_segscalc_dG[temp_LPs] = temp_seg_lim
-        segs2calc_dG.append(temp_segscalc_dG)
+        segs2calc_dG_list.append(temp_segscalc_dG)
     assert temp_seg[1] == 1.
     assert len(segs2check) == 0
     segs2calc_LPs = {}
@@ -854,7 +883,15 @@ def get_segments2test(LPs, LPs_allowed, seg_width_slide = [(0.3, 0.1), (0.2, 0.2
                 segs2calc_LPs[temp_LPs] = segs2calc[temp_seg]
             else:
                 segs2calc_LPs[temp_LPs].extend(segs2calc[temp_seg])
-    return segs2calc_LPs, segs2calc_dG
+    # make sure that all segs2calc_dG are in segs2calc_LPs
+    all_segs2_calc_LPs = copy.deepcopy(segs2calc_LPs)
+    for segs2calc_dG in segs2calc_dG_list:
+        for LPs_2_calc, seg2calc_dG in segs2calc_dG.items():
+            if LPs_2_calc not in all_segs2_calc_LPs:
+                all_segs2_calc_LPs[LPs_2_calc] = [seg2calc_dG]
+            elif seg2calc_dG not in all_segs2_calc_LPs[LPs_2_calc]:
+                all_segs2_calc_LPs[LPs_2_calc].append(seg2calc_dG)
+    return segs2calc_LPs, segs2calc_dG_list, all_segs2_calc_LPs
 
 def __get_dG_err_data_from_keys(dG_err, dG_err_keys, temp_seg):
     flag_OI = False
@@ -961,18 +998,22 @@ def update_LPs_times(data_bar_sys, data_dhdl_sys=None, T=300, **kwargs):
         else:
             LPs_allowed = list(LPs_sim)
             dl_min_update = dl_min # add midpoints at the update
-    segs2calc_LPs, segs2calc_dG = get_segments2test(LPs_sim, LPs_allowed, **seg_test_kwargs)
+    segs2calc_LPs, segs2calc_dG, all_segs2_calc_LPs = get_segments2test(LPs_sim, LPs_allowed, **seg_test_kwargs)
     si_l_dict = si_data_bar_dhdl(data_bar_sys)
     seg_score_flag = {}
     converged_segments = []
     seg_data_dG_err = {}
-    for temp_LPs, segs2calc in segs2calc_LPs.items():
+    for temp_LPs, segs2calc in all_segs2_calc_LPs.items():
         Es, NFRs, dEs, LPs, LPs_pred = prep_mbar_input(data_bar_sys, data_dhdl_sys, LPs = temp_LPs, **kwargs)
         nfr_mul = get_nfr_mul_from_NFRs(NFRs, LPs, LPs_pred)
         LPs_map = LPs_Map(LPs[0], LPs[-1], LPs, LPs_pred)
-        seg_dG, seg_dG_err, dG_full = calc_seg_props(LPs_map, Es, dEs, nfr_mul, segs2calc = segs2calc, si_skips = si_l_dict, **kwargs)
+        seg_dG, seg_dG_err, dG_full = calc_seg_props(LPs_map, Es, dEs, nfr_mul, segs2calc = segs2calc, si_skips = si_l_dict, **seg_test_kwargs)
         seg_data_dG_err[temp_LPs] = seg_dG, seg_dG_err, dG_full
-        for temp_seg in segs2calc:
+        if temp_LPs in segs2calc_LPs:
+            segs2calc_for_convergence = segs2calc_LPs[temp_LPs]
+        else:
+            segs2calc_for_convergence = []
+        for temp_seg in segs2calc_for_convergence:
             score, flag_conv = seg_check_conv_calc_score(temp_seg, seg_dG_err, tols)
             seg_score_flag[temp_seg] = score, flag_conv
             if flag_conv:
@@ -1015,7 +1056,11 @@ def update_LPs_2(LPs, seg_score_flag, converged_segments, dl_min):
             segs2sim.append(temp_seg)
     W_segs = np.array(W_segs).T
     for i in range(len(W_segs)):
-        W_segs[i]/=float(sum(W_segs[i]))
+        sum_weights = float(sum(W_segs[i]))
+        if sum_weights == 0.:
+            W_segs[i] = 1
+            sum_weights = float(sum(W_segs[i]))
+        W_segs[i] /= sum_weights
     new_LPs_weights = {}
     for i in range(len(segs2sim)):
         temp_seg = segs2sim[i]

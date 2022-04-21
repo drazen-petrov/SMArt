@@ -20,14 +20,14 @@ def _parse_header(f_path, dl_max, comments, N_comm_lines):
             elif c_lines_no_comm==1:
                 LPs = np.array(l.split(), dtype=float)
             c_lines_no_comm+=1
-        """
+        #"""
         else:
             if c_lines==0:
                 temp = l.split()
                 step, t = int(temp[-2]), float(temp[-1])
             elif c_lines==1 and 'lam_s' in l:
                 sim_l = float(l.split()[-1])
-        """
+        #"""
         if c_lines_no_comm>N_comm_lines:
             line_len = len(l)
             break

@@ -975,6 +975,7 @@ def generate_multi_state_top(sol, top_state = 0, **kwargs):
     :param sol: solution (from MCS)
     :param top_state: state to use to generate the topology (0 default)
     :kwargs
+        flag_copy_undefined_bl: copies undefined_bl from input topologies
         add_DUM_exclusions: adds exclusions betweeen dummies from different states (True by default)
         flag_EP2excl: generates exclusions and pairse from EP
         flag_bond_constraints: generates constraints to all bonds except the perturbed ones

@@ -10,10 +10,10 @@ def _get_LPs2use(LPs, dl_max, sim_l, LP_offset):
 
 def _parse_header(f_path, dl_max, comments, N_comm_lines):
     f = open(f_path)
-    c_lines_no_comm, c_lines = 0, 0
+    c_lines_no_comm = 0
     #sim_l, step, t = None, None, None
     sim_l = None
-    for l in f:
+    for c_lines, l in enumerate(f):
         if _not_start_with_comm(l, comments):
             if c_lines_no_comm==0:
                 N_LPs = int(l)
@@ -22,10 +22,10 @@ def _parse_header(f_path, dl_max, comments, N_comm_lines):
             c_lines_no_comm+=1
         #"""
         else:
-            if c_lines==0:
+            if c_lines==0 and 'sim time' in l:
                 temp = l.split()
                 step, t = int(temp[-2]), float(temp[-1])
-            elif c_lines==1 and 'lam_s' in l:
+            elif c_lines in (0, 1) and 'lam_s' in l:
                 sim_l = float(l.split()[-1])
         #"""
         if c_lines_no_comm>N_comm_lines:
@@ -37,6 +37,7 @@ def _parse_header(f_path, dl_max, comments, N_comm_lines):
         assert len(LPs) == N_LPs + 1
         sim_l = LPs[0]
         LP_offset = 1
+    assert sim_l is not None
     lp2use, lp2use_pos = _get_LPs2use(LPs, dl_max, sim_l, LP_offset)
     return c_lines, lp2use, lp2use_pos, LPs, sim_l, len(LPs), line_len
 

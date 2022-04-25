@@ -909,6 +909,19 @@ class GeneralTopology(DataDumping, InteractionContainer, GraphDirected):
             cg.update()
         return new_obj
 
+    def renumber(self, **kwargs):
+        """
+        :param kwargs:
+            c_init = 1
+            attrib = 'id'
+            flag_id_map = False
+        :return:
+            id_map
+        """
+        id_map_atoms = self.renumber_container('atoms', **kwargs)
+        id_map_residues = self.renumber_container('residues', **kwargs)
+        return id_map_atoms, id_map_residues
+
     def add_interactions2atoms_dict(self, EP_cont_exclude = True, **kwargs):
         atom_interactions = self.get_container('atom_interactions', create=True)
         for int_container in self.get_interaction_containers(EP_cont_exclude = EP_cont_exclude):

@@ -70,9 +70,9 @@ class GMX_FE_sim_set_processor:
         commands = []
         #grompp
         grompp_kwargs = kwargs.get('grompp_kwargs', self.kwargs.get('grompp_kwargs'))
-        in_conf = self.current_conf
+        in_conf = sim.get('input_conf', self.current_conf)
         if not flag_continue_cpt:
-            in_conf = sim.get('prev_FE_sim_final_conf', self.current_conf)
+            in_conf = sim.get('prev_FE_sim_final_conf', in_conf)
         comm = run_gm_prog('grompp', f=mdp_out, c=in_conf, p=self.top, o=sys_name, **grompp_kwargs)
         commands.append(comm)
         if sim['eq']:
@@ -89,8 +89,14 @@ class GMX_FE_sim_set_processor:
         if not sim['eq']:
             for new_sim_i in sim.get('sub'):
                 new_sim = sim_set[new_sim_i]
+                if 'input_conf' in sim:
+                    new_sim['input_conf'] = sim['input_conf']
                 if flag_continue_cpt:
                     new_sim['prev_FE_sim_t'] = tot_sim_time
                 else:
                     new_sim['prev_FE_sim_final_conf'] = os.path.join(sim_fd, sys_name + '.gro')
+        else:
+            for new_sim_i in sim.get('sub'):
+                new_sim = sim_set[new_sim_i]
+                new_sim['input_conf'] = os.path.join(sim_fd, sys_name + '.gro')
         return commands

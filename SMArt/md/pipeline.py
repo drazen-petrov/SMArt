@@ -127,6 +127,8 @@ class SimulationSet(Defaults):
         job_f, sim_fd, name = self.get_sim_file_fd(sim, sim_fd_root, **kwargs)
         commands.extend(fnc2process(sim, self.sim_set, job_f, sim_fd, name, **kwargs))
         commands.append('\n')
+        if sim.get('flag_cp_before_new_sub'):
+            commands.extend(get_cp_back_commands())
         # process all jobs to sub
         for new_sim_i in sim.get('sub'):
             new_sim = self.sim_set[new_sim_i]
@@ -135,8 +137,8 @@ class SimulationSet(Defaults):
             slurm_job_kwargs = new_sim.get('slurm_job_kwargs', kwargs)
             gen_slurm_job(new_sim_info[0], new_commands, job_fd=new_sim_info[1], **slurm_job_kwargs) # job_f, commands (kwargs, e.g. slurm_kw)
             temp_job_f_name = os.path.split(new_sim_info[0])[1]
-            if new_sim.get('flag_cp_before_new_sub'):
-                commands.extend(get_cp_back_commands())
+            #if new_sim.get('flag_cp_before_new_sub'):
+            #    commands.extend(get_cp_back_commands())
             comm = 'cd ' + new_sim_info[1] + '\n{:} '.format(self.submit_cmd) + temp_job_f_name + '\n'
             commands.append(comm)
             self.sims_done.add(new_sim_i)

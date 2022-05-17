@@ -77,13 +77,14 @@ def __parse_line_float_precision(line_gen, float_precision=8, usecols=None):
     else:
         return data
 
-def read_bar_dhdl(f_path, dl_max=0.3, comments=('#',), skip_stride=None, N_comm_lines=2, **kwargs):
+def read_bar_dhdl(f_path, dl_max=0.3, comments=('#',), skip=None, stride=None, N_comm_lines=2, **kwargs):
     """
         parse bar / dhdl data from GROMOS (output of ext_ti_ana)
     :param f_path: path to file
     :param dl_max: max delta lam to read (e.g. if sim_lp == 0.1 and dl_max=0.3, read data for lam in range [0., 0.4])
     :param comments: comment characters (skip these lines)
-    :param skip_stride: (int, int) - skipping lines
+    :param skip: skipping first `skip` lines (int)
+    :param stride: skipping every `stride` lines (int)
     :param N_comm_lines: number of commented lines in the header (default 2)
     :param kwargs:
         float_precision: number of digits used to write float in the output file - use if numbers are not separated with a space
@@ -98,9 +99,9 @@ def read_bar_dhdl(f_path, dl_max=0.3, comments=('#',), skip_stride=None, N_comm_
     c_lines, lp2use, lp2use_pos, LPs, sim_l, N_cols, line_len = _parse_header(f_path, dl_max, comments, N_comm_lines, **kwargs)
     data = None
     line_gen = None
-    if skip_stride:
-        skip_stride = skip_stride[0] + N_comm_lines, skip_stride[1]
-        line_gen = _get_lines(f_path, comments, *skip_stride)
+    if skip or stride:
+        skip = skip + N_comm_lines
+        line_gen = _get_lines(f_path, comments, skip, stride)
     if kwargs.get('col_format'):
         col_format = kwargs.get('col_format')
         N_cols = kwargs.get('N_cols', N_cols)

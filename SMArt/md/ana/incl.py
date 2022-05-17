@@ -75,10 +75,10 @@ def _get_lines(f_path, comments, skip, stride):
                 yield l
 
 
-def read_data(f_path, skip_stride=None, **kwargs):
-    if skip_stride:
+def read_data(f_path, skip=None, stride=None, **kwargs):
+    if skip or stride:
         comments = kwargs.get('comments', [])
-        f_path = _get_lines(f_path, comments, skip_stride[0], skip_stride[1])
+        f_path = _get_lines(f_path, comments, skip, stride)
     data = np.loadtxt(f_path, comments = comments, **kwargs)
     return data
 

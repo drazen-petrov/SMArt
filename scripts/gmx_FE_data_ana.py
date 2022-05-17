@@ -2,18 +2,15 @@ import glob, os
 from SMArt.md.ana import pert_FE
 from SMArt.md.gromacs.io.ana import read_bar_data, read_xvg_data
 
-def read_data(FD_list, data_file_pattern='FE_MD*.xvg', stride=None, dl_max=None):
+def read_data(FD_list, data_file_pattern='*/FE_MD*.xvg', skip=None, stride=None, dl_max=None):
     bar_data = {}
-    skip_stride = None
-    if stride:
-        skip_stride = False, stride
     for sim_index, fd in enumerate(FD_list):
         data_files = glob.glob(fd + '/' + data_file_pattern)
         for f in data_files:
+            dl_max_kw = {}
             if dl_max:
-                data, sim_l = read_bar_data(f, skip_stride=skip_stride, dl_max=dl_max)
-            else:
-                data, sim_l = read_bar_data(f, skip_stride=skip_stride)
+                dl_max_kw['dl_max'] = dl_max
+            data, sim_l = read_bar_data(f, skip=skip, stride=stride, **dl_max_kw)
             pert_FE.combine_bar_dhdl(bar_data, data, sim_l, append_index=sim_index)
     return bar_data
 
@@ -22,8 +19,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(fromfile_prefix_chars='@')
     parser.convert_arg_line_to_args = lambda arg_line:arg_line.split()
     parser.add_argument('-d', '--fd', dest='fd', help='target folder', type=str, required=True, nargs='+')
-    parser.add_argument('-p', '--pattern', help='pattern to find data files in each of the folders', type=str, default='FE_MD*.xvg')
-    parser.add_argument('-s', '--stride', type=int, help='stride step for reading the data files (read every stride steps)')
+    parser.add_argument('-p', '--pattern', help='pattern to find data files in each of the folders', type=str, default='*/FE_MD*.xvg')
+    parser.add_argument('-stride', type=int, help='stride step for reading the data files (read every stride steps)')
+    parser.add_argument('-skip', type=int, help='skip first `skip` steps when reading the data files')
     parser.add_argument('-dl_max', type=float, help='max delta lambda for reading (how many neighbouring LPs to take into account)')
     parser.add_argument('-BS_steps', type=int, help='number of samples for bootstrapping', default=0)
     parser.add_argument('-n', '--n_cpu', type=int, help='number of CPUs for bootstrapping', default=8)
@@ -37,11 +35,14 @@ if __name__ == '__main__':
 
 
     print('reading...')
-    bar_data = read_data(args.fd, args.pattern, stride=args.stride, dl_max=args.dl_max)
+    bar_data = read_data(args.fd, args.pattern, skip=args.skip, stride=args.stride, dl_max=args.dl_max)
     print('DONE reading\n\nanalysis...')
 
     pert_FE.dG_err_tols._dG_err_tols__BS_steps = args.BS_steps
-    result = pert_FE.update_LPs_times(bar_data, ncpu=args.n_cpu)
+    seg_width_slide_kw = {}
+    if args.dl_max and args.dl_max>=1.:
+        seg_width_slide_kw['seg_width_slide'] = [(1.,1.)]
+    result = pert_FE.update_LPs_times(bar_data, ncpu=args.n_cpu, **seg_width_slide_kw)
     seg_score_flag, converged_segments, new_LPs, seg_data_dG_err, segs2calc_dG = result
     dG = pert_FE.get_full_dG_from_segs(seg_data_dG_err, segs2calc_dG[0])
     if args.BS_steps:

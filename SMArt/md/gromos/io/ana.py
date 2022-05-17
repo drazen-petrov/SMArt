@@ -95,7 +95,7 @@ def read_bar_dhdl(f_path, dl_max=0.3, comments=('#',), skip_stride=None, N_comm_
         data as a `pandas` `DataFrame`
         simulated lambda (float)
     """
-    c_lines, lp2use, lp2use_pos, LPs, sim_l, N_cols, line_len = _parse_header(f_path, dl_max, comments, N_comm_lines)
+    c_lines, lp2use, lp2use_pos, LPs, sim_l, N_cols, line_len = _parse_header(f_path, dl_max, comments, N_comm_lines, **kwargs)
     data = None
     line_gen = None
     if skip_stride:

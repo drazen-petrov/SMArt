@@ -232,7 +232,8 @@ def get_skips(si_l, LPs = None, skip = 1):
     skips = []
     for l in LPs:
         for temp_si in si_l[l]:
-            skips.append(int(temp_si * skip) + 1)
+            skip_value = max(1, int(round(temp_si * skip, 0)))
+            skips.append(skip_value)
     return skips
 
 def si_skips_data_dEs(dEs, nfr_mul, skip = 1):
@@ -244,7 +245,8 @@ def si_skips_data_dEs(dEs, nfr_mul, skip = 1):
             if n_frms:
                 c_end = c+n_frms
                 temp_si = timeseries.statisticalInefficiency(dEs[i][c:c_end])
-                skips.append(int(temp_si * skip) + 1)
+                skip_value = max(1, int(round(temp_si * skip, 0)))
+                skips.append(skip_value)
                 c = c_end
     return skips
 
@@ -960,6 +962,41 @@ def check_fullseg_in_segs(seg, segs):
             return True
     return False
 
+def segs2calc_dG__2__segs2calc_LPs(segs2calc_dG_element):
+    segs2calc_LPs = {}
+    for LPs, seg2calc in segs2calc_dG_element.items():
+        segs2calc_LPs[LPs] = [seg2calc]
+    return segs2calc_LPs
+
+def run_calc_seg_props(data_bar_sys, data_dhdl_sys=None, T=300, **kwargs):
+    LPs_sim = get_lset(data_bar_sys)
+    LPs = LPs_sim
+    LPs_pred = set()
+    for lp_bar_data in data_bar_sys.values():
+        LPs_pred |= set(lp_bar_data[0].columns)
+    LPs_pred = get_lset(LPs_pred)
+    segs2calc_LPs, segs2calc_dG, all_segs2_calc_LPs = get_segments2test(LPs_sim, LPs_pred, **kwargs)
+    si_l_dict = si_data_bar_dhdl(data_bar_sys)
+    seg_data_dG_err = {}
+    segs2calc_LPs = segs2calc_dG__2__segs2calc_LPs(segs2calc_dG[0])
+    temp_gen = gen_seg_data(data_bar_sys, data_dhdl_sys, segs2calc_LPs, si_l_dict, kwargs, kwargs)
+    for temp_LPs, segs2calc, seg_dG, seg_dG_err, dG_full in temp_gen:
+        seg_data_dG_err[temp_LPs] = seg_dG, seg_dG_err, dG_full
+    return seg_data_dG_err, segs2calc_dG
+
+def gen_seg_data(data_bar_sys, data_dhdl_sys, segs2_calc_LPs, si_l_dict=None,
+                 prep_mbar_imput_kwargs=None, calc_seg_props_kwargs=None):
+    if prep_mbar_imput_kwargs is None:
+        prep_mbar_imput_kwargs = {}
+    if calc_seg_props_kwargs is None:
+        calc_seg_props_kwargs = {}
+    for temp_LPs, segs2calc in segs2_calc_LPs.items():
+        Es, NFRs, dEs, LPs, LPs_pred = prep_mbar_input(data_bar_sys, data_dhdl_sys, LPs = temp_LPs, **prep_mbar_imput_kwargs)
+        nfr_mul = get_nfr_mul_from_NFRs(NFRs, LPs, LPs_pred)
+        LPs_map = LPs_Map(LPs[0], LPs[-1], LPs, LPs_pred)
+        seg_dG, seg_dG_err, dG_full = calc_seg_props(LPs_map, Es, dEs, nfr_mul, segs2calc = segs2calc, si_skips = si_l_dict, **calc_seg_props_kwargs)
+        yield temp_LPs, segs2calc, seg_dG, seg_dG_err, dG_full
+
 def update_LPs_times(data_bar_sys, data_dhdl_sys=None, T=300, **kwargs):
     """
     :param data_bar_sys: 
@@ -998,6 +1035,7 @@ def update_LPs_times(data_bar_sys, data_dhdl_sys=None, T=300, **kwargs):
         else:
             LPs_allowed = list(LPs_sim)
             dl_min_update = dl_min # add midpoints at the update
+    #### this part can be changed with the function from above: run_calc_seg_props
     segs2calc_LPs, segs2calc_dG, all_segs2_calc_LPs = get_segments2test(LPs_sim, LPs_allowed, **seg_test_kwargs)
     si_l_dict = si_data_bar_dhdl(data_bar_sys)
     seg_score_flag = {}
@@ -1009,6 +1047,7 @@ def update_LPs_times(data_bar_sys, data_dhdl_sys=None, T=300, **kwargs):
         LPs_map = LPs_Map(LPs[0], LPs[-1], LPs, LPs_pred)
         seg_dG, seg_dG_err, dG_full = calc_seg_props(LPs_map, Es, dEs, nfr_mul, segs2calc = segs2calc, si_skips = si_l_dict, **seg_test_kwargs)
         seg_data_dG_err[temp_LPs] = seg_dG, seg_dG_err, dG_full
+        #### this part can be changed with the function from above: run_calc_seg_props
         if temp_LPs in segs2calc_LPs:
             segs2calc_for_convergence = segs2calc_LPs[temp_LPs]
         else:

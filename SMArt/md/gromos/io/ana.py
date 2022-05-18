@@ -100,6 +100,8 @@ def read_bar_dhdl(f_path, dl_max=0.3, comments=('#',), skip=None, stride=None, N
     data = None
     line_gen = None
     if skip or stride:
+        if skip is None:
+            skip=0
         skip = skip + N_comm_lines
         line_gen = _get_lines(f_path, comments, skip, stride)
     if kwargs.get('col_format'):

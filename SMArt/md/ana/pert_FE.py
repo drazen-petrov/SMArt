@@ -976,7 +976,9 @@ def run_calc_seg_props(data_bar_sys, data_dhdl_sys=None, T=300, **kwargs):
         LPs_pred |= set(lp_bar_data[0].columns)
     LPs_pred = get_lset(LPs_pred)
     segs2calc_LPs, segs2calc_dG, all_segs2_calc_LPs = get_segments2test(LPs_sim, LPs_pred, **kwargs)
-    si_l_dict = kwargs.get('si_l_dict', si_data_bar_dhdl(data_bar_sys))
+    si_l_dict = kwargs.get('si_l_dict')
+    if si_l_dict is None:
+        si_l_dict = si_data_bar_dhdl(data_bar_sys)
     seg_data_dG_err = {}
     segs2calc_LPs = segs2calc_dG__2__segs2calc_LPs(segs2calc_dG[0])
     temp_gen = gen_seg_data(data_bar_sys, data_dhdl_sys, segs2calc_LPs, si_l_dict, kwargs, kwargs)
@@ -1038,7 +1040,9 @@ def update_LPs_times(data_bar_sys, data_dhdl_sys=None, T=300, **kwargs):
             dl_min_update = dl_min # add midpoints at the update
     #### this part can be changed with the function from above: run_calc_seg_props
     segs2calc_LPs, segs2calc_dG, all_segs2_calc_LPs = get_segments2test(LPs_sim, LPs_allowed, **seg_test_kwargs)
-    si_l_dict = kwargs.get('si_l_dict', si_data_bar_dhdl(data_bar_sys))
+    si_l_dict = kwargs.get('si_l_dict')
+    if si_l_dict is None:
+        si_l_dict = si_data_bar_dhdl(data_bar_sys)
     seg_score_flag = {}
     converged_segments = []
     seg_data_dG_err = {}

@@ -1,7 +1,9 @@
 from SMArt.incl import np, pd, re
 from SMArt.md.ana.incl import _not_start_with_comm, _get_lines, Real
 
-def _get_xvg_labels(f_path, comments=('#', '@')):
+XVG_COMMENTS = ('#', '@')
+
+def _get_xvg_labels(f_path, comments=XVG_COMMENTS):
     f = open(f_path)
     labels = ['x']
     for l in f:
@@ -15,15 +17,14 @@ def _get_xvg_labels(f_path, comments=('#', '@')):
             break
     return labels
 
-XVG_COMMENTS = ('#', '@')
-
-def read_xvg_data(f_path, comments=XVG_COMMENTS, skip=None, stride=None, **kwargs):
+def read_xvg_data(f_path, comments=XVG_COMMENTS, skip=None, stride=None, flag_pdDF=False, **kwargs):
     """
         parses data from a xvg file
     :param f_path: path to a xvg file
     :param comments: comment characters (skip these lines)
     :param skip: skipping first `skip` lines (int)
     :param stride: skipping every `stride` lines (int)
+    :param flag_pdDF: read the columns labels and return the data as pandas DataFrame
     :param kwargs:
         passed to np.loadtxt function
     :return:
@@ -32,6 +33,9 @@ def read_xvg_data(f_path, comments=XVG_COMMENTS, skip=None, stride=None, **kwarg
     if skip or stride:
         f_path = _get_lines(f_path, comments, skip, stride) # generator that skips lines
     data = np.loadtxt(f_path, comments = comments, **kwargs)
+    if flag_pdDF:
+        cols = _get_xvg_labels(f_path, comments=comments)
+        data = pd.DataFrame(data, columns=cols)
     return data
 
 def read_bar_data(f_path, dl_max=0.3, comments=XVG_COMMENTS, skip=None, stride=None, 

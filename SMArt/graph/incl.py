@@ -415,9 +415,16 @@ returns ((), {'all_v':[v1,v2,v3,...]})
 
     def get_2D_repr(self, vertices=None, d_12=1., d_13=1.7,  Fk=(100, 50, 5), rest_pow = 1, Nmaxiter=25, **kwargs):
         """
-        :param vertices:
-        :param kwargs: fig_name, step, init_struc
+        :param vertices: give a list of vertices to generate the representation
+        :param kwargs: 
+            fig_name: file name where a figure will be saved (e.g. mol.png)
+            fig_kwargs: kwargs to be passed to plt.figure
+            step: make plot at each step (True, False)
+            init_struc: make plot of initial structure at each step (True, False)
+            name_attribute: used to label vertices (e.g. 'name' if the vertices are atoms and have an attr 'name')
+            flag_show: True by default - shows the plot (plt.show) if ffig is None
         :return:
+            coord_2D: x,y coordinates of vertices (for plotting) as a pd.DataFrame
         """
         fig_name = kwargs.get('fig_name')
         step = kwargs.get('step', False)
@@ -440,44 +447,74 @@ returns ((), {'all_v':[v1,v2,v3,...]})
             else:
                 temp_min = self.__do_min(sub_temp_G, temp_coorf_df, 16, Nmaxiter, d_12, d_13,  Fk, rest_pow)
             if step and fig_name and init_struc:
-                self.__plot_graph(temp_G, coord_df, fig_name + '_step_' + str(i) + '_init.png', **kwargs)
+                self._plot_mol_graph(temp_G, coord_df, fig_name + '_step_' + str(i) + '_init.png', **kwargs)
             coord_df.loc[vertices] = temp_min.x.reshape((len(vertices),2))
             if step and fig_name:
-                self.__plot_graph(temp_G, coord_df, fig_name + '_step_' + str(i) + '_min.png', **kwargs)
+                self._plot_mol_graph(temp_G, coord_df, fig_name + '_step_' + str(i) + '_min.png', **kwargs)
         sub_temp_G = temp_G.sub_graph(vertices)
         temp_coorf_df = coord_df.loc[vertices]
         temp_min = self.__do_min(sub_temp_G, temp_coorf_df, 25, None, d_12, d_13, Fk, rest_pow)
         coord_df.loc[vertices] = temp_min.x.reshape((len(vertices),2))
+        self.coord_2D = coord_df
         if fig_name:
-            self.__plot_graph(temp_G, coord_df, fig_name + '_min.png', **kwargs)
-        else:
-            self.__plot_graph(temp_G, coord_df, **kwargs)
-        return coord_df
+            self._plot_mol_graph(temp_G, coord_df, fig_name + '_min.png', **kwargs)
+        elif kwargs.get('flag_show', True):
+            self._plot_mol_graph(temp_G, coord_df, **kwargs)
+        return self.coord_2D
+
+    def plot_mol_graph(self, vertices, fig_name = None, name_attribute=None, **kwargs):
+        """
+        make a plot representing the graph
+        :param vertices: list of vertices to generate the representation
+        :param fig_name: file name where the fig will be saved
+        
+        for more details, see self._plot_mol_graph function
+        """
+        if vertices is None:
+            vertices = list(self.adj)
+        sub_temp_G = temp_G.sub_graph(vertices)
+        if not hasattr(self, 'coord_2D'):
+            self.get_2D_repr(vertices=vertices, flag_show=False, **kwargs)
+        self._plot_mol_graph(sub_temp_G, self.coord_2D, fig_name, name_attribute=name_attribute, **kwargs)
 
     @staticmethod
-    def __plot_graph(temp_G, coord_df, ffig = None, flag_name_attribute=None, **kwargs):
+    def _plot_mol_graph(G, coord_df, ffig = None, name_attribute=None, **kwargs):
+        """
+        make a plot representing the graph
+        :param G: graph instance
+        :param coord_df: dataframe with coordinates
+        :param ffig: file name where the fig will be saved
+        :param name_attribute: used to label vertices (e.g. 'name' if the vertices are atoms and have an attr 'name')
+        :params kwargs:
+            fig_kwargs: kwargs to be passed to plt.figure
+            flag_show: True by default - shows the plot (plt.show) if ffig is None
+        """
+        fig_kwargs = kwargs.get('fig_kwargs')
+        if fig_kwargs:
+            plt.figure(**fig_kwargs)
         x = coord_df.x.values
         y = coord_df.y.values
         plt.scatter(x,y,color = "k")
         v_list = list(coord_df.index)
         for i in range(len(v_list)):
-            if flag_name_attribute:
+            if name_attribute:
                 #plt.text(x[i], y[i], getattr(v_list[i], flag_name_attribute), ha='center', va='center')
-                plt.text(x[i], y[i], getattr(v_list[i], flag_name_attribute))
+                plt.text(x[i], y[i], getattr(v_list[i], name_attribute))
             else:
                 #plt.text(x[i], y[i], str(v_list[i]), ha='center', va='center')
                 plt.text(x[i], y[i], str(v_list[i]))
-        for b in temp_G.get_edges():
-            temp_coord = coord_df.loc[list(b)]
-            temp_x = temp_coord.x
-            temp_y = temp_coord.y
-            plt.plot(temp_x, temp_y, color='k')
+        for b in G.get_edges():
+            try:
+                temp_coord = coord_df.loc[list(b)] # this step fails if these vertices are not in the coord_df
+                temp_x = temp_coord.x
+                temp_y = temp_coord.y
+                plt.plot(temp_x, temp_y, color='k')
+            except:pass
         plt.xlim(min(x) - 1, max(x) + 1)
         plt.ylim(min(y) - 1, max(y) + 1)
         plt.gca().set_aspect('equal')
         if ffig is None:
-            if kwargs.get('flag_show', True):
-                plt.show()
+            plt.show()
         else:
             plt.savefig(ffig)
             plt.close()

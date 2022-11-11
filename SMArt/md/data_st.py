@@ -1796,9 +1796,19 @@ class MolSystem(Topology, Configuration):
 from SMArt.md.ana.incl import get_lset
 
 class MD_Parameters(GromosParser, GromosWriter):
-    def __init__(self, template_md_in):
+    def __init__(self, template_md_in=None, **kwargs):
+        """
+        :param template_md_in: template file to get the parameters
+        :param kwargs:
+            gr_unknown_bl_v - function version for reading the unknown blocks (2_1, 2_2 or 3)
+        """
         self.md_in = template_md_in
         if self.md_in.endswith('imd'):
+            gr_unknown_bl_v = kwargs.get('gr_unknown_bl_v')
+            if gr_unknown_bl_v:
+                assert gr_unknown_bl_v in ('2_1', '2_2', '3')
+                self._GromosParser__read_unknown_block_v = '_GromosParser__read_unknown_block_v' + gr_unknown_bl_v
+                self._GromosWriter__write_unknown_block_v = '_GromosWriter__write_unknown_block_v2_3'
             self._parse_gr(self.md_in)
 
     def get_LPs_pred(self):
@@ -1848,33 +1858,20 @@ class MD_Parameters(GromosParser, GromosWriter):
         else:
             return s
 
-    def __get_bl_params(self, bl):
-        params = []
-        params_per_line = []
-        for l in self.undefined_bl[bl]:
-            temp = l.split()
-            params_per_line.append(len(temp))
-            params.extend(temp)
-        return params, params_per_line
-
-    def __generate_bl_txt(self, bl, params, params_per_line):
-        bl_lines = []
-        bl_txt = ''
-        c_param = 0
-        for N_params in params_per_line:
-            line = ''
-            for i in range(N_params):
-                line += '{:>9} '.format(params[i + c_param])
-            bl_lines.append(line[:-1] + '\n')
-            c_param += N_params
-        self.undefined_bl[bl] = bl_lines
-
     def change_imd(self, md_kw, **kwargs):
+        """
+        this only works if undefined blocks were read with version 1 parsing function
+        :param md_kw: parameters to change, defined as a dictionary where each key is a block and value is again a dict
+                    where each key is an index of parameter to change and value is a new value
+        :param kwargs:
+        :return: None - does inplace change on the level of block text (list of strings for each line)
+        """
         for bl in md_kw:
-            bl_params, bl_params_per_line = self.__get_bl_params(bl)
+            bl_params, bl_params_per_line = self._get_block_params(bl)
             for param, value in md_kw[bl].items():
                 bl_params[param] = value
-            self.__generate_bl_txt(bl, bl_params, bl_params_per_line)
+            # generate new text for the block (based on new adjusted parameters)
+            self.undefined_bl[bl] = self.get_block_txt_from_params(bl_params, bl_params_per_line)
 
     def write_imd(self, f_path = None, **kwargs):
         gs = self._get_grs_from_fpaht(f_path)

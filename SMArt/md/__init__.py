@@ -58,3 +58,4 @@ def parse_cnf(f_path, **kwargs):
     :return: configuration
     """
     return Configuration(f_path, **kwargs)
+

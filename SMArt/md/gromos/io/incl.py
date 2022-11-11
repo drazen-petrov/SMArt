@@ -171,10 +171,55 @@ class GromosParser(GeneralContainer, GromosDefaults):
         temp_f(gs, bl_name, **kwargs)
 
     def __read_unknown_block_v1(self, gs, bl_name, **kwargs):
+        """
+        does it as pure text (list of lines)
+        """
         self.undefined_bl[bl_name] = list(gs.block_lines())
 
-    def __read_unknown_block_v2(self, gs, bl_name, **kwargs):
+    def _get_block_params(self, block_name):
+        """
+        converts string lines from an undefined block into a list of parameters (list of lists for each line)
+        :param block_name: one of the keys from self.undefined_bl
+        :return:
+            params: list of lists of individual parameter
+            params_per_line: list of integers (number of parameters in each line
+        """
+        params = []
+        params_per_line = []
+        for l in self.undefined_bl[block_name]:
+            temp = l.split()
+            params_per_line.append(len(temp))
+            params.extend(temp)
+        return params, params_per_line
+
+    def __read_unknown_block_v2_1(self, gs, bl_name, **kwargs):
+        """
+        does it as a list of individual parameters (based on str split)
+        and it keep the track of number of params per line...
+        """
+        if not hasattr(self, '_undefined_bl_params_per_line'):
+            self._undefined_bl_params_per_line = {}
+            setattr(self, '_undefined_bl_params_per_line', {})
+        self.__read_unknown_block_v1(gs, bl_name, **kwargs)
+        params, params_per_line = self._get_block_params(bl_name)
+        self.undefined_bl[bl_name] = params
+        self._undefined_bl_params_per_line[bl_name] = params_per_line
+
+    def __read_unknown_block_v2_2(self, gs, bl_name, **kwargs):
+        """
+        does it as a list of individual parameters (based on str split)
+        not keeping the track of number of params per line...
+        """
         self.undefined_bl[bl_name] = list(gs.block_split_fnc)
+
+    def __read_unknown_block_v3(self, gs, bl_name, **kwargs):
+        """
+        does it as a list of lists of individual parameters (based on str split and line split)
+        """
+        self.undefined_bl[bl_name] = []
+        for l in gs.block_lines():
+            temp = l.split()
+            self.undefined_bl[bl_name].append(temp)
 
     def __TITLE_v1(self, gs, *args, **kwargs):
         temp_title = DescriptionPart(form = 'gr', **kwargs)
@@ -213,6 +258,11 @@ GromosParser._add_defaults(_GromosParser_defs, flag_set=1)
 class GromosWriter(GeneralContainer, GromosDefaults):
     """contains basic functions that allow writing of different blocks"""
 
+    def __just_for_readability(self):
+        self.undefined_bl = None
+        self.__write_general_block_v = None
+        self.__write_gromos_format_v = None
+
     @staticmethod
     def _get_grs_from_fpaht(fpath):
         if fpath:
@@ -225,11 +275,54 @@ class GromosWriter(GeneralContainer, GromosDefaults):
         return gs
 
     def __write_unknown_blocks(self, gs, *blocks, **kwargs):
+        temp_f = getattr(self, self.__write_unknown_block_v)
         for bl in blocks:
             if hasattr(self, 'undefined_bl') and bl in self.undefined_bl:
-                gs.write_block(bl, self.undefined_bl[bl])
+                temp_f(gs, bl, **kwargs)
+                #gs.write_block(bl, self.undefined_bl[bl])
             else:
                 do_warn('block name not found in undefined_bl:' + bl)
+
+    def __write_unknown_block_v1(self, gs, block_name, **kwargs):
+        gs.write_block(block_name, self.undefined_bl[block_name])
+
+    def get_block_txt_from_params(self, params, params_per_line=None, param_format=None):
+        if param_format is None:
+            param_format = self.__param_format
+        if not isinstance(params[0], (list, tuple)):
+            if isinstance(params_per_line, int):
+                temp_i = 0
+                params2write = []
+                while params[temp_i:]:
+                    params2write.append(params[temp_i:temp_i + params_per_line])
+                    temp_i += params_per_line
+            else:
+                assert len(params) == sum(params_per_line)
+                params2write = []
+                temp_i = 0
+                for N_params in params_per_line:
+                    new_temp_i = temp_i + N_params
+                    params2write.append(params[temp_i:new_temp_i])
+                    temp_i = new_temp_i
+        else:
+            params2write = params
+        bl_txt = []
+        for params_line in params2write:
+            temp_line = param_format * len(params_line)
+            temp_line = temp_line.format(*params_line)
+            bl_txt.append(temp_line + '\n')
+        return bl_txt
+
+    def __write_unknown_block_v2_3(self, gs, block_name, **kwargs):
+        """write unknown block if all params are split and stored individually in a list (or list of lists)
+        such format comes with __read_unknown_block_v_ 2_1 2_2 or 3"""
+        params = self.undefined_bl[block_name]
+        try:
+            params_per_line = self._undefined_bl_params_per_line[block_name]
+        except:
+            params_per_line = self.__params_per_line
+        bl_txt = self.get_block_txt_from_params(params, params_per_line)
+        gs.write_block(block_name, bl_txt)
 
     def __write_general_block_v1(self, gs, bl, **kwargs):
         text2write = getattr(self, getattr(self._gr_block_names, bl))
@@ -271,9 +364,14 @@ class GromosWriter(GeneralContainer, GromosDefaults):
         return temp_f(gs, *blocks, **kwargs)
 
 _GromosWriter_defs = {}
+_GromosWriter_defs['__params_per_line'] = 5
+_GromosWriter_defs['__param_format'] = '{:>9} '
 _GromosWriter_defs['__write_general_block_v'] = '__write_general_block_v1'
 _GromosWriter_defs['__write_gromos_format_v'] = '__write_gromos_format_v1'
+_GromosWriter_defs['__write_unknown_block_v'] = '__write_unknown_block_v1'
 _GromosWriter_defs['_write_TITLE'] = '__write_TITLE_v1'
+
+
 
 GromosWriter._add_defaults(_GromosWriter_defs, flag_set=True)
 
@@ -1581,3 +1679,9 @@ _TrjCnfBlocksWriter_defs = {}
 _TrjCnfBlocksWriter_defs['_write_POSITIONRED'] = '__write_POSITIONRED_v1'
 
 TrjCnfBlocksWriter._add_defaults(_TrjCnfBlocksWriter_defs, flag_set=True)
+
+
+class IMD_IO(GromosParser, GromosWriter):
+    def parse_imd(self, parse_from, parse_from_file=True, **kwargs):
+        """parses a top file (GROMOS format)"""
+        self._parse_gr(parse_from, parse_from_file, **kwargs)

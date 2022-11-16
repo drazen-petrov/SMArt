@@ -1,5 +1,5 @@
 from itertools import chain
-from SMArt.incl import os, copy, np, do_warn
+from SMArt.incl import os, copy, np, do_warn, gzip, json
 from SMArt.incl import Defaults, OrderedDict, GeneralContainer, FileStream, StringStream, split_gen, get_id_string
 from SMArt.md.incl import *
 from SMArt.md.incl import _gr_title_gm_system, _file_type_ext_map, _add_DescriptionPart
@@ -1556,7 +1556,22 @@ cnfBlocksWriter._add_defaults(_cnfBlocksWriter_defs, flag_set=1)
 
 #### CNF TRJ reading and writing
 
-class TrjCnfBlocksParser(GromosParser):
+class gr_TrajectoryParser(GromosParser):
+    def __init__(self):
+        self.int_num_dtype = np.int32
+        self.real_num_dtype = np.float32
+
+    def __TIMESTEP_v1(self, parse_from, bl_name, **kwargs):
+        self.time_step = self.int_num_dtype(next(parse_from.block_split_fnc))
+        self.time = self.time_real_num_dtype(next(parse_from.block_split_fnc))
+        parse_from.end_block_split()
+
+_gr_TrajectoryParser_defs = {}
+_gr_TrajectoryParser_defs['_TIMESTEP_parser'] = '__TIMESTEP_v1'
+gr_TrajectoryParser._add_defaults(_gr_TrajectoryParser_defs, flag_set=True)
+
+
+class TrjCnfBlocksParser(gr_TrajectoryParser):
     """parser for cnf trajectories"""
     def __just_for_readability(self):
         self.int_num_dtype = np.int32
@@ -1570,11 +1585,6 @@ class TrjCnfBlocksParser(GromosParser):
         for i, xyz in enumerate(split_gen(line)):
             temp[i] = xyz
         return temp
-
-    def __TIMESTEP_v1(self, parse_from, bl_name, **kwargs):
-        self.time_step = self.int_num_dtype(next(parse_from.block_split_fnc))
-        self.time = self.time_real_num_dtype(next(parse_from.block_split_fnc))
-        parse_from.end_block_split()
 
     def __POSITIONRED_v1(self, parse_from, bl_name, **kwargs):
         frame_coord = [line.split() for line in parse_from.block_lines()]
@@ -1594,13 +1604,12 @@ class TrjCnfBlocksParser(GromosParser):
         self._gr_add_frame()
 
 _TrjCnfBlocksParser_defs = {}
-_TrjCnfBlocksParser_defs['_TIMESTEP_parser'] = '__TIMESTEP_v1'
 _TrjCnfBlocksParser_defs['_POSITIONRED_parser'] = '__POSITIONRED_v1'
 _TrjCnfBlocksParser_defs['_GENBOX_parser'] = '__GENBOX_v1'
 TrjCnfBlocksParser._add_defaults(_TrjCnfBlocksParser_defs, flag_set=True)
 
 
-class GeneralCnfWriter(GromosWriter):
+class GeneralTrjWriter(GromosWriter):
     def __just_for_readability(self):
         self._real_num_format = ''
         self._time_real_num_format = ''
@@ -1624,9 +1633,27 @@ class GeneralCnfWriter(GromosWriter):
     def __write_real_num_v2(self, num):
         return self.__write_real_num(num.astype(str), ' {:s}')
 
+    def _write_real_num(self, num):
+        fnc2write = getattr(self, '_GeneralTrjWriter__write_real_num_v' + str(self._write_real_num_v))
+        return fnc2write(num)
+
+_GeneralTrjWriter_defs = {'_real_num_format':'{:15.9f}'}
+_GeneralTrjWriter_defs = {'_time_real_num_format':'{:15.9f}'}
+_GeneralTrjWriter_defs['_write_TIMESTEP'] = '__write_TIMESTEP_v1'
+_GeneralTrjWriter_defs['_write_real_num_v'] = 1
+
+GeneralTrjWriter._add_defaults(_GeneralTrjWriter_defs, flag_set=True)
+
+
+class GeneralCnfWriter(GeneralTrjWriter):
+    def __just_for_readability(self):
+        self._real_num_format = ''
+        self._time_real_num_format = ''
+        self.fr = None
+        self._write_real_num_v = 1
+
     def _get_atom_pos_str(self, atom_coord):
-        fnc2write = getattr(self, '_GeneralCnfWriter__write_real_num_v' + str(self._write_real_num_v))
-        return fnc2write(atom_coord) + '\n'
+        return self._write_real_num(atom_coord) + '\n'
 
     def __write_TIMESTEP_v1(self, gf, bl, **kwargs):
         s = ('{:15d}' + self._time_real_num_format + '\n').format(self.fr[0][0], self.fr[1][0])
@@ -1634,15 +1661,12 @@ class GeneralCnfWriter(GromosWriter):
 
     def __write_GENBOX_v1(self, gf, bl, *args, **kwargs):
         s = '{:>5}\n'.format(self.fr['box_type'][0])
-        fnc2write = getattr(self, '_GeneralCnfWriter__write_real_num_v' + str(self._write_real_num_v))
-        s += fnc2write(self.fr['box'])
+        s += self._write_real_num(self.fr['box'])
         gf.write_block(bl, s)
 
-_GeneralCnfWriter_defs = {'_real_num_format':'{:15.9f}'}
-_GeneralCnfWriter_defs = {'_time_real_num_format':'{:15.9f}'}
+_GeneralCnfWriter_defs = {}
 _GeneralCnfWriter_defs['_write_TIMESTEP'] = '__write_TIMESTEP_v1'
 _GeneralCnfWriter_defs['_write_GENBOX'] = '__write_GENBOX_v1'
-_GeneralCnfWriter_defs['_write_real_num_v'] = 1
 
 GeneralCnfWriter._add_defaults(_GeneralCnfWriter_defs, flag_set=True)
 
@@ -1679,6 +1703,267 @@ _TrjCnfBlocksWriter_defs = {}
 _TrjCnfBlocksWriter_defs['_write_POSITIONRED'] = '__write_POSITIONRED_v1'
 
 TrjCnfBlocksWriter._add_defaults(_TrjCnfBlocksWriter_defs, flag_set=True)
+
+
+class EnegyTrajectoryIO(GromosParser, GeneralTrjWriter):
+    def __init__(self):
+        self.int_num_dtype = np.int32
+        self.real_num_dtype = np.float32
+        self.__block = None # current block
+        self.ene_param_dict = {}
+        self.ene_size_dict = {}
+        self.frene_param_dict = {}
+        self.frene_size_dict = {}
+
+    def __read_block(self, parse_from, parts, param_dict, size_dict, **kwargs):
+        self.__block = parts[1]
+        param_dict[self.__block] = {}
+        size_dict[self.__block] = {}
+
+    def __read_subblock(self, parse_from, parts, param_dict, size_dict, **kwargs):
+        param_dict[self.__block][parts[1]] = []
+        for temp_part in parts[2:]:
+            if temp_part.isnumeric():
+                param_dict[self.__block][parts[1]].append(int(temp_part))
+            else:
+                param_dict[self.__block][parts[1]].append(temp_part)
+
+    def __read_size(self, parse_from, parts, param_dict, size_dict, **kwargs):
+        size_dict[self.__block][parts[1]] = None
+        param_dict[self.__block][parts[1]] = None
+
+    def __read_whole_block(self, parse_from,  param_dict, size_dict, **kwargs):
+        fnc_map = {'block':self.__read_block, 'subblock':self.__read_subblock, 'size':self.__read_size}
+        # reads the whole block - e.g. ENERTRJ or FRENERTRJ (based on the 3 fnc from above)
+        for line in parse_from.block_lines():
+            parts = line.split()
+            temp_fnc = fnc_map[parts[0]] # get the function for reading
+            temp_fnc(parse_from, parts, param_dict, size_dict, **kwargs)
+
+    def __ENERTRJ_v1(self, parse_from, bl_name, **kwargs):
+        self.__read_whole_block(parse_from, self.ene_param_dict, self.ene_size_dict, **kwargs)
+
+    def __FRENERTRJ_v1(self, parse_from, bl_name, **kwargs):
+        self.__read_whole_block(parse_from, self.frene_param_dict, self.frene_size_dict, **kwargs)
+
+    def read_ene_ana_lib(self, lib_path):
+        self.lib_path = lib_path
+        self._parse_gr(lib_path)
+        self.__generate_parsing_fnc()
+        self.__generate_writing_fnc()
+
+    def __general_parsing_fnc_v1(self, parse_from, bl_name, **kwargs):
+        temp_values = list(parse_from.block_split_fnc)
+        temp_data = self.__get_values_block(bl_name, temp_values)
+        self.__data_step.append(temp_data)
+
+    def __general_parsing_lastBlock_fnc_v1(self, parse_from, bl_name, **kwargs):
+        self.__general_parsing_fnc_v1(parse_from, bl_name, **kwargs)
+        self.__store_step_data()
+
+    def __generate_parsing_fnc(self):
+        self.__data_step = []
+        # ene
+        class_fnc_pref = "_{:}".format("EnegyTrajectoryIO")
+        last_bl = list(self.ene_size_dict)[-1]
+        for bl_name in self.ene_size_dict:
+            fnc_name_key = '_{:}_parser'.format(bl_name)
+            if bl_name != last_bl:
+                setattr(self, fnc_name_key, class_fnc_pref + "__general_parsing_fnc_v1")
+            else:
+                setattr(self, fnc_name_key, class_fnc_pref + "__general_parsing_lastBlock_fnc_v1")
+        # fr_ene
+        last_bl = list(self.frene_size_dict)[-1]
+        for bl_name in self.frene_size_dict:
+            fnc_name_key = '_{:}_parser'.format(bl_name)
+            if bl_name != last_bl:
+                setattr(self, fnc_name_key, class_fnc_pref + "__general_parsing_fnc_v1")
+            else:
+                setattr(self, fnc_name_key, class_fnc_pref + "__general_parsing_lastBlock_fnc_v1")
+
+    # writing fnc
+    def __general_writing_fnc_v1(self, gf, bl, **kwargs):
+        s = ''
+        for temp_field, temp_shape in self.__current_param_dict[bl].items():
+            s += gf._comm_indicators[0] + ' ' + temp_field + '\n'
+            if temp_shape is None:
+                s += str(self.__current_size_dict[bl][temp_field]) + '\n'
+            else:
+                temp_data = self.__current_step[bl][temp_field]
+                s += self._write_real_num(temp_data)
+        gf.write_block(bl, s)
+
+    def __generate_writing_fnc(self):
+        # ene
+        class_fnc_pref = "_{:}".format("EnegyTrajectoryIO")
+        for bl_name in self.ene_size_dict:
+            fnc_name_key = '_write_{:}'.format(bl_name)
+            setattr(self, fnc_name_key, class_fnc_pref + "__general_writing_fnc_v1")
+        # fr_ene
+        for bl_name in self.frene_size_dict:
+            fnc_name_key = '_write_{:}'.format(bl_name)
+            setattr(self, fnc_name_key, class_fnc_pref + "__general_writing_fnc_v1")
+
+    def __get_values_block(self, block_name, value_list):
+        data_all = list()
+        shapes_all = list()
+        pos = 0
+        for subblock, temp_shape in self.__current_param_dict[block_name].items():
+            if temp_shape:
+                for i, temp_value in enumerate(temp_shape):
+                    if isinstance(temp_value, str):
+                        temp_shape[i] = self.__current_size_dict[block_name][temp_value]
+                temp_shape = tuple(temp_shape)
+                num_values = 1
+                for temp_value in temp_shape:
+                    num_values *= temp_value
+                new_pos = pos + num_values
+                temp_data = np.array(value_list[pos:new_pos]).reshape(temp_shape)
+                data_all.append(temp_data)
+                if self.__current_data_type is None:
+                    shapes_all.append((subblock, self.real_num_dtype, temp_shape))
+                pos = new_pos
+            else:
+                self.__current_size_dict[block_name][subblock] = int(value_list[pos])
+                if subblock=="NUM_ENERGY_GROUPS":
+                    temp_value = self.__current_size_dict[block_name][subblock]
+                    self.__current_size_dict[block_name]["matrix_NUM_ENERGY_GROUPS"] = temp_value * (temp_value+1) // 2
+                pos += 1
+        if self.__current_data_type is None:
+            self.__current_data_type_dict[block_name] = np.dtype(shapes_all)
+        return data_all
+
+    def __create_dtype(self):
+        subblock_data_types = list()
+        for block_name, temp_data_type in self.__current_data_type_dict.items():
+            subblock_data_types.append((block_name, temp_data_type))
+        self.__current_data_type = np.dtype(subblock_data_types)
+
+    def __store_step_data(self):
+        if self.__current_data_type is None:
+            self.__create_dtype()
+        formated_data = list()
+        for i, temp_data in enumerate(self.__data_step):
+            temp_data = np.array(tuple(temp_data), dtype=self.__current_data_type[i])
+            formated_data.append(temp_data)
+        temp_step_data = np.array(tuple(formated_data), dtype=self.__current_data_type)
+        self._current_trj_list.append(temp_step_data) # _tre or _trg
+        self.__data_step = []
+
+    def parse_tre(self, f_path, **kwargs):
+        self._current_trj_list = self._tre
+        self.__current_size_dict = self.ene_size_dict
+        self.__current_param_dict = self.ene_param_dict
+        self.__current_data_type = self._ene_data_type
+        self.__current_data_type_dict = self._ene_data_type_dict
+        if f_path.endswith('.gz'):
+            self._parse_gr(f_path, fnc2open = gzip.open)
+        else:
+            self._parse_gr(f_path, **kwargs)
+        self.tre = np.array(self._tre, dtype=self._ene_data_type)
+
+    def parse_trg(self, f_path, **kwargs):
+        self._current_trj_list = self._trg
+        self.__current_size_dict = self.frene_size_dict
+        self.__current_param_dict = self.frene_param_dict
+        self.__current_data_type = self._frene_data_type
+        self.__current_data_type_dict = self._frene_data_type_dict
+        if f_path.endswith('.gz'):
+            self._parse_gr(f_path, fnc2open = gzip.open)
+        else:
+            self._parse_gr(f_path, **kwargs)
+        self.trg = np.array(self._trg, dtype=self._frene_data_type)
+
+    def load_tre_npz(self, f_path):
+        temp_data = np.load(f_path, allow_pickle=True)
+        self.add_gr_title([str(temp_data['title'])])
+        self.lib_version = str(temp_data['version'])
+        self.ene_size_dict = json.loads(str(temp_data['ene_size_dict']))
+        self.ene_param_dict = json.loads(str(temp_data['ene_param_dict']))
+        self.tre = temp_data['tre']
+        self._ene_data_type = self.tre.dtype
+        real_num_dtype = self._ene_data_type[1][0].subdtype[0].type
+        try:
+            int_num_dtype = self._ene_data_type[0][0].subdtype[0].type
+            time_real_num_dtype = self._ene_data_type[0][1].subdtype[0].type
+        except:
+            int_num_dtype = np.int32 # this can be improved..
+            time_real_num_dtype = self.real_num_dtype
+        self._set_data_types(int_num_dtype=int_num_dtype, real_num_dtype=real_num_dtype, time_real_num_dtype=time_real_num_dtype)
+        self.__generate_writing_fnc()
+
+    def load_trg_npz(self, f_path):
+        temp_data = np.load(f_path, allow_pickle=True)
+        self.add_gr_title([str(temp_data['title'])])
+        self.lib_version = str(temp_data['version'])
+        self.frene_size_dict = json.loads(str(temp_data['frene_size_dict']))
+        self.frene_param_dict = json.loads(str(temp_data['frene_param_dict']))
+        self.trg = temp_data['trg']
+        self._frene_data_type = self.trg.dtype
+        real_num_dtype = self._frene_data_type[1][0].subdtype[0].type
+        try:
+            int_num_dtype = self._frene_data_type[0][0].subdtype[0].type
+            time_real_num_dtype = self._frene_data_type[0][1].subdtype[0].type
+        except:
+            int_num_dtype = np.int32 # this can be improved..
+            time_real_num_dtype = self.real_num_dtype
+        self._set_data_types(int_num_dtype=int_num_dtype, real_num_dtype=real_num_dtype, time_real_num_dtype=time_real_num_dtype)
+        self.__generate_writing_fnc()
+
+    #writing
+    def write_tre_npz(self, f_path, expected_gr_ext='tre', expected_np_ext='npz'):
+        if not f_path.endswith('.{:}.{:}'.format(expected_gr_ext, expected_np_ext)):
+            if f_path.endswith(expected_gr_ext):
+                f_path += '.{:}'.format(expected_np_ext)
+            else:
+                f_path += '.{:}.{:}'.format(expected_gr_ext, expected_np_ext)
+        temp_ene_size_dict = json.dumps(self.ene_size_dict)
+        temp_ene_param_dict = json.dumps(self.ene_param_dict)
+        np.savez_compressed(f_path, title=''.join(self.sys_title[0].lines), version=self.undefined_bl['ENEVERSION'][0], 
+                            ene_size_dict=temp_ene_size_dict, ene_param_dict=temp_ene_param_dict, tre=self.tre)
+
+    def write_tre(self, f_path = None, **kwargs):
+        gs = self._get_grs_from_fpaht(f_path)
+        self.write_gromos_format(gs, 'TITLE')
+        int_blocks2write = tuple(self.tre.dtype.fields)
+        self.__current_size_dict = self.ene_size_dict
+        self.__current_param_dict = self.ene_param_dict
+        for temp_step in self.tre:
+            self.__current_step = temp_step
+            self.write_gromos_format(gs, *int_blocks2write)
+        if f_path and kwargs.get('flag_close', True):
+            gs.f.close()
+
+    def write_trg_npz(self, f_path, expected_gr_ext='trg', expected_np_ext='npz'):
+        if not f_path.endswith('.{:}.{:}'.format(expected_gr_ext, expected_np_ext)):
+            if f_path.endswith(expected_gr_ext):
+                f_path += '.{:}'.format(expected_np_ext)
+            else:
+                f_path += '.{:}.{:}'.format(expected_gr_ext, expected_np_ext)
+        temp_size_dict = json.dumps(self.frene_size_dict)
+        temp_param_dict = json.dumps(self.frene_param_dict)
+        np.savez_compressed(f_path, title=''.join(self.sys_title[0].lines), version=self.undefined_bl['ENEVERSION'][0], 
+                            frene_size_dict=temp_size_dict, frene_param_dict=temp_param_dict, trg=self.trg)
+
+    def write_trg(self, f_path = None, **kwargs):
+        gs = self._get_grs_from_fpaht(f_path)
+        self.write_gromos_format(gs, 'TITLE')
+        int_blocks2write = tuple(self.trg.dtype.fields)
+        self.__current_size_dict = self.frene_size_dict
+        self.__current_param_dict = self.frene_param_dict
+        for temp_step in self.trg:
+            self.__current_step = temp_step
+            self.write_gromos_format(gs, *int_blocks2write)
+        if f_path and kwargs.get('flag_close', True):
+            gs.f.close()
+
+
+_EnegyTrajectoryIO_defs = {}
+_EnegyTrajectoryIO_defs['_ENERTRJ_parser'] = '__ENERTRJ_v1'
+_EnegyTrajectoryIO_defs['_FRENERTRJ_parser'] = '__FRENERTRJ_v1'
+
+EnegyTrajectoryIO._add_defaults(_EnegyTrajectoryIO_defs, flag_set=True)
+
 
 
 class IMD_IO(GromosParser, GromosWriter):

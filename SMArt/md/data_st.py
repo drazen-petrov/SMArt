@@ -10,7 +10,7 @@ from .gromos.incl import GromosBlockNames, GromosDefaults
 from .gromos.io.incl import GromosFile, GromosString, GromosParser, GromosWriter, IFPBlocksParser, IFPBlocksWriter,\
                             BBParsing, grBBAtomWriting, BBWriting, MTBBlocksParser, topBlocksParser, topBlocksWriter, \
                             grTOPAtomWriting, PTP_EDS_BlocksParser, cnfBlocksParser, cnfBlocksWriter,\
-                            TrjCnfBlocksParser, TrjCnfBlocksWriter
+                            TrjCnfBlocksParser, TrjCnfBlocksWriter, EnegyTrajectoryIO
 from .gromacs.io.incl import gmFFParser, gmFFWriter, gmFragmentMoleculeIO, gmTopologyIO, gmConfigurationIO
 
 
@@ -1689,12 +1689,42 @@ _Configuration_defs['solv_res_names'] = ('SOL', 'SOLV', 'H2O')
 Configuration._add_defaults(_Configuration_defs, flag_set=True)
 
 
-class Trajectory(TrjCnfBlocksParser, TrjCnfBlocksWriter):
-    def __init__(self, f_path = None, N_atoms = None, int_num_dtype = np.int32, real_num_dtype = np.float32, **kwargs):
+class GeneralTrajectory:
+    def _set_data_types(self, int_num_dtype=np.int32, real_num_dtype=np.float32, **kwargs):
         self.int_num_dtype = int_num_dtype
         self.real_num_dtype = real_num_dtype
         self.time_real_num_dtype = kwargs.get('time_dtype', np.float32)
         self.__adjust_real_num_format()
+
+    def __adjust_num_format_coord(self, dtype, atr):
+        it_size = dtype().itemsize
+        num_dig = it_size * 2 - 1
+        if it_size<8:
+            num_spaces = str(15 - 9 + num_dig)
+            setattr(self, atr, '{:' + num_spaces + '.' + str(num_dig) + 'f}' + ' ' * (9 - num_dig))
+        else:
+            setattr(self, atr, '{:15.9f} ')
+
+    def __adjust_num_format_ene(self, dtype, atr):
+        it_size = dtype().itemsize
+        num_dig = it_size * 2 - 1
+        num_dig = min(num_dig, 9)
+        num_spaces = '18'
+        setattr(self, atr, '{:' + num_spaces + '.' + str(num_dig) + 'e}')
+
+    def __adjust_num_format(self, dtype, atr):
+        adjust_num_format_map = {'coord':self.__adjust_num_format_coord, 'ene':self.__adjust_num_format_ene}
+        adjust_num_format_map[self._adjust_num_format_key](dtype, atr)
+
+    def __adjust_real_num_format(self):
+        self.__adjust_num_format(self.real_num_dtype, '_real_num_format')
+        self.__adjust_num_format(self.time_real_num_dtype, '_time_real_num_format')
+
+
+class Trajectory(GeneralTrajectory, TrjCnfBlocksParser, TrjCnfBlocksWriter):
+    _adjust_num_format_key = 'coord'
+    def __init__(self, f_path=None, N_atoms=None, int_num_dtype=np.int32, real_num_dtype=np.float32, **kwargs):
+        self._set_data_types(int_num_dtype=int_num_dtype, real_num_dtype=real_num_dtype, **kwargs)
         self.N_atoms = N_atoms
         self._trj = []
         self.trj = None
@@ -1702,17 +1732,6 @@ class Trajectory(TrjCnfBlocksParser, TrjCnfBlocksWriter):
             self.get_frame_dtype()
         if f_path:
             self.parse_trc(f_path, **kwargs)
-
-    def __adjust_num_format(self, dtype, atr):
-        it_size = dtype().itemsize
-        if it_size<8:
-            num_dig = it_size * 2 - 1
-            num_spaces = str(15 - 9 + num_dig)
-            setattr(self, atr, '{:' + num_spaces + '.' + str(num_dig) + 'f}' + ' ' * (9 - num_dig))
-
-    def __adjust_real_num_format(self):
-        self.__adjust_num_format(self.real_num_dtype, '_real_num_format')
-        self.__adjust_num_format(self.time_real_num_dtype, '_time_real_num_format')
 
     def _get_frame_dtype_original(self):
         frame_dtype = [('time_step', self.int_num_dtype, (1,)), ('time', np.float32, (1,))]
@@ -1772,10 +1791,10 @@ class Trajectory(TrjCnfBlocksParser, TrjCnfBlocksWriter):
         self.add_gr_title([str(temp_title)])
         self.N_atoms = self.trj['coord'].shape[1]
         self.frame_dtype = self.trj.dtype
-        self.int_num_dtype = self.frame_dtype[0].subdtype[0].type
-        self.time_real_num_dtype = self.frame_dtype[1].subdtype[0].type
-        self.real_num_dtype = self.frame_dtype[2].subdtype[0].type
-        self.__adjust_real_num_format()
+        int_num_dtype = self.frame_dtype[0].subdtype[0].type
+        time_real_num_dtype = self.frame_dtype[1].subdtype[0].type
+        real_num_dtype = self.frame_dtype[2].subdtype[0].type
+        self._set_data_types(int_num_dtype=int_num_dtype, real_num_dtype=real_num_dtype, time_real_num_dtype=time_real_num_dtype)
 
     def parse_trc(self, f_path, **kwargs):
         if f_path.endswith('.gz'):
@@ -1787,6 +1806,35 @@ class Trajectory(TrjCnfBlocksParser, TrjCnfBlocksWriter):
             self.get_frame_dtype()
         self._trj = np.array(self._trj, dtype=self.frame_dtype)
         self.trj = self._trj
+
+
+class gr_EnegyTrajectory(GeneralTrajectory, EnegyTrajectoryIO):
+    _adjust_num_format_key = 'ene'
+
+    def __init__(self, lib_path=None, ene_trj_path=None, fene_trj_path=None, int_num_dtype=np.int32, real_num_dtype=np.float32, **kwargs):
+        """
+        A class that reads and stores all informations form the tre.
+        """
+        self._set_data_types(int_num_dtype=int_num_dtype, real_num_dtype=real_num_dtype, **kwargs)
+        self.ene_param_dict = {}
+        self.ene_size_dict = {}
+        self.frene_param_dict = {}
+        self.frene_size_dict = {}
+
+        # initialize trj variables
+        self._ene_data_type = None
+        self._ene_data_type_dict = dict()
+        self._tre = list()
+        self._frene_data_type = None
+        self._frene_data_type_dict = dict()
+        self._trg = list()
+        if lib_path:
+            self.read_ene_ana_lib(lib_path)
+            self.block_names = list(self.ene_param_dict)
+        if ene_trj_path:
+            self.parse_tre(ene_trj_path)
+        elif fene_trj_path:
+            self.parse_trg(fene_trj_path)
 
 
 class MolSystem(Topology, Configuration):

@@ -16,6 +16,7 @@ from collections import OrderedDict, defaultdict, deque, Counter
 from itertools import combinations, combinations_with_replacement, permutations, product
 from bisect import bisect_left, bisect_right
 from multiprocessing import Manager, Pool
+import json
 try:
     from frozendict import frozendict
 except ImportError:

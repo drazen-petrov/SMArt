@@ -426,7 +426,7 @@ class Top_g2g:
                     self.add2container(at.res, replace=-1, create=True)
                     self.add2container(at.cg, replace=-1, create=True, db_type=list)
                 self.EP_l.update(temp_mol_type.EP_l)
-                for atom_pair in temp_mol_type.excl_pair:
+                for atom_pair in getattr(temp_mol_type, 'excl_pair', []):
                     self.add2container(temp_mol_type.excl_pair[atom_pair], item_id = atom_pair, create = True, replace = -1)
                 for int_cont in temp_mol_type.get_interaction_containers():
                     if int_cont and int_cont[0].states[0].__class__ not in (self.PairType, self.ExclusionType) and \

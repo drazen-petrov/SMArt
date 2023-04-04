@@ -473,6 +473,20 @@ def _get_interaction_containers(self, EP_cont_exclude = False, **kwargs):
 
 class GeneralAtom(GeneralContainer):
     container2write = 'atoms'
+
+    @property
+    def __prf(self):
+        return str(self.id) + ' ' + str(self.name)
+
+    def __str__(self):
+        return self.__prf
+
+    def __repr__(self):
+        return self.__prf
+
+
+class GeneralTopAtom(GeneralAtom):
+    container2write = 'atoms'
     #__slots__ = ('id', 'name', 'a_type', 'p_ch', 'm')
 
     def __init__(self, atom_id=None, **kwargs):
@@ -487,16 +501,6 @@ class GeneralAtom(GeneralContainer):
                 return _atomtype_name__element_map['SI']
         else:
             return _atomtype_name__element_map[self.a_type.name]
-
-    @property
-    def __prf(self):
-        return str(self.id) + ' ' + str(self.name)
-
-    def __str__(self):
-        return self.__prf
-
-    def __repr__(self):
-        return self.__prf
 
     def add_pair(self, *atoms, **kwargs):
         for at in atoms:
@@ -518,7 +522,7 @@ class GeneralAtom(GeneralContainer):
 
     get_interaction_containers = _get_interaction_containers
 
-class BBAtom(GeneralAtom, grBBAtomWriting):
+class BBAtom(GeneralTopAtom, grBBAtomWriting):
     def __init__(self, atom_id=None, **kwargs):
         self.id = atom_id
         self.flag_bb = False
@@ -527,7 +531,7 @@ class BBAtom(GeneralAtom, grBBAtomWriting):
         self.name = kwargs.get('name', 'ANN')
 
 
-class TopAtom(GeneralAtom, grTOPAtomWriting):
+class TopAtom(GeneralTopAtom, grTOPAtomWriting):
     def __init__(self, atom_id=None, **kwargs):
         self.id = atom_id
         self.name = kwargs.get('name', 'ANN')
@@ -1367,7 +1371,7 @@ class Topology(Top_g2g, TopBBdb, MolTop, FF, topBlocksParser, topBlocksWriter, P
         mols = []
         atoms = list(self.get_atoms())
         if kwargs.get('flag_disres'):
-            G = self.sub_graph(self.atoms.values())
+            G = self.sub_graph(self.atoms.values(), set_adj_format=set)
             disres_cont = self.get_container(self.Distance_r, flag_class=True,  allow_not_found = True)
             if disres_cont:
                 for dr in disres_cont:
@@ -1455,8 +1459,7 @@ class Topology(Top_g2g, TopBBdb, MolTop, FF, topBlocksParser, topBlocksWriter, P
         return id_map_atoms, id_map_residues
 
 
-class ConfAtom():
-    container2write = 'atoms'
+class ConfAtom(GeneralAtom):
     _attributes = ('id', 'name', 'res_id', 'res_name', 'coord', 'vel', 'latshift')
 
 
@@ -1564,7 +1567,7 @@ class Configuration(cnfBlocksParser, cnfBlocksWriter, gmConfigurationIO):
             d2_min = list(self.box.abc)
             for coord_i in range(len(d2_min)):
                 for i in range(-1, 2):
-                    temp = abs(c1[coord_i] + self.box.abc[coord_i] - c2[coord_i])
+                    temp = abs(c1[coord_i] + i*self.box.abc[coord_i] - c2[coord_i])
                     if d2_min[coord_i] > temp:
                         d2_min[coord_i] = temp
             d2_min = np.dot(d2_min, d2_min)

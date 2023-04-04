@@ -1672,8 +1672,40 @@ class gmConfigurationIO(GromacsParser, GromacsWriter):
         box_vec = [float(box_v) for box_v in f.readline().split()]
         self.box = self.Box(vec = box_vec)
 
-    def write_gro(self, f_path):
-        pass
+    def write_gro(self, f_path, **kwargs):
+        gs = self._get_gms_from_fpaht(f_path)
+        try:
+            if self.sys_title[0].lines[0]:
+                gs.f.write(self.sys_title[0].lines[0])
+        except:
+            gs.f.write('configuration file\n')
+        gs.write(str(len(self.atoms))+'\n')
+
+        for at in self.atoms:
+            temp_line = ''
+            for i, num_char in enumerate(self.__line_form[:-3]):
+                if i==1:
+                    temp_line += '{{:<{:}}}'.format(num_char)
+                else:
+                    temp_line += '{{:>{:}}}'.format(num_char)
+            for num_char in self.__line_form[-3:]:
+                temp_line += '{{:>{:}.3f}}'.format(num_char)
+            params = [getattr(at, attr) for attr in self.__var_name]
+            params += list(at.coord)
+            try:
+                params += list(at.vel)
+                for num_char in self.__line_form[-3:]:
+                    temp_line += '{{:>{:}.4f}}'.format(num_char)
+            except:pass
+            gs.f.write(temp_line.format(*params) + '\n')
+        
+        box_line = '{:>10.5f}' * len(self.box._gm_vec)
+        box_line = box_line.format(*self.box._gm_vec)
+        gs.f.write(box_line + '\n')
+        if f_path and kwargs.get('flag_close', True):
+            gs.f.close()
+        return
+
 
 
 _gmConfigurationIO_defs = {}

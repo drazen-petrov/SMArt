@@ -1,6 +1,6 @@
 from SMArt.incl import copy, np, math, combinations, combinations_with_replacement, OrderedDict, \
     defaultdict, DataDumping, Defaults, do_warn, gzip
-from SMArt.incl import GeneralContainer
+from SMArt.incl import GeneralContainer, ContainerItem
 from SMArt.md.incl import *
 from SMArt.geometry import rot
 from SMArt.graph.incl import GraphDirected
@@ -10,7 +10,7 @@ from .gromos.incl import GromosBlockNames, GromosDefaults
 from .gromos.io.incl import GromosFile, GromosString, GromosParser, GromosWriter, IFPBlocksParser, IFPBlocksWriter,\
                             BBParsing, grBBAtomWriting, BBWriting, MTBBlocksParser, topBlocksParser, topBlocksWriter, \
                             grTOPAtomWriting, PTP_EDS_BlocksParser, cnfBlocksParser, cnfBlocksWriter,\
-                            TrjCnfBlocksParser, TrjCnfBlocksWriter, EnegyTrajectoryIO
+                            TrjCnfBlocksParser, TrjCnfBlocksWriter, EnegyTrajectoryIO, IMD_IO
 from .gromacs.io.incl import gmFFParser, gmFFWriter, gmFragmentMoleculeIO, gmTopologyIO, gmConfigurationIO
 
 
@@ -148,6 +148,12 @@ rules - [1,2,3] for every atom type
             if self.at_index_map[at1.id] > self.at_index_map[at2.id]:
                 return tuple((at2, at1))
         return tuple((at1, at2))
+    
+    def get_vdw_pair(self, a_type1, a_type2):
+        at_pair = (a_type1, a_type2)
+        if at_pair not in self.get_intDB().vdw:
+            at_pair = (a_type2, a_type1)
+        return self.get_intDB().vdw[at_pair]
 
     def generate_vdw(self, at_ids=False, replace=False, format_type = None, **kwargs):
         """
@@ -249,6 +255,18 @@ rules - [1,2,3] for every atom type
             return self.get_intDB().vdw[at_pair]
         else:
             raise Exception("vdw parameters not defined - atoms: " + str(at_id1) + " " + str(at_id2))
+
+    def _add_excl_pair_types(self, replace=False):
+        if hasattr(self.get_intDB(), self.ExclusionPairType.container2write):
+            if not replace:
+                return
+        normal_vdw = self.ExclusionPairType('normal_vdw', params=[0])
+        excl = self.ExclusionPairType('excl', params=[1])
+        pair14 = self.ExclusionPairType('pair14', params=[2])
+        self.get_intDB().add2container(normal_vdw, create=True, replace=replace)
+        self.get_intDB().add2container(excl, replace=replace)
+        self.get_intDB().add2container(pair14, replace=replace)
+        return
 
     def add_m_type(self, mass_id, mass, atom_name, replace=False):
         self.get_intDB().add2container(self.MassType(mass_id, mass, atom_name), replace=replace)
@@ -471,22 +489,10 @@ def _get_interaction_containers(self, EP_cont_exclude = False, **kwargs):
                     except:pass
 
 
-class GeneralAtom(GeneralContainer):
+class GeneralAtom(GeneralContainer, ContainerItem):
     container2write = 'atoms'
-
-    @property
-    def __prf(self):
-        return str(self.id) + ' ' + str(self.name)
-
-    def __str__(self):
-        return self.__prf
-
-    def __repr__(self):
-        return self.__prf
-
 
 class GeneralTopAtom(GeneralAtom):
-    container2write = 'atoms'
     #__slots__ = ('id', 'name', 'a_type', 'p_ch', 'm')
 
     def __init__(self, atom_id=None, **kwargs):
@@ -1072,7 +1078,7 @@ class BBdb(TopBBdb, FF, MTBBlocksParser, GromosWriter):
         temp_f.f.close()
 
 
-class Residue(GeneralContainer):
+class Residue(GeneralContainer, ContainerItem):
     #__slots__ = ('atoms', 'name')
     container2write = 'residues'
 
@@ -1846,7 +1852,7 @@ class MolSystem(Topology, Configuration):
 
 from SMArt.md.ana.incl import get_lset
 
-class MD_Parameters(GromosParser, GromosWriter):
+class MD_Parameters(IMD_IO):
     def __init__(self, template_md_in=None, **kwargs):
         """
         :param template_md_in: template file to get the parameters

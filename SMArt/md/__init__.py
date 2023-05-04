@@ -1,5 +1,5 @@
 from . import ana
-from .data_st import FF, BBdb, Topology, Configuration, Trajectory, MolSystem
+from .data_st import FF, BBdb, Topology, Configuration, Trajectory, MolSystem, MD_Parameters
 
 
 def parse_ff(parse_from, parse_from_file = True, format_type = 'gr', **kwargs):
@@ -43,8 +43,7 @@ def parse_mtb(parse_from, parse_from_file = True, **kwargs):
 
 def parse_trc(f_path, **kwargs):
     """
-    :param parse_from: this can also be gromos stream
-    :param parse_from_file:
+    :param f_path: path to the trc file
     :param kwargs:
     :return: trajectory
     """
@@ -52,10 +51,16 @@ def parse_trc(f_path, **kwargs):
 
 def parse_cnf(f_path, **kwargs):
     """
-    :param parse_from: this can also be gromos stream
-    :param parse_from_file:
+    :param f_path: path to the cnf file
     :param kwargs:
     :return: configuration
     """
     return Configuration(f_path, **kwargs)
 
+def parse_imd(imd_path, **kwargs):
+    """
+    :param imd_path: path to the imd file
+    :param kwargs:
+    :return: MD_Parameters object 
+    """
+    return MD_Parameters(imd_path, **kwargs)

@@ -1970,3 +1970,40 @@ class IMD_IO(GromosParser, GromosWriter):
     def parse_imd(self, parse_from, parse_from_file=True, **kwargs):
         """parses a top file (GROMOS format)"""
         self._parse_gr(parse_from, parse_from_file, **kwargs)
+
+    def __NONBONDED_v1(self, parse_from, bl_name, **kwargs):
+        self.NLRELE = int(next(parse_from.block_split_fnc))
+        self.KAPPA = float(next(parse_from.block_split_fnc))
+        self.RCRF = float(next(parse_from.block_split_fnc))
+        self.EPSRF = float(next(parse_from.block_split_fnc))
+        self.NSLFEXCL = int(next(parse_from.block_split_fnc))
+        #
+        rest_NONBONDED_params = list(parse_from.block_split_fnc)
+        try:
+            self.ASHAPE = rest_NONBONDED_params[0]
+            self.NA2CLC = rest_NONBONDED_params[1]
+            self.TOLA2 = rest_NONBONDED_params[2]
+            self.EPSLS = rest_NONBONDED_params[3]
+            self.NKX = rest_NONBONDED_params[4]
+            self.NKY = rest_NONBONDED_params[5]
+            self.NKZ = rest_NONBONDED_params[6]
+            self.KCUT = rest_NONBONDED_params[7]
+            self.NGX = rest_NONBONDED_params[8]
+            self.NGY = rest_NONBONDED_params[9]
+            self.NGZ = rest_NONBONDED_params[10]
+            self.NASORD = rest_NONBONDED_params[11]
+            self.NFDORD = rest_NONBONDED_params[12]
+            self.NALIAS = rest_NONBONDED_params[13]
+            self.NSPORD = rest_NONBONDED_params[14]
+            self.NQEVAL = rest_NONBONDED_params[15]
+            self.FACCUR = rest_NONBONDED_params[16]
+            self.NRDGRD = rest_NONBONDED_params[17]
+            self.NWRGRD = rest_NONBONDED_params[18]
+            self.NLRLJ = rest_NONBONDED_params[19]
+            self.SLVDNS = rest_NONBONDED_params[20]
+        except:
+            self.rest_NONBONDED_params = rest_NONBONDED_params
+
+_gr_IMD_IO_defs = {}
+_gr_IMD_IO_defs['_NONBONDED_parser'] = '__NONBONDED_v1'
+IMD_IO._add_defaults(_gr_IMD_IO_defs, flag_set=True)

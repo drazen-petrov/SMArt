@@ -423,16 +423,48 @@ class StringStream(Defaults):
     def _remove_f(self):
         return
 
+class ContainerItem:
+    def __just_for_readability(self):
+        self.container2write = None # this defines how to call a container
+        self.id = None # id of the item
+        self.name # name of the item
+        self._name_var = None
+
+    @property
+    def __prf(self):
+        txt = str(self.id)
+        if hasattr(self, 'name'):
+            name = str(self.name)
+        else:
+            _name_var = getattr(self, '_name_var')
+            if _name_var:
+                name = getattr(self, _name_var)
+        if name:
+            txt += ' ' + name
+        return txt
+
+    def __str__(self):
+        return self.__prf
+
+    def __repr__(self):
+        return self.__prf
+
+
 class GeneralContainer:
+    ContainerItem = ContainerItem
 
     def get_container(self, container_name, create=False, db_type=OrderedDict, **kwargs):
         """gets the container by the name
-        kwargs: flag_item - searches for the container name from the item (e.g. flag_item = Bond())
-                flag_class - searches for the container name from the class (e.g. flag_item = Bond)
+        kwargs: 
+            flag_item - searches for the container name from the item (e.g. flag_item = Bond())
+            flag_class - searches for the container name from the class (e.g. flag_item = Bond)
                 flag_item and flag_class finds the container name that is usually defined from container2write
-                pre_containers - list of pre_containers (e.g. top.ff with cont_name = bonds gives top.ff.bonds)
-                cont_pref
-                cont_suf"""
+            pre_containers - list of pre_containers (e.g. top.ff with cont_name = bonds gives top.ff.bonds)
+            cont_pref - prefix for container name
+            cont_suf - sufix for container name
+            allow_not_found - if container is not found, Exception is raised, 
+                if this flag is set to True, this prevents the Exception
+        """
         if kwargs.get('flag_item', False):
             container_name = self.__get_container_name(container_name, **kwargs)
         if kwargs.get('flag_class', False):

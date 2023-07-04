@@ -1555,7 +1555,8 @@ class AlchemicalSolution_base:
         for i in range(2):
             if matched_pair[i][0] is not None:
                 new_row[matched_pair[i][0]] = matched_pair[i][1]
-        new_sol_df = self._sol.append(new_row)
+        #new_sol_df = self._sol.append(new_row)
+        new_sol_df = pd.concat([self._sol, new_row])
         new_sol = self.copy4update_new_sol_df(new_sol_df)
         for i in range(2):
             if matched_pair[i][1] not in (Dummy, None):

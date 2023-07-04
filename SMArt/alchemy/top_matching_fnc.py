@@ -1296,7 +1296,8 @@ def get_res_atom_names_v1(sol, **kwargs):
         temp_residues_all = set()
         for sol_at in res.atoms:
             atom_names = Counter()
-            for top_i, top_at in sol._sol.loc[sol_at.sol_id].iteritems():
+            #for top_i, top_at in sol._sol.loc[sol_at.sol_id].iteritems():
+            for top_i, top_at in sol._sol.loc[sol_at.sol_id].items():
                 if top_at not in (None, Dummy):
                     temp_residues_all.add(top_at.res)
                     atom_names[top_at.name] += 1

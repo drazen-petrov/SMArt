@@ -39,17 +39,17 @@ def convert_trj_gr2gm(gmx_trj_path, gro, out_f, file_format='trc'):
 
 if __name__ == "__main__":
     # parsing arguments
-    #import argparse
+    import argparse
     #parser = argparse.ArgumentParser()
     from SMArt.incl import ArgParser # same as argparse with a fromfile_prefix_chars fix
-    parser = ArgParser(fromfile_prefix_chars='@')
-    parser.add_argument('-gmx_trj', type=str, required = True, help='gromacs trajectory file (e.g. *.xtc)')
-    parser.add_argument('-gro', type=str, required = True, help='gro or pdb file that corresponds to the trajectory (used to load the trajectory with mdtraj)')
-    parser.add_argument('-out', type=str, default='out.trc', help='output file (e.g. *trc)')
-    parser.add_argument('-file_format', type=str, default='trc', help='trc or npz')
+    parser = ArgParser(fromfile_prefix_chars='@', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument('-f','--trj', type=str, required=True, help='trajectory file (e.g. *.xtc)')
+    parser.add_argument('-t','--top', type=str, required=True, help='topology file that corresponds to the trajectory (used to load the trajectory with mdtraj, e.g. pdb)')
+    parser.add_argument('-o','--out', type=str, default='out.trc', help='output file (e.g. *trc)')
+    parser.add_argument('-e','--file_format', type=str, default='trc', choices=['trc', 'npz'], help='file format (extension)')
 
     args = parser.parse_args()
 
     # convert
-    convert_trj_gr2gm(args.gmx_trj, args.gro, args.out, args.file_format)
+    convert_trj_gr2gm(args.trj, args.top, args.out, args.file_format)
 

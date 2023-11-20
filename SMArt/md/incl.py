@@ -468,7 +468,10 @@ class BondType(InteractionType, Defaults):
             b_khq[2] = b_khq[1] / (2 * b_khq[0] ** 2)
         else:
             #assert check_ind_f_params(b_khq[2], b_khq[1] / (2 * b_khq[0] ** 2)), 'k_harm != 2*k_quad * b0**2'
-            assert check_if_eq_np(b_khq[2], b_khq[1] / (2 * b_khq[0] ** 2)), 'k_harm != 2*k_quad * b0**2'
+            if kwargs.get("flag_check_bond_fk", False):
+                assert check_if_eq_np(b_khq[2], b_khq[1] / (2 * b_khq[0] ** 2)), 'k_harm != 2*k_quad * b0**2'
+            else:
+                if check_if_eq_np(b_khq[2], b_khq[1] / (2 * b_khq[0] ** 2)):print('WARN: k_harm != 2*k_quad * b0**2')
         return b_khq
 
     def gr2gm(self, **kwargs):

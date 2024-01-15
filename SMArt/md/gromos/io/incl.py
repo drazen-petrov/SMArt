@@ -290,6 +290,8 @@ class GromosWriter(GeneralContainer, GromosDefaults):
         if param_format is None:
             param_format = self.__param_format
         if not isinstance(params[0], (list, tuple)):
+            if params_per_line is None:
+                params_per_line = self.__params_per_line
             if isinstance(params_per_line, int):
                 temp_i = 0
                 params2write = []
@@ -1978,8 +1980,8 @@ class IMD_IO(GromosParser, GromosWriter):
         self.EPSRF = float(next(parse_from.block_split_fnc))
         self.NSLFEXCL = int(next(parse_from.block_split_fnc))
         #
-        rest_NONBONDED_params = list(parse_from.block_split_fnc)
-        try:
+        self.rest_NONBONDED_params = list(parse_from.block_split_fnc)
+        if len(self.rest_NONBONDED_params)==21:
             self.ASHAPE = rest_NONBONDED_params[0]
             self.NA2CLC = rest_NONBONDED_params[1]
             self.TOLA2 = rest_NONBONDED_params[2]
@@ -2001,9 +2003,15 @@ class IMD_IO(GromosParser, GromosWriter):
             self.NWRGRD = rest_NONBONDED_params[18]
             self.NLRLJ = rest_NONBONDED_params[19]
             self.SLVDNS = rest_NONBONDED_params[20]
-        except:
-            self.rest_NONBONDED_params = rest_NONBONDED_params
+
+    def __write_NONBONDED_v1(self, gs, bl, **kwargs):
+        params = [self.NLRELE, self.KAPPA, self.RCRF, self.EPSRF, self.NSLFEXCL] + self.rest_NONBONDED_params
+        bl_txt = self.get_block_txt_from_params(params)
+        gs.write_block(bl, bl_txt)
+
 
 _gr_IMD_IO_defs = {}
 _gr_IMD_IO_defs['_NONBONDED_parser'] = '__NONBONDED_v1'
+_gr_IMD_IO_defs['_write_NONBONDED'] = '__write_NONBONDED_v1'
 IMD_IO._add_defaults(_gr_IMD_IO_defs, flag_set=True)
+

@@ -1743,9 +1743,15 @@ class Trajectory(GeneralTrajectory, TrjCnfBlocksParser, TrjCnfBlocksWriter):
             self.parse_trc(f_path, **kwargs)
 
     def _get_frame_dtype_original(self):
-        frame_dtype = [('time_step', self.int_num_dtype, (1,)), ('time', np.float32, (1,))]
+        #single_value_1 = 1
+        single_value_1 = (1,) # this used to be like this, kept in case something goes wrong...
+        frame_dtype = [('time_step', self.int_num_dtype, single_value_1), ('time', np.float32, single_value_1)]
         frame_dtype.append(('coord', self.real_num_dtype, (self.N_atoms, 3)))
-        frame_dtype.extend([('box_type', np.int8, (1,)), ('box', self.real_num_dtype, (4,3))])
+        frame_dtype.extend([('box_type', np.int8, single_value_1), ('box', self.real_num_dtype, (4,3))])
+
+        # frame_dtype = [('time_step', self.int_num_dtype), ('time', np.float32)]
+        # frame_dtype.append(('coord', self.real_num_dtype, (self.N_atoms, 3)))
+        # frame_dtype.extend([('box_type', np.int8), ('box', self.real_num_dtype, (4,3))])
         self.frame_dtype = np.dtype(frame_dtype)
         self.trj = np.empty(0, dtype=self.frame_dtype)
 
@@ -1932,7 +1938,7 @@ class MD_Parameters(IMD_IO):
 
     def write_imd(self, f_path = None, **kwargs):
         gs = self._get_grs_from_fpaht(f_path)
-        self.write_gromos_format(gs, 'TITLE')
+        self.write_gromos_format(gs, 'TITLE', 'NONBONDED')
         blocks2write = list(self.undefined_bl)
         self.write_gromos_format(gs, *blocks2write, **kwargs)
         if f_path and kwargs.get('flag_close', True):

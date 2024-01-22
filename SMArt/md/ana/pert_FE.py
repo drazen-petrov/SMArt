@@ -2,6 +2,20 @@ from SMArt.incl import sys, np, pd, copy, Manager, Pool, integrate, bisect_left,
 from .incl import Real, get_lset
 try:
     from pymbar import MBAR, timeseries
+    stat_ineff_fnc = None
+    stat_ineff_fnc_names = ('statisticalInefficiency', 'statistical_inefficiency', 'statistical_inefficiency_multiple')
+    for fnc_name in stat_ineff_fnc_names:
+        if hasattr(timeseries, fnc_name):
+            stat_ineff_fnc = getattr(timeseries, fnc_name)
+            break
+    d_FE_fnc_names = ('getFreeEnergyDifferences', 'compute_free_energy_differences')
+    for d_FE_fnc_name in d_FE_fnc_names:
+        if hasattr(MBAR, d_FE_fnc_name):
+            break
+    weights_fnc_names = ('getWeights', 'weights')
+    for weights_fnc_name in weights_fnc_names:
+        if hasattr(MBAR, weights_fnc_name):
+            break
 except ImportError:
     pass
 
@@ -222,7 +236,7 @@ def si_data_bar_dhdl(data_bar_dhdl):
     for l in data_bar_dhdl:
         si_l[l] = []
         for i in range(len(data_bar_dhdl[l])):
-            temp_si = timeseries.statisticalInefficiency(data_bar_dhdl[l][i].loc[:,l])
+            temp_si = stat_ineff_fnc(data_bar_dhdl[l][i].loc[:,l])
             si_l[l].append(temp_si)
     return si_l
 
@@ -244,7 +258,7 @@ def si_skips_data_dEs(dEs, nfr_mul, skip = 1):
         for n_frms in n_frms_list:
             if n_frms:
                 c_end = c+n_frms
-                temp_si = timeseries.statisticalInefficiency(dEs[i][c:c_end])
+                temp_si = stat_ineff_fnc(dEs[i][c:c_end])
                 skip_value = max(1, int(round(temp_si * skip, 0)))
                 skips.append(skip_value)
                 c = c_end
@@ -306,7 +320,7 @@ def _get_mbar(Es, nfr, T):
 
 def calc_dg_mbar(Es, nfr, T = 300):
     mbar, kT = _get_mbar(Es, nfr, T)
-    Deltaf_ij, dDeltaf_ij = mbar.getFreeEnergyDifferences()
+    Deltaf_ij, dDeltaf_ij = getattr(mbar, d_FE_fnc_name)()
     return Deltaf_ij*kT, dDeltaf_ij*kT, mbar
 
 def calc_dg_bar(LPs_map, Es, nfr, T = 300):
@@ -410,7 +424,7 @@ def calc_exTI_err(exTI_data, LPs_pred = None, flag_get_exTI_data_avg=True, fnc2c
 
 def _calc_exTI_pred_mbar(mbar, dEs, LPs_pred, flag_calc_w = True):
     if flag_calc_w:
-        w = mbar.getWeights().T
+        w = getattr(mbar, weights_fnc_name)().T
     else:
         w = mbar
     dhdl_pred_mbar = []
@@ -422,7 +436,7 @@ def _calc_singleLP_exTI_pred_mbar(Es, dEs, LPs_pred, nfr, T = 300):
     assert Es.shape == dEs.shape
     kT = kb * T
     mbar = MBAR(Es / kT, nfr)
-    w = mbar.getWeights()
+    w = getattr(mbar, weights_fnc_name)()
     wt = w.T
     dgdl_int = []
     for i in range(len(LPs_pred)):

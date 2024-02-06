@@ -1517,25 +1517,38 @@ class AlchemicalSolution_base:
             at1, at2 = new_atom_pair
             new_sol.toptp.add_atom_pair2EP_l(at1, at2)
 
+    def __copy_interaction_states_map(self, flag_add_new_state=False):
+        N_states = len(self.toptp.interaction_states_map)
+        if flag_add_new_state:
+            N_states+=1
+        new_interaction_states_map = tuple(dict() for _ in range(N_states))
+        done_interactions = set()
+        for top_i, int_st_map in enumerate(self.toptp.interaction_states_map):
+            for top_interaction in int_st_map: # interaction (e.g. bond between 2 atoms in one of the states/tops)
+                sol_int = int_st_map[top_interaction] # solution interaction that stores ND_states (non-redundant) and int_states (interactions for each top)
+                if sol_int not in done_interactions:
+                    new_sol_int = top_interaction.__class__(top_interaction.int_type)
+                    done_interactions.add(sol_int)
+                    new_sol_int.ND_states={}
+                    new_sol_int.int_states = [None] * N_states
+                    for ND_state, top_set in sol_int.ND_states.items():
+                        new_sol_int.ND_states[ND_state] = set(top_set)
+                        for temp_top_i in top_set:
+                            temp_int_top_i = sol_int.int_states[temp_top_i]
+                            new_interaction_states_map[temp_top_i][temp_int_top_i] = new_sol_int
+                            new_sol_int.int_states[temp_top_i] = temp_int_top_i
+        return new_interaction_states_map
+
     def update_copy_sol_toptp(self, new_sol):
         if hasattr(self, 'toptp'):
             self.__update_copy_sol_toptp(new_sol)
-            new_sol.toptp.interaction_states_map = tuple(int_st_map.copy() for int_st_map in self.toptp.interaction_states_map)
+            #new_sol.toptp.interaction_states_map = tuple(int_st_map.copy() for int_st_map in self.toptp.interaction_states_map)
+            new_sol.toptp.interaction_states_map = self.__copy_interaction_states_map()
 
     def update_copy_sol_toptp_add_state(self, new_sol):
         if hasattr(self, 'toptp'):
             self.__update_copy_sol_toptp(new_sol)
-            new_sol.toptp.interaction_states_map = []
-            done_interactions = set()
-            for int_st_map in self.toptp.interaction_states_map:
-                temp_map = dict()
-                for k in int_st_map:
-                    if int_st_map[k] not in done_interactions:
-                        int_st_map[k].int_states.append(None)
-                        done_interactions.add(int_st_map[k])
-                    temp_map[k] = int_st_map[k]
-                new_sol.toptp.interaction_states_map.append(temp_map)
-            new_sol.toptp.interaction_states_map.append(dict())
+            new_sol.toptp.interaction_states_map = self.__copy_interaction_states_map(flag_add_new_state=True)
 
     """
     def __add_update_match2sol_atom_None_pair(self, matched_pair):

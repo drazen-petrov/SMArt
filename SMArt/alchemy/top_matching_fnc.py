@@ -383,9 +383,11 @@ def update_ptp_interactions(sol, top_atom_list_01, done_interactions = None, **k
                             done_interactions.add(new_interaction)
                     if other_int_states:
                         for top_i_other, int_match_other in enumerate(other_int_states):
-                            sol_interaction.int_states[top_i_other] = int_match_other
-                            sol_ND_state_tops_set.add(top_i_other)
-                            sol.toptp.interaction_states_map[top_i_other][int_match_other] = sol_interaction
+                            if int_match_other is not None:
+                                sol_interaction.int_states[top_i_other] = int_match_other
+                                sol_ND_state_tops_set.add(top_i_other)
+                                sol.toptp.interaction_states_map[top_i_other][int_match_other] = sol_interaction
+                            # this only makes sense to do if the int_match_other is not None!!!
                         done_interactions.add(sol_interaction)
                     if other_int_state:
                         top_i_other, int_match_other = other_int_state
@@ -411,7 +413,7 @@ def update_ptp_interactions(sol, top_atom_list_01, done_interactions = None, **k
                         for top_set in sol_interaction_2.ND_states.values():
                             for top_i in top_set:
                                 assert sol_interaction.int_states[top_i] is None
-                                int_i = sol_interaction_2
+                                int_i = sol_interaction_2.int_states[top_i]
                                 sol_interaction.int_states[top_i] = int_i
                                 sol.toptp.interaction_states_map[top_i][int_i] = sol_interaction
                         done_interactions.add(sol_interaction_2)
@@ -469,7 +471,7 @@ def add_atom_m_to_row(sol_at, at_m, st_at, ptp_atom):
                 flag = False
                 break
         if flag:
-            sol_at.ND_m_states[at_m] = st_at
+            sol_at.ND_m_states[at_m] = set(st_at)
             ptp_atom[0] += flag
 
 def add_atom_pch_to_row(sol_at, at_p_ch, st_at, ptp_atom):
@@ -497,7 +499,7 @@ def add_atom_pch_to_row(sol_at, at_p_ch, st_at, ptp_atom):
                 flag = False
                 break
         if flag:
-            sol_at.ND_pch_states[at_p_ch] = st_at
+            sol_at.ND_pch_states[at_p_ch] = set(st_at)
             ptp_atom[1] += flag
 
 def add_atom_a_type_to_row(sol_at, at_a_type, st_at, ptp_atom):
@@ -514,7 +516,7 @@ def add_atom_a_type_to_row(sol_at, at_a_type, st_at, ptp_atom):
                 flag = False
                 break
         if flag:
-            sol_at.ND_a_type_states[at_a_type] = st_at
+            sol_at.ND_a_type_states[at_a_type] = set(st_at)
             ptp_atom[2] += flag
 
 # interactions

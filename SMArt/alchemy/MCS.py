@@ -1009,8 +1009,8 @@ class MCS(DataDumping):
         return flag_find_solution, tops_ind_ring_parts_pairs
 
     def enumerate_stepwise_sorted(self, **kwargs):
-        sol = self.initial_sol.copy()
-        if sol._sol.shape[0] == 0:
+        if self.initial_sol._sol.shape[0] == 0:
+            sol = self.initial_sol.copy()
             for temp_pair in self.get_sorted_initial_pairs_stepwise_2(sol, **kwargs):
                 if kwargs.get('verbose'):
                     print('1', self.c, temp_pair)
@@ -1026,7 +1026,16 @@ class MCS(DataDumping):
                     self.enumerate_stepwise_sorted_call(new_sol, **kwargs)
                 sol.tried_pairs.append(temp_pair)
         else:
-            self.enumerate_stepwise_sorted_call(sol, **kwargs)
+            self.enumerate_stepwise_sorted_call(self.initial_sol, **kwargs)
+
+    @staticmethod
+    def get_int_ptp_from_sol(sol):
+        int_ptp_set = set()
+        for top_i in range(len(sol.toptp.interaction_states_map)):
+            for int_top_mcs, sol_int in sol.toptp.interaction_states_map[top_i].items():
+                if len(sol_int.ND_states)!=1:
+                    int_ptp_set.add(sol_int)
+        return int_ptp_set
 
     def enumerate_stepwise_sorted_call(self, sol, **kwargs):
         for temp_pair in self.get_sorted_new_pairs_stepwise(sol, **kwargs):
@@ -1040,7 +1049,7 @@ class MCS(DataDumping):
             self.current[3] = new_sol
             if new_sol:
                 ########## debugging
-                new_sol.SH = sol, sol.copy(), new_sol.copy(), temp_pair, self.c
+                #new_sol.SH = sol, sol.copy(), new_sol.copy(), temp_pair, self.c
                 ########## debugging
                 self.update_solutions(new_sol, **kwargs)
                 #assert new_sol.full_estimate <= sol.full_estimate

@@ -64,6 +64,12 @@ if sys.version_info[0] < 3:
 #class __VersionCompatibility(object):pass
 
 def test_time(f, *args, **kwargs):
+    """
+    calls f(*args, **kwargs) and times the execution (wall time)
+    return:
+        time
+        res: return of the f(*args, **kwargs) call
+    """
     t = time.time()
     res = f(*args, **kwargs)
     return time.time() - t, res

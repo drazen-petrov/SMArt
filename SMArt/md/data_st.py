@@ -796,16 +796,19 @@ class GeneralTopology(DataDumping, InteractionContainer, GraphDirected):
     def gen_graph(self, containers = ('bonds',)):
         self.create_adj_list(containers)
 
-    def add_exclusions_neigh(self, nexcl=2):
+    def add_exclusions_neigh(self, nexcl=2, atom_subset=None):
         self.create_adj_list()
         for at in self.get_atoms():
+            if atom_subset:
+                if at not in atom_subset:
+                    continue
             for temp_at in self.BFS_d(at, nexcl):
                 if at!=temp_at:
+                    if atom_subset:
+                        if temp_at not in atom_subset:
+                            continue
                     #at.add_excl(temp_at, replace = -1)
-                    temp_interaction = Interaction(ExclusionPairType, atoms=(at, temp_at))
-                    temp_interaction.add_state(fnc_type = None, params = (True,))
-                    self.add2container(temp_interaction, create=True, item_id=frozenset((at, temp_at)), replace = -1)
-                    self.add_atom_pair2EP_l(at, temp_at)
+                    self.add_exclusion(at, temp_at)
 
     @property
     def EP_l(self):
@@ -815,6 +818,18 @@ class GeneralTopology(DataDumping, InteractionContainer, GraphDirected):
 
     def get_excl_pair(self):
         return self.get_container('excl_pair', create=True)
+
+    def add_exclusion(self, at, *atoms, **kwargs):
+        """
+        adds combinations of at with all elements of atoms to be excluded
+        """
+        for at2 in atoms:
+            # add pair to self EP_l
+            temp_interaction = Interaction(ExclusionPairType, atoms=(at, at2))
+            temp_interaction.add_state(fnc_type = None, params = (True,))
+            self.add2container(temp_interaction, create=True, item_id=frozenset((at, at2)), replace = -1)
+        # add each of the atoms in the pair to the other at EP_l
+        self.add_atom_pair2EP_l(at, *atoms, **kwargs)
 
     def add_atom_pair2EP_l(self, at, *atoms, **kwargs):
         for at2 in atoms:
@@ -1016,7 +1031,20 @@ class GeneralTopology(DataDumping, InteractionContainer, GraphDirected):
         return dict((at,i) for i, at in enumerate(self.get_atoms()))
 
 
-class BuildingBlock(BBParsing, BBWriting, GeneralTopology):
+class Base_Residue_BB:
+    def find_atom(self, atom_name):
+        for at in self.get_atoms():
+            if at.name == atom_name:
+                return at
+
+    def find_atoms(self, *atom_names):
+        for at_name in atom_names:
+            at = self.find_atom(at_name)
+            if at is not None:
+                yield at
+
+
+class BuildingBlock(Base_Residue_BB, BBParsing, BBWriting, GeneralTopology):
     """Building block class"""
     Atom = BBAtom
 
@@ -1035,6 +1063,16 @@ class BuildingBlock(BBParsing, BBWriting, GeneralTopology):
             gs = GromosString("")
         blocks2write = ('MTBUILDBLSOLUTE',)
         return self.write_gromos_format(gs, *blocks2write, get_str = get_str)
+
+    def get_EP_l(self):
+        for at in self.get_atoms():
+            self.add_exclusion(at, *at.e_l)
+
+    def transform_EP_l(self):
+        for at in self.get_atoms():
+            for excl_at in self._gr_get_excl_pairs(at)[0]:
+                if excl_at not in at.e_l:
+                    at.e_l.append(excl_at)
 
 
 class TopBBdb(Defaults):
@@ -1078,7 +1116,7 @@ class BBdb(TopBBdb, FF, MTBBlocksParser, GromosWriter):
         temp_f.f.close()
 
 
-class Residue(GeneralContainer, ContainerItem):
+class Residue(GeneralContainer, ContainerItem, Base_Residue_BB):
     #__slots__ = ('atoms', 'name')
     container2write = 'residues'
 
@@ -1089,11 +1127,6 @@ class Residue(GeneralContainer, ContainerItem):
     def add_atom(self, atom, **kwargs):
         self.add2container(atom, db_type=list, create = True, **kwargs)
         atom.res = self
-
-    def find_atom(self, atom_name):
-        for at in self.atoms:
-            if at.name == atom_name:
-                return at
 
 
 class MolTop(GeneralTopology):

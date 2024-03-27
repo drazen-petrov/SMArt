@@ -533,7 +533,7 @@ returns ((), {'all_v':[v1,v2,v3,...]})
         return res
 
     @staticmethod
-    def __get_123(temp_G, coord_df, cutoff2 = None):
+    def __get_123(temp_G, coord_df, cutoff2=None):
         checked_pairs = set()
         l12 = []
         l13 = []
@@ -557,12 +557,13 @@ returns ((), {'all_v':[v1,v2,v3,...]})
                             else:
                                 lrest.append(temp_p)
         if KDTree and cutoff2:
-            kd_tree = KDTree(coord.values)
+            kd_tree = KDTree(coord_df.values)
             pairs_in_cutoff = kd_tree.query_pairs(np.sqrt(cutoff2))
             l123_set = set(l12) | set(l13)
-            for pair in lrest:
-                if pair not in l123_set:
-                    lrest.append(pair)
+            for pair in pairs_in_cutoff:
+                temp_pair = tuple(sorted(pair))
+                if temp_pair not in l123_set:
+                    lrest.append(temp_pair)
         return l12, l13, lrest
 
     @staticmethod

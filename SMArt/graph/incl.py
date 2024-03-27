@@ -4,7 +4,7 @@ v - vertex
 e - edges
 """
 
-from SMArt.incl import defaultdict, __VersionCompatibility, np, pd, minimize, plt, deque
+from SMArt.incl import defaultdict, __VersionCompatibility, np, pd, minimize, plt, deque, KDTree
 from SMArt.geometry import generate_new_coordinates
 
 
@@ -442,10 +442,11 @@ returns ((), {'all_v':[v1,v2,v3,...]})
             vertices += grp_add[i]
             sub_temp_G = temp_G.sub_graph(vertices)
             temp_coorf_df = coord_df.loc[vertices]
+            temp_cutoff2 = kwargs.get('cutoff2', 16)
             if i + 1 != len(added_paths):
-                temp_min = self.__do_min(sub_temp_G, temp_coorf_df, 16, Nmaxiter, d_12, d_13,  Fk, rest_pow)
+                temp_min = self.__do_min(sub_temp_G, temp_coorf_df, temp_cutoff2, Nmaxiter, d_12, d_13,  Fk, rest_pow)
             else:
-                temp_min = self.__do_min(sub_temp_G, temp_coorf_df, 16, Nmaxiter, d_12, d_13,  Fk, rest_pow)
+                temp_min = self.__do_min(sub_temp_G, temp_coorf_df, temp_cutoff2, Nmaxiter, d_12, d_13,  Fk, rest_pow)
             if step and fig_name and init_struc:
                 self._plot_mol_graph(temp_G, coord_df, fig_name + '_step_' + str(i) + '_init.png', **kwargs)
             coord_df.loc[vertices] = temp_min.x.reshape((len(vertices),2))
@@ -453,7 +454,8 @@ returns ((), {'all_v':[v1,v2,v3,...]})
                 self._plot_mol_graph(temp_G, coord_df, fig_name + '_step_' + str(i) + '_min.png', **kwargs)
         sub_temp_G = temp_G.sub_graph(vertices)
         temp_coorf_df = coord_df.loc[vertices]
-        temp_min = self.__do_min(sub_temp_G, temp_coorf_df, 25, None, d_12, d_13, Fk, rest_pow)
+        temp_cutoff2 = kwargs.get('cutoff2', 25)
+        temp_min = self.__do_min(sub_temp_G, temp_coorf_df, temp_cutoff2, None, d_12, d_13, Fk, rest_pow)
         coord_df.loc[vertices] = temp_min.x.reshape((len(vertices),2))
         self.coord_2D = coord_df
         if fig_name:
@@ -532,7 +534,7 @@ returns ((), {'all_v':[v1,v2,v3,...]})
 
     @staticmethod
     def __get_123(temp_G, coord_df, cutoff2 = None):
-        checked_pairs = []
+        checked_pairs = set()
         l12 = []
         l13 = []
         lrest = []
@@ -543,17 +545,24 @@ returns ((), {'all_v':[v1,v2,v3,...]})
                 if v1 != v2:
                     temp_p = tuple(sorted((v_index_map[v1], v_index_map[v2])))
                     if temp_p not in checked_pairs:
-                        checked_pairs.append(temp_p)
+                        checked_pairs.add(temp_p)
                         if l == 1:
                             l12.append(temp_p)
                         elif l == 2:
                             l13.append(temp_p)
                         else:
                             if cutoff2:
-                                if np.sum(np.diff(coord_df.loc[[v1,v2]].values)**2) < cutoff2:
+                                if not KDTree and np.sum(np.diff(coord_df.loc[[v1,v2]].values)**2) < cutoff2:
                                     lrest.append(temp_p)
                             else:
                                 lrest.append(temp_p)
+        if KDTree and cutoff2:
+            kd_tree = KDTree(coord.values)
+            pairs_in_cutoff = kd_tree.query_pairs(np.sqrt(cutoff2))
+            l123_set = set(l12) | set(l13)
+            for pair in lrest:
+                if pair not in l123_set:
+                    lrest.append(pair)
         return l12, l13, lrest
 
     @staticmethod

@@ -49,6 +49,10 @@ try:
     from scipy import integrate
 except ImportError:
     integrate = None
+try:
+    from scipy.spatial import KDTree
+except ImportError:
+    KDTree = None
 
 #import xml.etree.ElementTree as ET
 

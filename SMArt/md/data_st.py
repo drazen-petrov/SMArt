@@ -693,7 +693,7 @@ class GeneralTopology(DataDumping, InteractionContainer, GraphDirected):
         res_state = states[top_state]
         if self._check_if_physical_state(res_state):
             return res_state
-        elif self._check_if_physical_state(states[other_state]):
+        elif other_state and self._check_if_physical_state(states[other_state]):
             return states[other_state]
         if find_other_state:
             assert find_other_state in ('any', 1, -1)

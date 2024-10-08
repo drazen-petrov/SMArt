@@ -1032,6 +1032,12 @@ class GeneralTopology(DataDumping, InteractionContainer, GraphDirected):
 
 
 class Base_Residue_BB:
+    def get_atoms(self):
+        if dict in self.atoms.__class__.__mro__:
+            return self.atoms.values()
+        else:
+            return self.atoms
+
     def find_atom(self, atom_name):
         for at in self.get_atoms():
             if at.name == atom_name:

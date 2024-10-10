@@ -516,7 +516,8 @@ returns ((), {'all_v':[v1,v2,v3,...]})
         plt.ylim(min(y) - 1, max(y) + 1)
         plt.gca().set_aspect('equal')
         if ffig is None:
-            plt.show()
+            if kwargs.get('flag_plt_show', True):
+                plt.show()
         else:
             plt.savefig(ffig)
             plt.close()

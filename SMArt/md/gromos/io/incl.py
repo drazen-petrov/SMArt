@@ -162,6 +162,7 @@ class GromosParser(GeneralContainer, GromosDefaults):
             self.undefined_bl = OrderedDict()
         for i in gs.lines():
             bl_name = i.strip()
+            if bl_name=="":continue
             temp_fnc = self.__find_parse_fnc(bl_name)
             temp_fnc(gs, bl_name=bl_name, **kwargs)
         gs._remove_f()

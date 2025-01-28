@@ -672,6 +672,7 @@ class BBParsing(GromosParser):
             temp_at_e = self.get_item(temp_at_n, self.Atom, create=True)
             temp_at_e.gr_id = temp_at_n
             temp_at.add_excl(temp_at_e)
+            temp_at.flag_pre_at = True
 
     def __read_atom(self, gs, cg, ff=None, **kwargs):
         at_id = next(gs.block_split_fnc)
@@ -702,6 +703,8 @@ class BBParsing(GromosParser):
                 temp_at_e = self.get_item(temp_at_n, self.Atom, create=True)
                 temp_at_e.gr_id = temp_at_n
                 temp_at.add_excl(temp_at_e)
+        else:
+            temp_at.flag_trailing_at = True
         temp_at.flag_bb = True
         temp_at.flag_excl = flag_excl
         return cg

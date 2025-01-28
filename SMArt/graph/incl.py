@@ -413,10 +413,11 @@ returns ((), {'all_v':[v1,v2,v3,...]})
         for r in rings:
             yield self.sub_graph(r)
 
-    def get_2D_repr(self, vertices=None, d_12=1., d_13=1.7,  Fk=(100, 50, 5), rest_pow = 1, Nmaxiter=25, **kwargs):
+    def get_2D_repr(self, vertices=None, d_12=1., d_13=1.7,  Fk=(100, 50, 5), rest_pow=1, Nmaxiter=25, **kwargs):
         """
         :param vertices: give a list of vertices to generate the representation
         :param kwargs: 
+            init_coord_df: initial x,y coordinates of a subset of vertices
             fig_name: file name where a figure will be saved (e.g. mol.png)
             fig_kwargs: kwargs to be passed to plt.figure
             step: make plot at each step (True, False)
@@ -431,10 +432,16 @@ returns ((), {'all_v':[v1,v2,v3,...]})
         init_struc = kwargs.get('init_struc', False)
         if vertices is None:
             vertices = list(self.adj)
-        temp_G = self.sub_graph(vertices, flag_directed = True, parents = vertices[0])
-        coord_df = pd.DataFrame(np.zeros((len(vertices), 2)), pd.Index(temp_G.adj.keys(), name = 'idx'))
+        coord_df = pd.DataFrame(np.zeros((len(vertices), 2)), pd.Index(vertices, name = 'idx'))
         coord_df.columns = ['x', 'y']
-        vertices = [vertices[0]]
+        init_coord_df = kwargs.get('init_coord_df', None)
+        if init_coord_df is not None:
+            coord_df.loc[init_coord_df.index] = init_coord_df.values
+            temp_G = self.sub_graph(vertices, flag_directed=True, parents=init_coord_df.index)
+            vertices = list(init_coord_df.index)
+        else:
+            temp_G = self.sub_graph(vertices, flag_directed=True, parents=vertices[0])
+            vertices = [vertices[0]]
         grp_add, added_paths, anchor_points = temp_G.get_add_missing_groups(**kwargs)
         for i in range(len(added_paths)):
             path2add, anchor_p = added_paths[i], anchor_points[i]
@@ -452,17 +459,28 @@ returns ((), {'all_v':[v1,v2,v3,...]})
             coord_df.loc[vertices] = temp_min.x.reshape((len(vertices),2))
             if step and fig_name:
                 self._plot_mol_graph(temp_G, coord_df, fig_name + '_step_' + str(i) + '_min.png', **kwargs)
-        sub_temp_G = temp_G.sub_graph(vertices)
-        temp_coorf_df = coord_df.loc[vertices]
-        temp_cutoff2 = kwargs.get('cutoff2', 25)
-        temp_min = self.__do_min(sub_temp_G, temp_coorf_df, temp_cutoff2, None, d_12, d_13, Fk, rest_pow)
-        coord_df.loc[vertices] = temp_min.x.reshape((len(vertices),2))
         self.coord_2D = coord_df
+        temp_cutoff2 = kwargs.get('cutoff2', 25)
+        self.e_min(vertices, temp_cutoff2, d_12=d_12, d_13=d_13, Fk=Fk, rest_pow=rest_pow)
+        # sub_temp_G = temp_G.sub_graph(vertices)
+        # temp_coorf_df = coord_df.loc[vertices]
+        # temp_cutoff2 = kwargs.get('cutoff2', 25)
+        # temp_min = self.__do_min(sub_temp_G, temp_coorf_df, temp_cutoff2, None, d_12, d_13, Fk, rest_pow)
+        # coord_df.loc[vertices] = temp_min.x.reshape((len(vertices),2))
+        # coord_df = self.coord_2D
         if fig_name:
             self._plot_mol_graph(temp_G, coord_df, fig_name + '_min.png', **kwargs)
         elif kwargs.get('flag_show', True):
             self._plot_mol_graph(temp_G, coord_df, **kwargs)
         return self.coord_2D
+
+    def e_min(self, vertices=None, cutoff2=25, Nmaxiter=None, d_12=1., d_13=1.7,  Fk=(100, 50, 5), rest_pow=1, **kwargs):
+        if vertices is None:
+            vertices = list(self.coord_2D.index)
+        temp_coorf_df = self.coord_2D.loc[vertices]
+        sub_G = self.sub_graph(vertices)
+        temp_min = self.__do_min(sub_G, temp_coorf_df, cutoff2, Nmaxiter, d_12, d_13, Fk, rest_pow)
+        self.coord_2D.loc[vertices] = temp_min.x.reshape((len(vertices),2))
 
     def plot_mol_graph(self, vertices, fig_name = None, name_attribute=None, **kwargs):
         """

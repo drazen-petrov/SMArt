@@ -1599,7 +1599,8 @@ class AlchemicalSolution_base:
 
     def __add_update_match2sol_row_atom_pair(self, matched_pair):
         new_sol = self.copy4update()
-        new_sol._sol[matched_pair[1][0]][matched_pair[0][1]] = matched_pair[1][1]
+        #new_sol._sol[matched_pair[1][0]][matched_pair[0][1]] = matched_pair[1][1]
+        new_sol._sol.loc[matched_pair[0][1], matched_pair[1][0]] = matched_pair[1][1]
         if matched_pair[1][1]!=Dummy:
             top_available_atoms = new_sol.available_atoms[matched_pair[1][0]]
             pos = top_available_atoms.index(matched_pair[1][1])

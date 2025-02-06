@@ -120,10 +120,10 @@ def _get_EDS_stepwise(mcs_kwargs, enum_kwargs, *tops, **kwargs):
         mcs = temp_mcs
     return mcs
 
-def _run_mcs_top0(tops):
+def _run_mcs_top0(tops, **kwargs):
     mcs_top0=[None]
     for i in range(1,len(tops)):
-        mcs = get_EDS(tops[0], tops[i])
+        mcs = get_EDS(tops[0], tops[i], **kwargs)
         mcs_top0.append(mcs)
     return mcs_top0
 
@@ -148,14 +148,14 @@ def _get_common_atms_mcs_top0(tops, mcs_top0):
         common_atoms.append(temp_common_atoms)
     return common_atoms
 
-def get_common_atms_mcs_top0(tops):
+def get_common_atms_mcs_top0(tops, **kwargs):
     """
     runs MCS from tops[0] to all other tops[1:] andd finds all matches
     :param: tops - list of all tops
     :return:
         common_atoms - list of lists (already in the format to be used by MCS)
     """
-    mcs_top0 = _run_mcs_top0(tops)
+    mcs_top0 = _run_mcs_top0(tops, **kwargs)
     return _get_common_atms_mcs_top0(tops, mcs_top0)
 
 def get_EDS(*tops, **kwargs):
@@ -179,7 +179,7 @@ def get_EDS(*tops, **kwargs):
     if 'flag_prune_EDS_match_mass' not in enum_kwargs:
        enum_kwargs['flag_prune_EDS_match_mass'] = False
     mcs = None
-    if kwargs.get('flag_get_res_common_atoms'):
+    if kwargs.get('flag_get_res_common_atoms') and not kwargs.get('flag_get_core_common_atoms_top0'):
         common_atoms, available_atoms_groups = top_matching_fnc.get_res_common_atoms(*tops)
         if common_atoms[0]:
             mcs = MCS(*tops, common_atoms = common_atoms, available_atoms = available_atoms_groups[0], **mcs_kwargs)
@@ -191,7 +191,9 @@ def get_EDS(*tops, **kwargs):
     if mcs is None:
         core_common_atoms = kwargs.get('core_common_atoms')
         if core_common_atoms is None and kwargs.get('flag_get_core_common_atoms_top0'):
-            core_common_atoms=get_common_atms_mcs_top0(tops)
+            temp_kwargs = dict(kwargs)
+            temp_kwargs.pop("flag_get_core_common_atoms_top0")
+            core_common_atoms=get_common_atms_mcs_top0(tops, **temp_kwargs)
             kwargs = dict(kwargs)
             kwargs['core_common_atoms'] = core_common_atoms
         if kwargs.get('flag_stepwise', True):

@@ -145,9 +145,15 @@ class Interaction(__VersionCompatibility):
             state = self.int_type(**kwargs)
         self.states.append(state) # state = interaction parameters (fnc type, type code, params)
 
-    def check_atoms_int_match(self, atoms, **kwargs): # not sure if this is correct....
+    def check_atoms_int_match(self, atoms, **kwargs):
+        """
+        :param atoms: list of atoms (instances of class `Atom`)
+        :param kwargs:
+            kwargs also passed to `_cls_check_atoms_int_match` method of the interaction_type
+        :return:
+            int_matches: list of found interactions
+        """
         return self.int_type._cls_check_atoms_int_match(self.atoms, atoms, **kwargs)
-         # not sure if this is correct.... atom types of self.atoms might be needed
 
 
 from SMArt.md.gro2gro.g2g import IntType_g2g
@@ -471,7 +477,7 @@ class BondType(InteractionType, Defaults):
             if kwargs.get("flag_check_bond_fk", False):
                 assert check_if_eq_np(b_khq[2], b_khq[1] / (2 * b_khq[0] ** 2)), 'k_harm != 2*k_quad * b0**2'
             else:
-                if check_if_eq_np(b_khq[2], b_khq[1] / (2 * b_khq[0] ** 2)):print('WARN: k_harm != 2*k_quad * b0**2')
+                if not check_if_eq_np(b_khq[2], b_khq[1] / (2 * b_khq[0] ** 2)):print('WARN: k_harm != 2*k_quad * b0**2')
         return b_khq
 
     def gr2gm(self, **kwargs):
@@ -550,7 +556,10 @@ class AngleType(InteractionType, Defaults):
 #            a_khq[2] = a_khq[1] / (math.sin(math.radians(a_khq[0])) * _rad2deg)**2
         else:
             kq = h2q(a_khq, kt)
-            assert check_ind_f_params(a_khq[2], kq, **kwargs), self.id + '\tk_quad != h2q(k_harm) with T = ' + str(T)
+            if kwargs.get("flag_check_bond_fk", False):
+                assert check_ind_f_params(a_khq[2], kq, **kwargs), self.id + '\tk_quad != h2q(k_harm) with T = ' + str(T)
+            else:
+                if not check_ind_f_params(a_khq[2], kq, **kwargs):print(self.id + '\tk_quad != h2q(k_harm) with T = ' + str(T))
             #assert check_if_eq_np(a_khq[2], kq, **kwargs), self.id + '\tk_quad != h2q(k_harm) with T = ' + str(T)
         return a_khq
 
@@ -635,7 +644,7 @@ DihedralType._add_defaults(_DihedralType_defs, flag_set=True)
 _DihedralType_class_defs = {'gr2gm_fnc':'1', 'gr2gm_def_pref': 'gd_', 'dih_imp':('2', '4')}
 #_DihedralType_class_defs = {'gr2gm_fnc':'1', 'gr2gm_def_pref': 'gd_', 'dih_imp':('2')}
 _DihedralType_class_defs['gr2gm_def_pref_fnc_type'] = {'2':'gi_'}
-_DihedralType_class_defs['gm2gr_int_type_fnc_type'] = {'2':ImproperType, '4':DihedralType}
+_DihedralType_class_defs['gm2gr_int_type_fnc_type'] = {'2':ImproperType, '4':DihedralType, '9':DihedralType}
 DihedralType._add_class_defaults(_DihedralType_class_defs, flag_set=True)
 
 fnc_imp = dict(DihedralType.fnc)
@@ -646,8 +655,11 @@ _ImproperType_defs = {'fnc':fnc_imp, 'container2write':'impropers', '_gr_gm_pos_
 _ImproperType_defs['gr2gm_param_trans_fnc'] = (None, None, None, None, lambda x:x * _deg2rad_2)
 _ImproperType_defs['gm2gr_param_trans_fnc'] = (None, None, None, None, lambda x:x * _rad2deg_2)
 ImproperType._add_defaults(_ImproperType_defs, flag_set=True)
+_ImproperType_class_defs = {'gr2gm_fnc':'2', 'gr2gm_def_pref': 'gi_'}
+_ImproperType_class_defs['gm2gr_int_type_fnc_type'] = {'2':ImproperType, '4':DihedralType, '9':DihedralType}
+ImproperType._add_class_defaults(_ImproperType_class_defs, flag_set=True)
 #ImproperType._add_class_defaults({'gr2gm_fnc':'2', 'gr2gm_int_type':DihedralType, 'gr2gm_def_pref': 'gi_'}, flag_set=True)
-ImproperType._add_class_defaults({'gr2gm_fnc':'2', 'gr2gm_def_pref': 'gi_'}, flag_set=True)
+#ImproperType._add_class_defaults({'gr2gm_fnc':'2', 'gr2gm_def_pref': 'gi_'}, flag_set=True)
 
 
 def convert_se2c612(se):

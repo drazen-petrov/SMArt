@@ -1232,7 +1232,39 @@ class gmFragmentMoleculeIO(GromacsParser, GromacsWriter):
         if not temp:
             temp_int_atom_types = [temp_at.a_type for temp_at in temp_int_atoms]
             temp_state = self.ff.find_interaction_type(temp_int_atom_types, temp_interaction_type, fnc_type, **kwargs)
-            temp_interaction.add_state(temp_state[0])
+            if len(temp_state)>1:
+                if kwargs.get('use_multiple_matches', True):
+                    if temp_interaction_type is AngleType:
+                        temp_kwargs = dict(kwargs)
+                        temp_kwargs['atoms_reversed']=False
+                        temp_kwargs['allow_not_found']=True
+                        temp_state_2 = self.ff.find_interaction_type(temp_int_atom_types, temp_interaction_type, fnc_type, **temp_kwargs)
+                        assert len(temp_state_2)==1
+                        temp_interaction.add_state(temp_state_2[0])
+                    elif issubclass(temp_interaction_type, DihedralType):
+                        # remove types with atoms 'X'
+                        temp_states_noX=[]
+                        for temp_st in temp_state:
+                            temp_noXflag = True
+                            for temp_at in temp_st.atoms:
+                                if temp_at == 'X':
+                                    temp_noXflag = False
+                                    break
+                            if temp_noXflag:
+                                temp_states_noX.append(temp_st)
+                        if fnc_type!="9":
+                            assert len(temp_states_noX)==1
+                            temp_interaction.add_state(temp_states_noX[0])
+                        else:
+                            assert len(temp_states_noX)!=0
+                            temp_interaction.add_state(temp_states_noX[-1])
+                            for temp_noX_st in temp_states_noX[:-1]:
+                                additional_interaction = Interaction(temp_interaction_type, atoms=temp_int_atoms)
+                                additional_interaction.add_state(temp_noX_st)
+                                self._add_gm_ord(additional_interaction, **kwargs)
+                                self.add2container(additional_interaction, create=True, db_type=list)
+            else:
+                temp_interaction.add_state(temp_state[0])
         else:
             if temp_interaction_type!=VirtualSitenType:
                 while temp:
@@ -1373,6 +1405,7 @@ class gmFragmentMoleculeIO(GromacsParser, GromacsWriter):
         return txt2write
 
     def __write_interactions_v1(self, **kwargs):
+        int_type2exclude_params = kwargs.get('int_type2exclude_params', {PairType, cmap})
         int_type = kwargs.get('interaction_type', self._gm_curr_write_mol_int_type)
         int_container = self.get_container(int_type.find_int_container2write(), create = False, allow_not_found = 1)
         if not int_container:return
@@ -1413,7 +1446,7 @@ class gmFragmentMoleculeIO(GromacsParser, GromacsWriter):
             if temp_gm_int_type.fnc_type:
                 txt2write += self.__fnc_type_format.format(temp_gm_int_type.fnc_type)
             if kwargs.get('write_params', True):
-                flag_write_params = 1
+                flag_write_params = True
                 if not kwargs.get('write_params_explicitly'):
                     temp_int_type = self.ff.find_interaction_type(temp_interaction.atoms, temp_interaction.int_type,
                         temp_gm_int_type.fnc_type, create = False, allow_not_found=1, allow_multiple_matches = True)
@@ -1423,7 +1456,9 @@ class gmFragmentMoleculeIO(GromacsParser, GromacsWriter):
                                                                   create = False, allow_not_found=1)
                     """
                     if temp_int_type and temp_int_type[0].check_eq_params(temp_gm_int_type.p):
-                        flag_write_params = 0
+                        flag_write_params = False
+                if temp_interaction.int_type in int_type2exclude_params:
+                    flag_write_params = False
                 if flag_write_params:
                     defines = None
                     if kwargs.get('flag_use_define'):
@@ -1431,12 +1466,14 @@ class gmFragmentMoleculeIO(GromacsParser, GromacsWriter):
                     txt2write += ' ' + temp_gm_int_type._write_gm_params(defines = defines, **kwargs)
                 # PTP interaction
                 if temp_ptp_gm_int_type and temp_ptp_gm_int_type!=Dummy: # actually, this should be split to if temp_ptp_gm_int_type -> remove
-                    flag_write_params = 1
+                    flag_write_params = True
                     if not kwargs.get('write_params_explicitly'): ######################### this part has to be adjusted for PTP atom types
                         temp_int_type = self.ff.find_interaction_type(temp_interaction.atoms, temp_interaction.int_type,
                         temp_ptp_gm_int_type.fnc_type, create = False, allow_not_found=1, allow_multiple_matches = True)
                         if temp_int_type and temp_int_type[0].check_eq_params(temp_ptp_gm_int_type.p):
-                            flag_write_params = 0
+                            flag_write_params = False
+                    if temp_interaction.int_type in int_type2exclude_params:
+                        flag_write_params = False
                     if flag_write_params:
                         defines = None
                         if kwargs.get('flag_use_define'):

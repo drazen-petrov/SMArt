@@ -60,6 +60,19 @@ class FF(AvailableInteractionTypes, DataDumping, IFPBlocksParser, IFPBlocksWrite
     def get_DUM_type(self):
         return self.get_intDB().DUM_type
 
+    def add_DUM_type(self, **kwargs):
+        ff = self.get_intDB()
+        temp_kwargs = dict()
+        try:
+            temp_a_type = next(iter(ff.a_type.values()))
+            temp_kwargs['format_type'] = temp_a_type.format_type
+        except:pass
+        temp_kwargs.update(kwargs)
+        d_at = self.AtomType('DUM', 'DUM', c612=(0,0), vdw=(0,0), **temp_kwargs)
+        d_at.element, d_at.m, d_at.p_ch, d_at.p_type = 0, 0, 0, "A"
+        ff.DUM_type = d_at
+        ff.add2container(d_at, **kwargs)
+
     def add_a_type(self, atom_type_id, atom_name, vdw=None, rules=None, replace=False, **kwargs):
         """
 atom_id - 1,2,3... if False: defined as the next available number
@@ -965,6 +978,16 @@ class GeneralTopology(DataDumping, InteractionContainer, GraphDirected):
         return bb_at
 
     def find_interactions(self, atoms, container2search, **kwargs):
+        """
+        :param atoms: list of atoms (instances of class `Atom`)
+        :param container2search: where to search for interactions, e.g. self.bonds
+        :param kwargs:
+            allow_not_found: allows to return empty list
+            allow_multiple_matches: allows to return a list of more than 1 item
+            kwargs also passed to `check_atoms_int_match` method of interaction
+        :return:
+            int_matches: list of found interactions
+        """
         int_matches = []
         for temp_interaction in container2search:
             if temp_interaction.check_atoms_int_match(atoms, **kwargs):

@@ -1,9 +1,13 @@
-from SMArt.incl import combinations, np,  OrderedDict, permutations, bisect_left, Counter, DataDumping
+from SMArt.incl import combinations, np,  OrderedDict, permutations, bisect_left, Counter, DataDumping, pd
 from SMArt.alchemy.incl import AlchemicalSolution, Dummy, TopGraphProperties
 from SMArt.alchemy.top_matching_fnc import update_ptp, generate_toptp
 from SMArt.md.ana.incl import _RMSD, _RMSD_pairwise
+from SMArt.geometry import get_aligned_coord
+from SMArt.md.data_st import Configuration
+
 
 class MCS(DataDumping):
+    Dummy = Dummy
     def __init__(self, *tops, flag_partial_ring=True, max_partial_ring_match=2, **kwargs):
         """
         :param tops:
@@ -44,28 +48,15 @@ class MCS(DataDumping):
         self.score_fnc = kwargs.get('score_fnc')
         if self.score_fnc is None:
             self.score_fnc = getattr(self, '_calc_sol_score_' + self.flag_score_fnc)
+        coords = kwargs.get('coords')
+        if coords:
+            self.add_coords(coords, **kwargs)
         flag_add_RMSD = kwargs.get('add_RMSD')
         if flag_add_RMSD:
             assert flag_add_RMSD in ('simple', 'pairwise')
             RMSD_fnc_map = dict(simple=_RMSD, pairwise=_RMSD_pairwise)
             self.calc_RMSD = RMSD_fnc_map[flag_add_RMSD]
             self.RMSD_position = kwargs.get('RMSD_position', 1)
-            coords = kwargs.get('coords')
-            if coords:
-                try:
-                    for top_i, top in enumerate(self.tops):
-                        for at_i, at in enumerate(top.get_atoms()):
-                            at.coord = coords[top_i][at_i]
-                except:
-                    self.coords = {}
-                    for top_i, top in enumerate(self.tops):
-                        self.coords[top_i] = {}
-                        try:
-                            for at_i, at in enumerate(top.get_atoms()):
-                                self.coords[top_i][at] = coords[top_i][at_i]
-                        except:
-                            for at_i, at in enumerate(top.adj):
-                                self.coords[top_i][at] = coords[top_i][at_i]
         else:
             self.calc_RMSD = False
         ######################################### initial #########################################
@@ -92,6 +83,28 @@ class MCS(DataDumping):
         ######################################### initial topology props #########################################
         #self.__get_initial_estimate_matrices() # this is for testing!!!!!!!!!!!!!
 
+    def add_coords(self, coords, **kwargs):
+        self._coords = coords
+        self._coords_df = []
+        for i in range(len(self.tops)):
+            df = pd.DataFrame(coords[i], columns=list('xyz'))
+            df['at'] = self.tops[i].get_atoms()
+            df.set_index('at', inplace=True)
+            self._coords_df.append(df)
+        try:
+            for top_i, top in enumerate(self.tops):
+                for at_i, at in enumerate(top.get_atoms()):
+                    at.coord = coords[top_i][at_i]
+        except:
+            self.coords = {}
+            for top_i, top in enumerate(self.tops):
+                self.coords[top_i] = {}
+                try:
+                    for at_i, at in enumerate(top.get_atoms()):
+                        self.coords[top_i][at] = coords[top_i][at_i]
+                except:
+                    for at_i, at in enumerate(top.adj):
+                        self.coords[top_i][at] = coords[top_i][at_i]
 
 
     ####################################################################################################################
@@ -2229,3 +2242,87 @@ class MCS(DataDumping):
         atoms2sort = set(sol._sol.index)
         while atoms2sort:
             pass
+
+    ####################################################################################################################
+    #                                           generate coordinates
+    ####################################################################################################################
+
+    def __get_empty_coord_df(self, sol):
+        df = pd.DataFrame(sol.toptp.get_atoms(), columns=['at'])
+        df.set_index('at', inplace=True)
+        for c in 'xyz':
+            df[c]=0.
+        return df
+
+    def __get_coord_from_nonDummy(self, sol, state_coord_df):
+        df = self.__get_empty_coord_df(sol)
+        for at in sol.toptp.get_atoms():
+            row = sol._sol.loc[at.sol_id]
+            flag=False
+            for top_i, at_top in enumerate(row):
+                if at_top != Dummy:
+                    df.loc[at] = state_coord_df[top_i].loc[at_top].values
+                    flag=True
+                    break
+            assert flag
+        return df
+
+    def _generate_coord_simple(self, sol, **kwargs):
+        return self.__get_coord_from_nonDummy(sol, self._coords_df)
+    
+    def _generate_coord_align_core(self, sol, **kwargs):
+        # get the core atoms (atoms with no Dummy states)
+        core_at = []
+        for at in sol.toptp.atoms.values():
+            row = sol._sol.loc[at.sol_id]
+            if None not in at.ND_a_type_states:
+                assert Dummy not in row.values
+                core_at.append(at)
+            else:
+                assert Dummy in row.values
+        # get core_coord_df for each state
+        state_core_coord_df = []
+        for top_i, df in enumerate(self._coords_df):
+            top_core_at = []
+            for sol_at in core_at:
+                top_at = sol._sol.loc[sol_at.sol_id][top_i]
+                if top_at != Dummy:
+                    top_core_at.append(top_at)
+            df = self._coords_df[top_i].loc[top_core_at]
+            state_core_coord_df.append(df)
+        # align the cores
+        aligned_state_coord_df = [self._coords_df[0]]
+        cog_0 = state_core_coord_df[0].values.mean(axis=0)
+        coord0_0 = state_core_coord_df[0].values - cog_0
+        for top_i in range(1,len(self._coords_df)):
+            temp_coord = self._coords_df[top_i].values
+            temp_core_coord = state_core_coord_df[top_i].values
+            aligned_c = get_aligned_coord(None, temp_coord, v2_align_on=temp_core_coord, v1_0=coord0_0, cog_1=cog_0)
+            new_df = pd.DataFrame(aligned_c, columns=list('xyz'))
+            new_df.index = self._coords_df[top_i].index
+            aligned_state_coord_df.append(new_df)
+        # get the coordinates
+        return self.__get_coord_from_nonDummy(sol, aligned_state_coord_df)
+
+    def generate_EDS_conf(self, sol, fnc="simple", **kwargs):
+        """
+        param sol: solution
+        param fnc: function to generate coordinates (default simple -> calls _generate_coord_simple)
+        kwargs:
+            passed to the function that generates coordinates
+        """
+        c = Configuration()
+        self.conf_ptp = c
+        for at in sol.toptp.get_atoms():
+            c.add2container(at, create=True, db_type=list)
+            at.res_id = at.res.id
+            at.res_name = at.res.name
+            at.gm_id = at.id
+            at.gr_id = at.id
+        fnc2call = dict(simple=self._generate_coord_simple, align_core=self._generate_coord_align_core)[fnc]
+        c._coord = fnc2call(sol).values
+        c._generate_at_coord()
+        c.box = c.Box(vec=(0.1,0.1,0.1))
+        c.box.vec2abc()
+        c.box.box_type=1
+        c.time_step = 0,0

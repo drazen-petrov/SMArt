@@ -1,20 +1,12 @@
 from SMArt.incl import copy, np, pd, combinations, product, defaultdict, frozendict, OrderedDict, do_warn
 from SMArt.graph import Graph
+from SMArt.md.incl import Dummy
+
 # bond breaking / making (if True, max dist for bond breaking needed)
 # breaking other bonded interactions (angles, dihedrals, impropers (needed if bond breaks = True)
     # interesting for matching dihedrals in gromacs with different multiplicity or rings with one bond (2 atoms) partial solutions (see below)
 # ring solutions - all or nothing; all or one atom; all or one bond (two atoms); partial (needs bond breaking)
 # exclusions / pairs
-
-from SMArt.md.incl import Dummy
-
-"""
-class Dummy:
-    m = None
-    p_ch = None
-    a_type = None
-    coord = np.array([np.nan] * 3)
-"""
 
 
 class Branch:
@@ -124,6 +116,8 @@ class TopGraphProperties:
                 if v in ring, linear_combined_branches is a bit different as it only takes first neighbours within r
         dummy_estimates
     """
+    Dummy = Dummy
+
     def __init__(self, g, available_Vs = None, non_available_Vs = None, in_solution_Vs = None,
                  in_solution_dummy_match_Vs = None, remove_V_in_branch=False, **kwargs):
         """
@@ -1771,6 +1765,36 @@ class AlchemicalSolution_base:
             temp_df = temp_df.mask(temp_df.values == Dummy, 'DUM')
         return temp_df
 
+    def save2csv(self, csv_file, **kwargs):
+        sol_data = []
+        for i, row in self._sol.iterrows():
+            temp=[]
+            flag_DUM=False
+            for at in row:
+                if at==Dummy:
+                    temp.append("DUM")
+                    flag_DUM=True
+                else:temp.append(at.id)
+            if kwargs.get('skip_DUM', False) and flag_DUM:
+                continue
+            sol_data.append(temp)
+        df = pd.DataFrame(sol_data)
+        df.to_csv(csv_file, index=False)
+
+    def get_common_atoms_csv(self, csv_file):
+        df = pd.read_csv(csv_file).iloc[:,:len(self.tops)]
+        common_atoms = [[] for _ in range(len(self.tops))]
+        for i, row in df.iterrows():
+            for top_i, at_id in enumerate(row):
+                if at_id=="DUM":
+                    common_atoms[top_i].append(Dummy)
+                else:
+                    try:
+                        common_atoms[top_i].append(self.tops[top_i].atoms[at_id])
+                    except:
+                        common_atoms[top_i].append(self.tops[top_i].atoms[int(at_id)])
+        return common_atoms
+
     def __repr__(self):
         df = self.states2df()
         return str(df)
@@ -1799,6 +1823,8 @@ class AlchemicalSolution(AlchemicalSolution_base):
                 e.g. [[1,3,8], [1,4,8], [1, Dummy, 7], [2, 4, None]]
                     4 topologies, atoms (1, 1, 1, 2); (3, 4, dummy, 4) and (8, 8, 7, ?) are common
                     Dummy means dummy, None means not decided yet
+            common_atoms_csv
+                csv file with a table of common_atoms
             tried_pairs
                 [((top_index, atom), (top_index, atom)), ((top_index, atom), (top_index, atom)), ...]
                 e.g. [((0,1), (1,1)), ((0,1), (2,2)), ((1,2), (2,3))]
@@ -1806,6 +1832,9 @@ class AlchemicalSolution(AlchemicalSolution_base):
         """
         self.tops = tops
         common_atoms = kwargs.get('common_atoms')
+        common_atoms_csv = kwargs.get('common_atoms_csv')
+        if common_atoms_csv:
+            common_atoms = self.get_common_atoms_csv(common_atoms_csv)
         if common_atoms:
             assert len(common_atoms) == len(tops)
             self._sol = pd.DataFrame(common_atoms, dtype = object).T

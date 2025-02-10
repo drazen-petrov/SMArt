@@ -1209,6 +1209,25 @@ def _add_next_atom_2_stack(sol, tops_order, atoms2order, stack):
                 stack.append(sol_at)
                 return
 
+def reorder_residues(atom_order, sol, **kwargs):
+    res_idx_map = []
+    for t in sol.tops:
+        res_idx_map.append(dict(zip(t.get_residues(), range(len(t.residues)))))
+    temp_at_order = []
+    for at in atom_order:
+        row = sol._sol.loc[at.id]
+        res_max = 1
+        for top_i, t_at in enumerate(row):
+            try:
+                if -res_idx_map[top_i][t_at.res] < res_max:
+                    res_max = -res_idx_map[top_i][t_at.res]
+            except:pass
+        temp_at_order.append((-res_max, at))
+    new_at_order = []
+    for (idx, at) in sorted(temp_at_order, key=lambda x: x[0]):
+        new_at_order.append(at)
+    return new_at_order
+
 def find_atom_order(sol, **kwargs):
     tops_order = kwargs.get('tops_order')
     if not tops_order:
@@ -1251,6 +1270,8 @@ def find_atom_order(sol, **kwargs):
                     elif sol_at not in temp_stack_set:
                         stack.append(sol_at)
         _add_next_atom_2_stack(sol, tops_order, atoms2order, stack)
+    if kwargs.get('atom_order_res', True):
+        ordered_atoms = reorder_residues(ordered_atoms, sol, **kwargs)
     return ordered_atoms
 
 def get_residues_v1(sol, **kwargs):

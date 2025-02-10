@@ -42,6 +42,10 @@ try:
 except ImportError:
     plt = None
 try:
+    import scipy
+except ImportError:
+    scipy = None
+try:
     from scipy.optimize import minimize
 except ImportError:
     minimize = None

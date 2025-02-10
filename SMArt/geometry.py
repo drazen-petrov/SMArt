@@ -1,4 +1,6 @@
 from SMArt.incl import np
+from SMArt.incl import scipy
+_align_vectors = scipy.spatial.transform.Rotation.align_vectors
 
 def rot_2D(v, theta = 90):
     theta = np.radians(theta)
@@ -88,7 +90,8 @@ def generate_new_coordinates(path2add, anchor_points, coord_df, v_fact=0.2, **kw
             if anchor_points[anchor_point][i]:
                 anchor_p = anchor_point[i]
                 temp_N = len(anchor_points[anchor_point][i])
-                v_diff = coord_df.loc[[anchor_p] * temp_N].values - coord_df.loc[anchor_points[anchor_point][i]].values
+                anchor_p_other = list(anchor_points[anchor_point][i])
+                v_diff = coord_df.loc[[anchor_p] * temp_N].values - coord_df.loc[anchor_p_other].values
                 temp_v = np.vstack([temp_v, v_diff])
         if not temp_v.any():
             temp_v = [np.ones(coord_df.shape[1])]
@@ -101,3 +104,18 @@ def generate_new_coordinates(path2add, anchor_points, coord_df, v_fact=0.2, **kw
         else:
             temp_fnc = {1:add_ring_path_simple, 2:add_ring_path_3D}[kwargs.get('fnc_ring_path', 2)]
             temp_fnc(path2add, coord_df, anchor_point, temp_v, new_ap, v_fact, **kwargs)
+
+def get_aligned_coord(v1, v2, v2_align_on=None, weights=None, v1_0=None, cog_1=None):
+    if cog_1 is None:
+        cog_1 = np.average(v1, axis=0, weights=weights)
+    if v1_0 is None:
+        v1_0 = v1 - cog_1
+    if v2_align_on is not None:
+        v2_cog = np.average(v2_align_on, axis=0, weights=weights)
+        v2_align_on_0 = v2_align_on - v2_cog
+        v2_0 = v2 - v2_cog
+    else:
+        v2_0 = v2 - np.average(v2, axis=0, weights=weights)
+        v2_align_on_0 = v2_0
+    rot_M, rssd = _align_vectors(v1_0, v2_align_on_0, weights=weights)
+    return rot_M.apply(v2_0) + cog_1

@@ -1595,7 +1595,6 @@ class Box():
         z3 = np.sqrt(self.abc[2]**2 - x3**2 - y3**2)
         self.vec = np.array([v1, v2, [x3, y3, z3]])
 
-
 class Configuration(cnfBlocksParser, cnfBlocksWriter, gmConfigurationIO):
     """
     Configuration class
@@ -1608,6 +1607,9 @@ class Configuration(cnfBlocksParser, cnfBlocksWriter, gmConfigurationIO):
     Box = Box
 
     def __init__(self, f_path = None, N_dim=3, **kwargs):
+        #gromos defaults
+        self.time_step= 0,0
+        # general functionality
         self._N_dim = N_dim
         if f_path and f_path.endswith('cnf'):
             self.parse_cnf(f_path, **kwargs)
@@ -1622,6 +1624,13 @@ class Configuration(cnfBlocksParser, cnfBlocksWriter, gmConfigurationIO):
         self._coord = np.empty((len(self.atoms), self._N_dim))
         for i, at in enumerate(self.atoms):
             self._coord[i] = at.coord
+            at.coord = self._coord[i]
+
+    def _generate_at_coord(self):
+        """
+        generate self._coord and link to each atom object
+        """
+        for i, at in enumerate(self.atoms):
             at.coord = self._coord[i]
 
     def _d2(self, c1, c2):

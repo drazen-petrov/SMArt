@@ -106,6 +106,16 @@ def generate_new_coordinates(path2add, anchor_points, coord_df, v_fact=0.2, **kw
             temp_fnc(path2add, coord_df, anchor_point, temp_v, new_ap, v_fact, **kwargs)
 
 def get_aligned_coord(v1, v2, v2_align_on=None, weights=None, v1_0=None, cog_1=None):
+    """
+    :param v1: vector 1 (template for alignment)
+    :param v2: vector 2 (vector that is aligned)
+    :param v2_align_on: a subsection of v2 used for alignment (same dimension as v1). if None, v2 is used
+    :param weights: weights of different atoms for alignment
+    :param v1_0: v1 translated to 0,0,0. if None, v1_0 = v1 - cog_1
+    :param cog_1: center of geomerty of v1. if None, cog_1 = np.average(v1, axis=0, weights=weights)
+    :return:
+        v2_aligned
+    """
     if cog_1 is None:
         cog_1 = np.average(v1, axis=0, weights=weights)
     if v1_0 is None:

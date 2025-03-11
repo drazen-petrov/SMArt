@@ -492,7 +492,7 @@ returns ((), {'all_v':[v1,v2,v3,...]})
         """
         if vertices is None:
             vertices = list(self.adj)
-        sub_temp_G = temp_G.sub_graph(vertices)
+        sub_temp_G = self.sub_graph(vertices)
         if not hasattr(self, 'coord_2D'):
             self.get_2D_repr(vertices=vertices, flag_show=False, **kwargs)
         self._plot_mol_graph(sub_temp_G, self.coord_2D, fig_name, name_attribute=name_attribute, **kwargs)

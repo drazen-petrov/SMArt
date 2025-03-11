@@ -795,7 +795,6 @@ class MCS(DataDumping):
                             if atom_0 not in (None, Dummy): # this means 1 ring (with more matches than allowed for partial sol) matched to non-ring atom
                                 return False, None
                     # find all ind ring parts that are compatible with both atoms_top_0 and 1
-                    if kwargs.get('verbose'):print('JOS SMO TU')
                     atoms_set_top_0 = frozenset(atoms_top_0)
                     atoms_set_top_1 = frozenset(atoms_top_1)
                     allowed_atoms_0, allowed_atoms_1 = set(), set()
@@ -829,7 +828,6 @@ class MCS(DataDumping):
                             if at_in_sol_1 != ind_ring_part_1 & atoms_set_top_1:
                                 # this means that ind_ring_part_1 matches more than ind_ring_part_0
                                 return False, None
-                            if kwargs.get('verbose'):print('JOS SMO TU 2')
                             ring_ind_part_in_sol_0 = tuple(at_in_sol_0)
                             ring_ind_part_in_sol_1 = tuple(atoms_top_0[at_0] for at_0 in at_in_sol_0)
                             ring_ind_part_in_sol_0_1 = ring_ind_part_in_sol_0, ring_ind_part_in_sol_1
@@ -840,7 +838,6 @@ class MCS(DataDumping):
                                     # this means that some of the rest atoms is matched to Dummy...
                                     ################################## ISSUE #########################
                                     return False, None
-                            if kwargs.get('verbose'):print('JOS SMO TU 3')
                             assert atoms_rest_top_0_1 == (ind_ring_part_0 - atoms_set_top_0, ind_ring_part_1 - atoms_set_top_1)
                             if len(atoms_rest_top_0_1[0]) != 0:
                                 tops_ind_ring_parts_pairs.append((top_pair_ind, ring_ind_part_in_sol_0_1, atoms_rest_top_0_1))
@@ -849,7 +846,6 @@ class MCS(DataDumping):
                             ind_ring_part_1_skip.append(ind_ring_part_1)
                             #assert len(at_in_sol_1) > min_at_in_sol_allowed
                             allowed_atoms_1 = allowed_atoms_1 | ind_ring_part_1
-                            if kwargs.get('verbose'):print('JOS SMO TU 4 END OF THE LOOP')
                     for ind_ring_part_1 in r2check_1.independent_parts:
                         if ind_ring_part_1 in ind_ring_part_1_skip:
                             continue
@@ -2336,7 +2332,6 @@ class MCS(DataDumping):
         last_l = kwargs.get('N_levels',3)
         # loop over other tops and keep adding individual branches
         for top_i in range(1, len(sol.tops)):
-            print("TOP",top_i)
             temp_top = sol.tops[top_i]
             temp_set = set(top_atms_done[top_i])
             temp_rev_set = set(temp_top.get_atoms()) - temp_set
@@ -2346,7 +2341,6 @@ class MCS(DataDumping):
                 if v.c:
                     # find atoms to add and anchor points
                     atms2add = [at for at, l in G.BFS(v_at, visited=temp_set)][1:]
-                    print('\t',atms2add)
                     anch_points_by_level = {}
                     for at,l in G.BFS(v_at, visited=temp_rev_set):
                         if l>=last_l:
@@ -2362,7 +2356,6 @@ class MCS(DataDumping):
                         for at in temp_atoms:
                             sol_at = sol.find_sol_atom_ID((top_i, at))
                             sol_at_anch_points.append(sol_at)
-                    print('\t',sol_at_anch_points, anch_points, weights)
                     atms2add_coord = self._coords_df[top_i].loc[atms2add].values
                     AP_coord = self._coords_df[top_i].loc[anch_points].values
                     sol_at_AP_coord = df.loc[sol_at_anch_points].values

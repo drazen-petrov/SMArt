@@ -1208,8 +1208,12 @@ class MCS(DataDumping):
                     score_attr = '_score_without_RMSD'
                 else:
                     score_attr = 'score'
-                if getattr(self.solutions[0], score_attr) < getattr(sol, score_attr):
-                    return True
+                if kwargs.get('flag_prune_eq_score', False):
+                    if getattr(self.solutions[0], score_attr) <= getattr(sol, score_attr):
+                        return True
+                else:
+                    if getattr(self.solutions[0], score_attr) < getattr(sol, score_attr):
+                        return True
             if self.flag_top_prune:
                 top_prune_fnc = getattr(self, '_prune_top_' + self.flag_top_prune)
                 if top_prune_fnc(sol, **kwargs):
@@ -1324,7 +1328,11 @@ class MCS(DataDumping):
                     else:
                         top_pair_ind = (top_j, top_i)
                         temp_row_col = sol.pair_estimates[top_pair_ind][:, top_i_atom_i]
-                    temp_best_estimate, temp_best_estimate_pos = self.__get_best_estimate_row_pos(temp_row_col)
+                    if kwargs.get("flag_dummy_last", False):
+                        # remove match with dummy from sorting!
+                        temp_best_estimate, temp_best_estimate_pos = self.__get_best_estimate_row_pos(temp_row_col[:-1])
+                    else:
+                        temp_best_estimate, temp_best_estimate_pos = self.__get_best_estimate_row_pos(temp_row_col)
                     temp_best_atom_estimate.append(temp_best_estimate)
                     temp_best_atom_estimate_dummy_flag.append(temp_best_estimate_pos == len(temp_row_col) - 1)
                 temp_best_atom_estimate = np.array(temp_best_atom_estimate)
@@ -1348,7 +1356,12 @@ class MCS(DataDumping):
                 best_estimate_row_col = sol.pair_estimates[top_pair_ind][:, top_i_atom_i]
                 at1 = sol.available_atoms[top_i][top_i_atom_i]
                 flag_at_flip = -1
-            best_estimate_row_col_sorted_index = self.__get_best_estimate_row_sorted(best_estimate_row_col)
+            if kwargs.get("flag_dummy_last", False):
+                temp_best_estimate_row_col = best_estimate_row_col.copy()
+                temp_best_estimate_row_col[-1] = -1 # make sure that the match with dummy goes last!
+                best_estimate_row_col_sorted_index = self.__get_best_estimate_row_sorted(temp_best_estimate_row_col)
+            else:
+                best_estimate_row_col_sorted_index = self.__get_best_estimate_row_sorted(best_estimate_row_col)
             c_dummy = 0
             for top_other_available_atom_index in best_estimate_row_col_sorted_index:
                 try:
@@ -2304,12 +2317,75 @@ class MCS(DataDumping):
         # get the coordinates
         return self.__get_coord_from_nonDummy(sol, aligned_state_coord_df)
 
+    def _generate_coord_align_branches(self, sol, **kwargs):
+        # coord df with 0s
+        df = self.__get_empty_coord_df(sol)
+        # add coords of the fist top
+        top_atms_done = [set() for _ in self.tops]
+        for at in sol.toptp.get_atoms():
+            row = sol._sol.loc[at.sol_id]
+            for top_i, at_top in enumerate(row):
+                if top_i==0:
+                    if at_top==Dummy:
+                        break
+                    else:
+                        df.loc[at] = self._coords_df[0].loc[at_top].values
+                else: # this is skipped if at_top of top_0 is DUMMY
+                    if at_top!=Dummy:
+                        top_atms_done[top_i].add(at_top)
+        last_l = kwargs.get('N_levels',3)
+        # loop over other tops and keep adding individual branches
+        for top_i in range(1, len(sol.tops)):
+            print("TOP",top_i)
+            temp_top = sol.tops[top_i]
+            temp_set = set(top_atms_done[top_i])
+            temp_rev_set = set(temp_top.get_atoms()) - temp_set
+            G = temp_top.sub_graph(temp_top.get_atoms(), flag_directed=True, parents=temp_set)
+            for v_at in G.parent_v:
+                v = G.Gv[v_at]
+                if v.c:
+                    # find atoms to add and anchor points
+                    atms2add = [at for at, l in G.BFS(v_at, visited=temp_set)][1:]
+                    print('\t',atms2add)
+                    anch_points_by_level = {}
+                    for at,l in G.BFS(v_at, visited=temp_rev_set):
+                        if l>=last_l:
+                            break
+                        if l not in anch_points_by_level:
+                            anch_points_by_level[l] = []
+                        anch_points_by_level[l].append(at)
+                    anch_points, sol_at_anch_points, weights = [], [], []
+                    for l, temp_atoms in anch_points_by_level.items():
+                        anch_points = anch_points + temp_atoms
+                        temp_weight = 2**(last_l - 1 - l)
+                        weights = weights + [temp_weight/len(temp_atoms)] * len(temp_atoms)
+                        for at in temp_atoms:
+                            sol_at = sol.find_sol_atom_ID((top_i, at))
+                            sol_at_anch_points.append(sol_at)
+                    print('\t',sol_at_anch_points, anch_points, weights)
+                    atms2add_coord = self._coords_df[top_i].loc[atms2add].values
+                    AP_coord = self._coords_df[top_i].loc[anch_points].values
+                    sol_at_AP_coord = df.loc[sol_at_anch_points].values
+                    atms2add_coord_aligned = get_aligned_coord(sol_at_AP_coord, atms2add_coord, 
+                                                            v2_align_on=AP_coord, weights=weights)
+                    sol_atms2add = []
+                    for at in atms2add:
+                        sol_at = sol.find_sol_atom_ID((top_i, at))
+                        sol_atms2add.append(sol_at)
+                        row = list(sol._sol.loc[sol_at.sol_id])
+                        for top_j in range(top_i+1, len(sol.tops)):
+                            at_top = row[top_j]
+                            if at_top != Dummy:
+                                top_atms_done[top_j].add(at_top)
+                    df.loc[sol_atms2add] = atms2add_coord_aligned
+        return df
+
     def generate_EDS_conf(self, sol, fnc="simple", **kwargs):
         """
         param sol: solution
-        param fnc: function to generate coordinates (default simple -> calls _generate_coord_simple)
+        param fnc: function to generate coordinates ['simple', 'align_core', 'align_branches'] - default 'simple' -> calls _generate_coord_simple
         kwargs:
-            passed to the function that generates coordinates
+            N_levels - number of levels (bonds) for anchor points alignement in case fnc="align_branches"
         """
         c = Configuration()
         self.conf_ptp = c
@@ -2319,8 +2395,10 @@ class MCS(DataDumping):
             at.res_name = at.res.name
             at.gm_id = at.id
             at.gr_id = at.id
-        fnc2call = dict(simple=self._generate_coord_simple, align_core=self._generate_coord_align_core)[fnc]
-        c._coord = fnc2call(sol).values
+        fnc_dict = dict(simple=self._generate_coord_simple, align_core=self._generate_coord_align_core,
+                        align_branches=self._generate_coord_align_branches)
+        fnc2call = fnc_dict[fnc]
+        c._coord = fnc2call(sol, **kwargs).values
         c._generate_at_coord()
         c.box = c.Box(vec=(0.1,0.1,0.1))
         c.box.vec2abc()

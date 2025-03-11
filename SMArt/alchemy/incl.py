@@ -1458,6 +1458,8 @@ class TopGraphProperties:
     """
 
 class AlchemicalSolution_base:
+    Dummy=Dummy
+    
     def __init__(self, tops, sol, available_atoms, flag_top_not_in_sol, sol_atoms_map, tried_pairs = None):
         self.tops = tops
         self._sol = sol
@@ -1806,6 +1808,16 @@ class AlchemicalSolution_base:
     def find_sol_atom(self, top_atom0_index):
         row = self.sol_atoms_map[top_atom0_index]
         return self.toptp.atoms[row]
+
+    def find_sol_atom_ID(self, top_atom0_index):
+        if not hasattr(self, 'sol_atoms_id_map'):
+            self.sol_atoms_id_map = {}
+            for sol_at in self.toptp.get_atoms():
+                self.sol_atoms_id_map[sol_at.sol_id] = sol_at
+        row = self.sol_atoms_map[top_atom0_index]
+        return self.sol_atoms_id_map[row]
+
+
 
 class AlchemicalSolution(AlchemicalSolution_base):
     def __init__(self, tops, **kwargs):

@@ -19,6 +19,7 @@ if __name__ == '__main__':
     parser.add_argument('-max_sim_t', type=float, help='max simulation time in ns (e.g. due to slurm time limits)', default=None)
     parser.add_argument('-flag_cont', action='store_true', help='continuation of FE simualtions (using *cpt and appending into trajectories)', default=False)
     parser.add_argument('-N_LPs', type=int, help='number of lambda points', default=11)
+    parser.add_argument('-cmd_prefix', type=str, help='command prefix to be used for running/submitting the run files, e.g. sbatch', default="./")
     
     args = parser.parse_args()
 
@@ -46,7 +47,7 @@ if __name__ == '__main__':
     for sim in sim_set.sim_set:
         print(sim)
 
-    sim_set.submit_cmd = 'sbatch --ntasks 1 --cpus-per-task 4 --mem 1000 --gres=mps:33 --partition NGN '
+    sim_set.submit_cmd = args.cmd_prefix
     for sim in sim_set.sim_set:
         if not sim['eq']:
             if flag_continue_cpt:

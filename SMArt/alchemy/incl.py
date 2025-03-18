@@ -164,10 +164,10 @@ class TopGraphProperties:
     @staticmethod
     def _g_non__available__insol_Vs(g, available_Vs = None, non_available_Vs = None, in_solution_Vs = None,
                                     in_solution_dummy_match_Vs = None):
-        if available_Vs:
+        if available_Vs is not None:
             available_Vs = frozenset(available_Vs)
             non_available_Vs = frozenset(g.adj) - frozenset(available_Vs)
-        elif non_available_Vs:
+        elif non_available_Vs is not None:
             available_Vs = frozenset(g.adj) - frozenset(non_available_Vs)
             non_available_Vs = frozenset(non_available_Vs)
         else:
@@ -1797,6 +1797,20 @@ class AlchemicalSolution_base:
                         common_atoms[top_i].append(self.tops[top_i].atoms[int(at_id)])
         return common_atoms
 
+    def convert_sol_df(self, related_tops):
+        # generates a new sol DataFrame based on the atom IDs - e.g. if MCS was first done on heavy atoms only
+        common_atoms = []
+        for i,r in self._sol.iterrows():
+            new_r = []
+            for top_i,at in enumerate(r):
+                #print(at)
+                if at==self.Dummy:
+                    new_r.append(at)
+                else:
+                    new_r.append(related_tops[top_i].atoms[at.id])
+            common_atoms.append(new_r)
+        return pd.DataFrame(common_atoms)
+
     def __repr__(self):
         df = self.states2df()
         return str(df)
@@ -1847,7 +1861,10 @@ class AlchemicalSolution(AlchemicalSolution_base):
         common_atoms_csv = kwargs.get('common_atoms_csv')
         if common_atoms_csv:
             common_atoms = self.get_common_atoms_csv(common_atoms_csv)
-        if common_atoms:
+        if isinstance(common_atoms, pd.DataFrame):
+            assert common_atoms.shape[1] == len(tops)
+            self._sol = common_atoms
+        elif common_atoms:
             assert len(common_atoms) == len(tops)
             self._sol = pd.DataFrame(common_atoms, dtype = object).T
         else:
@@ -1863,7 +1880,7 @@ class AlchemicalSolution(AlchemicalSolution_base):
             if available_atoms[top_i] is None:
                 temp_set = set(self.tops[top_i].adj)
             else:
-                temp_set = set(available_atoms[top_i])
+                temp_set = set(top_av_atoms)
             temp_atoms_in_solution = set(self._sol[top_i])
             self.available_atoms.append(tuple(temp_set - temp_atoms_in_solution))
         self.__get_flag_top_not_in_sol()

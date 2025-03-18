@@ -158,6 +158,38 @@ def get_common_atms_mcs_top0(tops, **kwargs):
     mcs_top0 = _run_mcs_top0(tops, **kwargs)
     return _get_common_atms_mcs_top0(tops, mcs_top0)
 
+def _get_EDS_HH(*tops, **kwargs):
+    # prep steps
+    HH_atoms = []
+    tops_heavy = []
+    for t in tops:
+        temp_HH = t.get_HH(**kwargs)
+        HH_atoms.append(temp_HH)
+        at_idx = [at.id for at in temp_HH[1]]
+        tops_heavy.append(t.reduce(at_idx))
+    temp_kwargs = dict(kwargs)
+    temp_kwargs.pop("flag_HH")
+    # get EDS on heavy atoms only
+    mcs_heavy_all = get_EDS(*tops_heavy, **temp_kwargs)
+    # add hydrogens step by step
+    current_sol_df = mcs_heavy_all.solutions[0].convert_sol_df(tops)
+    for row_i,r in mcs_heavy_all.solutions[0]._sol.iterrows():
+        Hs = [list() for _ in range(len(mcs_heavy_all.tops))]
+        flag=False
+        for top_i,at in enumerate(r):
+            if at==mcs_heavy_all.Dummy:continue
+            at_orig = tops[top_i].atoms[at.id]
+            for temp_at in tops[top_i].adj[at_orig]:
+                if temp_at in HH_atoms[top_i][0]:
+                    Hs[top_i].append(temp_at)
+                    flag = True
+        if flag:
+            temp_mcs = get_EDS(*tops, common_atoms=current_sol_df, available_atoms=Hs, flag_stepwise=False, flag_prune_eq_score=True)
+            current_sol_df = temp_mcs.solutions[0]._sol
+    temp_mcs.mcs_heavy_all=mcs_heavy_all
+    return temp_mcs
+
+
 def get_EDS(*tops, **kwargs):
     """
     :param tops:
@@ -166,11 +198,14 @@ def get_EDS(*tops, **kwargs):
         flag_prune_EDS_match_mass (False)
         flag_get_res_common_atoms - uses residue and atom names to get common_atoms
         flag_get_core_common_atoms_top0 - uses get_common_atms_mcs_top0 to get core_common_atoms
+        flag_HH - splits the search in heavy and hydrogen atoms
         dihedral_match_v
         find_other_state
     :return:
         MCS instance with solutions (run generate_EDS_top(mcs) to get the EDS topology)
     """
+    if kwargs.get("flag_HH"):
+        return _get_EDS_HH(*tops, **kwargs)
     _prep_tops(*tops)
     mcs_kwargs = dict(kwargs)
     temp_mcs_kwargs = dict(flag_top_update = True, flag_top_prune = 'EDS', flag_score_fnc = 'EDS')

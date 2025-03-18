@@ -72,6 +72,8 @@ class FF(AvailableInteractionTypes, DataDumping, IFPBlocksParser, IFPBlocksWrite
         d_at.element, d_at.m, d_at.p_ch, d_at.p_type = 0, 0, 0, "A"
         ff.DUM_type = d_at
         ff.add2container(d_at, **kwargs)
+        if hasattr(self, 'at_index_map'):
+            self.at_index_map = self.__generate_index_map()
 
     def add_a_type(self, atom_type_id, atom_name, vdw=None, rules=None, replace=False, **kwargs):
         """
@@ -849,11 +851,11 @@ class GeneralTopology(DataDumping, InteractionContainer, GraphDirected):
             self.EP_l[at].add(at2)
             self.EP_l[at2].add(at)
 
-    def get_HH(self):
+    def get_HH(self, mass_cutoff=1.5, **kwargs):
         """get hydrogen and heavy atoms"""
         HH = ([], [])
         for at in self.get_atoms():
-            if at.m > 1.5:
+            if at.m > mass_cutoff:
                 HH[1].append(at)
             else:
                 HH[0].append(at)
@@ -1175,11 +1177,26 @@ class MolTop(GeneralTopology):
     def add_interactions(self, int_type, **kwargs):
         return self.get_item(item_id=None, klass = int_type, create=True, db_type = list, **kwargs)
 
-    def generate_constraints(self, constraints='bonds', excl_bonds=None, flag_check_form=True, **kwargs):
+    def generate_constraints(self, constraints='bonds', excl_bonds=None, flag_hydrogens=False,  flag_dummy=False, remove_bonds=False, **kwargs):
+        """
+        :param constraints: container to use to generate the constraints (default: 'bonds')
+        :param excl_bonds: list of bonds to exclude
+        :param flag_hydrogens: if True, use only bonds involving hydrogens
+        :param flag_dummy: if True, use only bonds involving dummy atoms (in at least one state)
+        :param remove_bonds: if True, removes the bonds that are converted to constraints
+        :param kwargs:
+            to be passed to self.get_HH and when generating constrains with Interaction(ConstraintType, **kwargs)
+        """
+        if flag_hydrogens:
+            HH = self.get_HH(**kwargs)
+            H_atoms = set(HH[0])
         in_kwargs = dict(kwargs)
         if excl_bonds is None:
             excl_bonds = []
-        for bond in self.get_container(constraints):
+        temp_containter = self.get_container(constraints)
+        if remove_bonds:
+            bonds2remove = []
+        for bond in temp_containter:
             flag = True
             for excl_bond in excl_bonds:
                 if hasattr(excl_bond, 'atoms'):
@@ -1187,32 +1204,37 @@ class MolTop(GeneralTopology):
                 if excl_bond[0] in bond.atoms and excl_bond[1] in bond.atoms:
                     flag = False
                     break
+            if flag and flag_hydrogens:
+                flag=False
+                for temp_at in bond.atoms:
+                    if temp_at in H_atoms:
+                        flag=True
+                        break
+            if flag and flag_dummy:
+                flag=False
+                if None in bond.states:
+                    flag=True
             if flag:
                 temp_const = Interaction(ConstraintType, **in_kwargs)
                 temp_const.add_atom(*bond.atoms)
                 for state in bond.states:
                     if state and state != Dummy:
                         bond_k = state.get_gr_gm_params()[0]
-                        if flag_check_form:
-                            temp_form = state.get_form()
-                            if temp_form == 'gr':
-                                fnc_type = 'gr_fnc'
-                            elif temp_form == 'gm':
-                                fnc_type = '1'
+                        # check form - if gromos or gromacs
+                        temp_form = state.get_form()
+                        if temp_form == 'gr':
+                            fnc_type = 'gr_fnc'
+                        elif temp_form == 'gm':
+                            fnc_type = '1'
                         temp_const.add_state(params = bond_k, fnc_type=fnc_type, int_code=state.id)
                     else:
                         temp_const.states.append(state)
                 self.add2container(temp_const, db_type=list, create=True)
-
-    def get_HH(self):
-        """get hydrogen and heavy atoms"""
-        HH = ([], [])
-        for at in self.get_atoms():
-            if at.m > 1.5:
-                HH[1].append(at)
-            else:
-                HH[0].append(at)
-        return HH
+                if remove_bonds:
+                    bonds2remove.append(bond)
+        if remove_bonds:
+            for bond in bonds2remove:
+                temp_containter.remove(bond)
 
 
 class MoleculeType(MolTop, gmFragmentMoleculeIO, MolType_g2g):

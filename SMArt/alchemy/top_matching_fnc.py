@@ -1132,6 +1132,7 @@ def generate_int_states(sol, **kwargs):
                     sol_int.int_states[top_i] = int_i
                     _get_sol_int_atoms_simple(sol, top_i, int_i, sol_int)
                     _get_sol_int_states(sol, sol_int) # in this case this is also fine for the dihedrals of v==1 (as they have to be DUM in the other states)
+                    sol.toptp.interaction_states_map[top_i][int_i] = sol_int
                     sol.toptp.add2container(sol_int, create=True, db_type=list, **kwargs)
                     continue
                     #done_interactions.add(sol_int) # not needed as not matched to any other interaction (all other states DUM)

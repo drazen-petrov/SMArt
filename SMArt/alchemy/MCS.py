@@ -77,7 +77,8 @@ class MCS(DataDumping):
             initial_sol = self.initial_sol
             self.make_estimates(initial_sol)
             self.calc_score(initial_sol)
-            generate_toptp(sol=initial_sol)
+            #generate_toptp(sol=initial_sol)
+            generate_toptp(sol=initial_sol, **kwargs)
         ######################################### initial #########################################
         ######################################### initial topology props #########################################
         ######################################### initial topology props #########################################

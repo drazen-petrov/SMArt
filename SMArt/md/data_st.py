@@ -74,6 +74,7 @@ class FF(AvailableInteractionTypes, DataDumping, IFPBlocksParser, IFPBlocksWrite
         ff.add2container(d_at, **kwargs)
         if hasattr(self, 'at_index_map'):
             self.at_index_map = self.__generate_index_map()
+        self.generate_vdw(replace=-1)
 
     def add_a_type(self, atom_type_id, atom_name, vdw=None, rules=None, replace=False, **kwargs):
         """

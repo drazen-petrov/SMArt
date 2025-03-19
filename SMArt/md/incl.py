@@ -110,6 +110,11 @@ class Dummy:
     a_type = None
     coord = np.array([np.nan] * 3)
 
+    def __repr__(self):
+        return "DUM"
+
+    def __str__(self):
+        return "DUM"
 
 class Interaction(__VersionCompatibility):
     """base class for each interaction type (bonds, angles...)
@@ -352,6 +357,8 @@ class InteractionType(gmInteractionTypeWriter, IntType_g2g):
     @staticmethod
     def _check_atoms_int_match_ordered(int_atoms, atoms, **kwargs):
         #assert len(int_atoms) == len(atoms)
+        if len(int_atoms) != len(atoms):
+            return False
         allowed_perturbations = kwargs.get('allowed_perturbations')
         if allowed_perturbations is None:
             allowed_perturbations = [list(range(len(int_atoms)))]
@@ -590,7 +597,11 @@ class Dihedral_Check_atoms_int(InteractionType, Defaults):
     def _check_atoms_int_match1(cls, int_atoms, atoms, **kwargs):
         if len(atoms) == 4:
             atoms = atoms[1:3]
-        return cls._check_atoms_int_match_ordered(int_atoms[1:3], atoms)
+            return cls._check_atoms_int_match_ordered(int_atoms[1:3], atoms)
+        elif len(atoms) == 2:
+            return cls._check_atoms_int_match_ordered(int_atoms[1:3], atoms)
+        else:
+            return False
 
     @classmethod
     def _check_atoms_int_match2(cls, int_atoms, atoms, **kwargs):

@@ -51,6 +51,7 @@ except ImportError:
     minimize = None
 try:
     from scipy import integrate
+    integrate.simps = integrate.simpson
 except ImportError:
     integrate = None
 try:

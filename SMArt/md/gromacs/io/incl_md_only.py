@@ -78,9 +78,9 @@ class gmCMAPWriter(gm_io_Defaults, gmInteractionTypeWriter):
         :return:
         """
         temp_txt = self._write_gm_atoms()
-        temp_v = []
+        temp_v = [self.fnc_type]
         temp_v.extend(self.grid_ind)
-        temp_txt += self._add_gm_eol(' {:<6}' * 2)
+        temp_txt += self._add_gm_eol(' {:<6}' * 3)
         temp_txt = temp_txt.format(*temp_v)
         temp_txt += self.__get_cmap_p_txt(**kwargs)
         return temp_txt

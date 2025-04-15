@@ -196,7 +196,7 @@ class GromosParser(GeneralContainer, GromosDefaults):
     def __read_unknown_block_v2_1(self, gs, bl_name, **kwargs):
         """
         does it as a list of individual parameters (based on str split)
-        and it keep the track of number of params per line...
+        and it keeps the track of number of params per line...
         """
         if not hasattr(self, '_undefined_bl_params_per_line'):
             self._undefined_bl_params_per_line = {}
@@ -316,15 +316,23 @@ class GromosWriter(GeneralContainer, GromosDefaults):
             bl_txt.append(temp_line + '\n')
         return bl_txt
 
-    def __write_unknown_block_v2_3(self, gs, block_name, **kwargs):
+    def __write_unknown_block_v2(self, gs, block_name, **kwargs):
         """write unknown block if all params are split and stored individually in a list (or list of lists)
-        such format comes with __read_unknown_block_v_ 2_1 2_2 or 3"""
+        such format comes with __read_unknown_block_v_ 2_1 2_2"""
         params = self.undefined_bl[block_name]
         try:
             params_per_line = self._undefined_bl_params_per_line[block_name]
         except:
             params_per_line = self.__params_per_line
         bl_txt = self.get_block_txt_from_params(params, params_per_line)
+        gs.write_block(block_name, bl_txt)
+
+    def __write_unknown_block_v3(self, gs, block_name, **kwargs):
+        """write unknown block if all params are split and stored individually in a list (or list of lists)
+        such format comes with __read_unknown_block_v_3"""
+        bl_txt = ""
+        for params in self.undefined_bl[block_name]:
+            bl_txt += self.get_block_txt_from_params(params, len(params))[0]
         gs.write_block(block_name, bl_txt)
 
     def __write_general_block_v1(self, gs, bl, **kwargs):
@@ -373,10 +381,36 @@ _GromosWriter_defs['__write_general_block_v'] = '__write_general_block_v1'
 _GromosWriter_defs['__write_gromos_format_v'] = '__write_gromos_format_v1'
 _GromosWriter_defs['__write_unknown_block_v'] = '__write_unknown_block_v1'
 _GromosWriter_defs['_write_TITLE'] = '__write_TITLE_v1'
-
-
-
 GromosWriter._add_defaults(_GromosWriter_defs, flag_set=True)
+
+
+class GromosIO(GromosParser, GromosWriter):
+    def __init__(self, parse_from=None, parse_from_file=True, **kwargs):
+        if parse_from is not None:
+            self._parse_gr(parse_from, parse_from_file=parse_from_file, **kwargs)
+
+    def write_gr(self, f_path, *blocks, **kwargs):
+        """
+        writes gromos format into a file (or prints out if None given for f_path)
+        :param f_path: file to write to
+        :param blocks: blocks to write out
+        :param kwargs:
+            flag_undefined_bl - to check for undefined blocks and write them all out
+        """
+        gs = self._get_grs_from_fpaht(f_path)
+        if 'TITLE' not in blocks:
+            blocks = list(blocks)
+            blocks.insert(0, 'TITLE')
+        if kwargs.get('flag_undefined_bl', True):
+            blocks = list(blocks)
+            try:
+                for bl_name in self.undefined_bl:
+                    if bl_name not in blocks:
+                        blocks.append(bl_name)
+            except:pass
+        self.write_gromos_format(gs, *blocks)
+        if kwargs.get('flag_close', True):
+            gs.f.close()
 
 # FF (IFP) parsing & writing functions
 block_interaction_type_map = dict()

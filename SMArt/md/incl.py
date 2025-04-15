@@ -1014,6 +1014,11 @@ class cmap(InteractionType, gmCMAPWriter):
             else:
                 self.add_atom(atoms)
 
+    @classmethod
+    def _cls_check_atoms_int_match(cls, int_atoms, atoms, **kwargs):
+        return cls._check_atoms_int_match_ordered(int_atoms, atoms, **kwargs)
+
+
 def __check_interaction_type_class(item):
     if hasattr(item, '__mro__') and InteractionType in item.__mro__:
         return True

@@ -221,7 +221,7 @@ def get_EDS(*tops, **kwargs):
             s = mcs.initial_sol
             mcs.make_estimates(s)
             mcs.calc_score(s)
-            top_matching_fnc.generate_toptp(sol=s)
+            top_matching_fnc.generate_toptp(sol=s, **kwargs)
             mcs.enumerate_stepwise_sorted_call(s, **enum_kwargs)
     if mcs is None:
         core_common_atoms = kwargs.get('core_common_atoms')

@@ -2317,22 +2317,27 @@ class MCS(DataDumping):
     def _generate_coord_align_branches(self, sol, **kwargs):
         # coord df with 0s
         df = self.__get_empty_coord_df(sol)
+        # order of states to consider
+        state_order = kwargs.get('state_order', list(range(len(sol.tops))))
         # add coords of the fist top
         top_atms_done = [set() for _ in self.tops]
         for at in sol.toptp.get_atoms():
-            row = sol._sol.loc[at.sol_id]
-            for top_i, at_top in enumerate(row):
-                if top_i==0:
+            row = list(sol._sol.loc[at.sol_id])
+            # for top_i, at_top in enumerate(row):
+            #     if top_i==state_order[0]:
+            for iter_idx, top_i in enumerate(state_order):
+                at_top = row[top_i]
+                if iter_idx==0:
                     if at_top==Dummy:
                         break
                     else:
-                        df.loc[at] = self._coords_df[0].loc[at_top].values
+                        df.loc[at] = self._coords_df[top_i].loc[at_top].values
                 else: # this is skipped if at_top of top_0 is DUMMY
                     if at_top!=Dummy:
                         top_atms_done[top_i].add(at_top)
         last_l = kwargs.get('N_levels',3)
         # loop over other tops and keep adding individual branches
-        for top_i in range(1, len(sol.tops)):
+        for iter_idx, top_i in enumerate(state_order[1:]):
             temp_top = sol.tops[top_i]
             temp_set = set(top_atms_done[top_i])
             temp_rev_set = set(temp_top.get_atoms()) - temp_set
@@ -2367,7 +2372,7 @@ class MCS(DataDumping):
                         sol_at = sol.find_sol_atom_ID((top_i, at))
                         sol_atms2add.append(sol_at)
                         row = list(sol._sol.loc[sol_at.sol_id])
-                        for top_j in range(top_i+1, len(sol.tops)):
+                        for top_j in state_order[iter_idx+2:]:
                             at_top = row[top_j]
                             if at_top != Dummy:
                                 top_atms_done[top_j].add(at_top)
@@ -2380,6 +2385,7 @@ class MCS(DataDumping):
         param fnc: function to generate coordinates ['simple', 'align_core', 'align_branches'] - default 'simple' -> calls _generate_coord_simple
         kwargs:
             N_levels - number of levels (bonds) for anchor points alignement in case fnc="align_branches"
+            state_order - order of states to consider in case fnc="align_branches" (range(0, len(sol.tops)) by default)
         """
         c = Configuration()
         self.conf_ptp = c

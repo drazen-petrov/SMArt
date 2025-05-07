@@ -17,9 +17,10 @@ if __name__ == '__main__':
     parser.add_argument('-eq_t', type=float, help='equlibration step time in ns', default=0.2)
     parser.add_argument('-sim_t', type=float, help='produciton simulation time in ns', default=1.)
     parser.add_argument('-max_sim_t', type=float, help='max simulation time in ns (e.g. due to slurm time limits)', default=None)
-    parser.add_argument('-flag_cont', action='store_true', help='continuation of FE simualtions (using *cpt and appending into trajectories)', default=False)
     parser.add_argument('-N_LPs', type=int, help='number of lambda points', default=11)
     parser.add_argument('-cmd_prefix', type=str, help='command prefix to be used for running/submitting the run files, e.g. sbatch', default="./")
+    parser.add_argument('-temp_fd', type=str, help='temp folder on a local disk to write during simulation and copy to main storate after simulation done (e.g. /scratch/\${SLURM_JOBID}/)')
+    parser.add_argument('-nproc', type=int, help='if partial usage of a node is required, use this. also adjust the submit command (e.g. --cpus-per-task for slurm')
     
     args = parser.parse_args()
 
@@ -41,8 +42,6 @@ if __name__ == '__main__':
     fd = args.fd.strip()
     fd = os.path.abspath(fd) + '/'
 
-    flag_continue_cpt=args.flag_cont
-
     sim_set = pipeline.Initial_FE(args.eq_t, args.sim_t, N_lam=args.N_LPs, max_t_sim=args.max_sim_t)
     for sim in sim_set.sim_set:
         print(sim)
@@ -50,19 +49,19 @@ if __name__ == '__main__':
     sim_set.submit_cmd = args.cmd_prefix
     for sim in sim_set.sim_set:
         if not sim['eq']:
-            if flag_continue_cpt:
-                flag_cp_all = (True, False)
-            else:
-                flag_cp_all = False
-            sim['slurm_job_kwargs'] = dict(temp_fd='/scratch/${SLURM_JOBID}/', flag_cp_all=flag_cp_all)
-            sim['flag_cp_before_new_sub'] = True
+            if args.temp_fd:
+                sim['job_kwargs'] = dict(temp_fd=args.temp_fd, flag_cp_all=False)
+                sim['flag_cp_before_new_sub'] = True
 
-    GMX_sim_process = GMX_FE_sim_set_processor(gro, top, mdp)    
+    GMX_sim_process = GMX_FE_sim_set_processor(gro, top, mdp)
+    GMX_sim_process.additional_mdrun_kwargs = {}
+    if args.nproc:
+        GMX_sim_process.additional_mdrun_kwargs['nt'] = args.nproc
 
     print('\n\n\n')
 
     grompp_kwargs = {'maxwarn':args.maxwarn}
     if ref:
         grompp_kwargs['r'] = ref
-    sim_set.generate_sim_files_jobs(fd, GMX_sim_process.fnc2process, grompp_kwargs=grompp_kwargs, flag_continue_cpt=flag_continue_cpt)
+    sim_set.generate_sim_files_jobs(fd, GMX_sim_process.fnc2process, grompp_kwargs=grompp_kwargs)
 

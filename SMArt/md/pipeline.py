@@ -17,7 +17,7 @@ def write_comm_in_f(f, comm):
     f.write(comm)
 
 
-def gen_slurm_job(f_path, commands, slurm_kw=None, **kwargs):
+def gen_job(f_path, commands, slurm_kw=None, **kwargs):
     """
     :param f_path: run file
     :param commands: commands to be executed in the run file
@@ -25,7 +25,7 @@ def gen_slurm_job(f_path, commands, slurm_kw=None, **kwargs):
     :param kwargs:
         temp_fd: use temp folder to run the job - e.g. /scratch/${SLURM_JOBID}/
         job_fd: job/simulation folder
-        flag_cp_all: if temp_job_fd given, this flag ensures that all the data is c/p to/from temp folder - it can also be (False, True) - copies only back to JOBDIR
+        flag_cp_all: if temp_job_fd given, this flag ensures that all the data is c/p to/from temp folder - default (False, True), which copies only back to JOBDIR
         pre_commands: set of commands to run before the commands
         post_commands: set of commands to run after the commands
     :return: None
@@ -43,7 +43,7 @@ def gen_slurm_job(f_path, commands, slurm_kw=None, **kwargs):
         f.write('WORKDIR=' + temp_fd + '\n')
         f.write('mkdir -p ${WORKDIR}\n')
         f.write('cd       ${WORKDIR}\n')
-        flag_cp_all = kwargs.get('flag_cp_all')
+        flag_cp_all = kwargs.get('flag_cp_all', (False, True))
         if flag_cp_all == True:
             flag_cp_all = (True, True)
         if flag_cp_all == False:
@@ -122,7 +122,7 @@ class SimulationSet(Defaults):
     def __fnc2be_implemented(self):
         self.get_sim_file_fd = None # should based on the input simulation, generates a folder; job file name; and simulation name
 
-    def process_sim(self, commands, sim, sim_fd_root, fnc2process, **kwargs):
+    def process_sim(self, commands, sim, sim_fd_root, fnc2process, slurm_kw=None, **kwargs):
         #job_info = fnc2process
         job_f, sim_fd, name = self.get_sim_file_fd(sim, sim_fd_root, **kwargs)
         commands.extend(fnc2process(sim, self.sim_set, job_f, sim_fd, name, **kwargs))
@@ -133,13 +133,15 @@ class SimulationSet(Defaults):
         for new_sim_i in sim.get('sub'):
             new_sim = self.sim_set[new_sim_i]
             new_commands = []
-            new_sim_info = self.process_sim(new_commands, new_sim, sim_fd_root, fnc2process, **kwargs)
-            slurm_job_kwargs = new_sim.get('slurm_job_kwargs', kwargs)
-            gen_slurm_job(new_sim_info[0], new_commands, job_fd=new_sim_info[1], **slurm_job_kwargs) # job_f, commands (kwargs, e.g. slurm_kw)
+            new_sim_info = self.process_sim(new_commands, new_sim, sim_fd_root, fnc2process, slurm_kw=slurm_kw, **kwargs)
+            slurm_kw, job_kwargs = self.__get_slurm__job__kw(new_sim, slurm_kw, dict(kwargs))
+            gen_job(new_sim_info[0], new_commands, job_fd=new_sim_info[1], slurm_kw=slurm_kw, **job_kwargs)
             temp_job_f_name = os.path.split(new_sim_info[0])[1]
             #if new_sim.get('flag_cp_before_new_sub'):
             #    commands.extend(get_cp_back_commands())
-            comm = 'cd ' + new_sim_info[1] + '\n{:} '.format(self.submit_cmd) + temp_job_f_name + '\n'
+            comm = 'cd ' + new_sim_info[1] + '\n{:}'.format(self.submit_cmd)
+            if self.submit_cmd and self.submit_cmd != './':comm += ' '
+            comm += temp_job_f_name + '\n'
             commands.append(comm)
             self.sims_done.add(new_sim_i)
         # process all jobs to run
@@ -148,29 +150,39 @@ class SimulationSet(Defaults):
         for new_sim_i in sim.get('run'):
             new_sim = self.sim_set[new_sim_i]
             new_sim['flag_increase_count'] = False
-            new_sim_info = self.process_sim(commands, new_sim, sim_fd_root, fnc2process, **kwargs)
+            new_sim_info = self.process_sim(commands, new_sim, sim_fd_root, fnc2process, slurm_kw=slurm_kw, **kwargs)
             self.sims_done.add(new_sim_i)
-        # write the job file with the commands
-        #gen_slurm_job(job_f, commands, **kwargs) # job_f, commands, kwargs (e.g. slurm_kw)
         return job_f, sim_fd
 
-    def generate_sim_files_jobs(self, sim_fd_root, fnc2process, **kwargs):
+    def generate_sim_files_jobs(self, sim_fd_root, fnc2process, slurm_kw=None, **kwargs):
         submit_commands = []
         commands = []
         self.sims_done = set()
         for i, sim in enumerate(self.sim_set):
             if i not in self.sims_done:
-                sim_info = self.process_sim(commands, sim, sim_fd_root, fnc2process, **kwargs)
+                sim_info = self.process_sim(commands, sim, sim_fd_root, fnc2process, slurm_kw=slurm_kw, **kwargs)
                 job_f, job_fd = sim_info
                 self.sims_done.add(i)
                 temp_job_f_name = os.path.split(job_f)[1]
-                slurm_job_kwargs = sim.get('slurm_job_kwargs', kwargs)
-                gen_slurm_job(job_f, commands, job_fd=job_fd, **slurm_job_kwargs) # job_f, commands, kwargs (e.g. slurm_kw)
+                slurm_kw, job_kwargs = self.__get_slurm__job__kw(sim, slurm_kw, dict(kwargs))
+                gen_job(job_f, commands, job_fd=job_fd, slurm_kw=slurm_kw, **job_kwargs)
                 commands = []
-                comm = 'cd ' + sim_info[1] + '\n{:} '.format(self.submit_cmd) + temp_job_f_name + '\n\n'
+                comm = 'cd ' + sim_info[1] + '\n{:}'.format(self.submit_cmd)
+                if self.submit_cmd and self.submit_cmd != './':comm += ' '
+                comm += temp_job_f_name + '\n\n'
                 print(comm)
                 submit_commands.append(comm)
         return commands
+
+    def __get_slurm__job__kw(self, sim, slurm_kw, job_kw):
+        if slurm_kw is None:
+            slurm_kw = {}
+        slurm_kw.update(sim.get('slurm_job_kwargs', {}))
+        if job_kw is None:
+            job_kw = {}
+        job_kw.update(sim.get('job_kwargs', {}))
+        return slurm_kw, job_kw
+
 
 SimulationSet._add_defaults(dict(submit_cmd='sbatch'), flag_set=1)
 

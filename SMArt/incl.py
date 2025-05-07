@@ -51,9 +51,11 @@ except ImportError:
     minimize = None
 try:
     from scipy import integrate
-    integrate.simps = integrate.simpson
 except ImportError:
     integrate = None
+try:
+    integrate.simps = integrate.simpson
+except:pass
 try:
     from scipy.spatial import KDTree
 except ImportError:

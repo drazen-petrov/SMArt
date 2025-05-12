@@ -52,6 +52,17 @@ def find_matching(in_file, ifp_file, bb_id, pdb_file, selection='all', flag_topo
     mcs.enumerate_stepwise_sorted()
     return mcs
 
+def change_names_pymol(match):
+    """
+    change the names of the atoms in pymol
+    match is a pandas DataFrame with the matches
+    """
+    sele = ''
+    for i, row in match.iterrows():
+        cmd.alter('index %s' % row[0].id, 'name="%s"' % row[1].name)
+        sele += 'or index %s ' % row[0].id
+    return sele[3:]
+
 def check_elements(mcs, sol_i = 0, sort_by_top = 0):
     """
     get only atom pairs that are have matching elements
@@ -63,7 +74,7 @@ def check_elements(mcs, sol_i = 0, sort_by_top = 0):
     for i, row in s._sol.iterrows():
         if alchemy.incl.Dummy not in row.values:
             diff_same[row[0].element == row[1].element].append(i)
-    match = s._sol.iloc[diff_same[1]]
+    match = s._sol.iloc[diff_same[1]].copy()
     match['pos'] = [int(a.id) for a in match.iloc[:,sort_by_top]]
     match = match.sort_values('pos').drop('pos', axis=1).reset_index(drop=True)
     return [len(diff_same[i]) for i in range(2)], diff_same, match
@@ -110,11 +121,11 @@ if __name__ == '__main__':
         print(i, '\t\t\t\t', res)
 
     print('\n\nsolution with the most matches is: {}; and has {:} matched atom'.format(*results[0]))
-    print('run the following commands to get the matches:\nsol_index = {:}'.format(results[0][0]))
+    print('\nrun the following command to get the matches:\nres[2]')
+
+    print('\nrun the following commands to get the matches of other solutions (xyz should be int):\nsol_index = xyz')
     print('res = check_elements(mcs, sol_index)\nres[2]')
-    print('the actual match is in res[2]._sol (pandas DataFrame)')
-    print('\nto check other solutions, change sol_index')
-    print('variable results is a sorted list of solutions by the number of matched atoms')
+    print('\n\nto generate a new pdb file with the new names, run the following command:\nsele=change_names_pymol(res[2])\ncmd.save("new.pdb", sele)')
 
     sol_index = results[0][0]
     res = check_elements(mcs, sol_index)

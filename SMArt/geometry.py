@@ -1,6 +1,7 @@
 from SMArt.incl import np
 from SMArt.incl import scipy
-_align_vectors = scipy.spatial.transform.Rotation.align_vectors
+if scipy:
+    _align_vectors = scipy.spatial.transform.Rotation.align_vectors
 
 def rot_2D(v, theta = 90):
     theta = np.radians(theta)

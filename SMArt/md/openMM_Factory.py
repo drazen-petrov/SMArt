@@ -167,9 +167,9 @@ class openMM_Factory:
 
     RAD2DEG_2 = (180 / np.pi)**2
 
-    FG_map = dict(FG_BONDS=0, FG_ANGLES=1, FG_IMPROPERS=2, FG_DIHEDRALS=3, FG_NB_NATIVE_GROUP=4)
+    cls_FG_map = dict(FG_BONDS=0, FG_ANGLES=1, FG_IMPROPERS=2, FG_DIHEDRALS=3, FG_NB_NATIVE_GROUP=4)
     FG_NB_CUSTOM_GROUP_START = 5
-    FG_map2 = dict(FG_NB_LJ_CUSTOM_GROUP=20, FG_NB_RF_CUSTOM_GROUP=21, FG_B_LJ14_CUSTOM_GROUP=22)
+    cls_FG_map2 = dict(FG_NB_LJ_CUSTOM_GROUP=20, FG_NB_RF_CUSTOM_GROUP=21, FG_B_LJ14_CUSTOM_GROUP=22)
     
     exclusions_Q = [0.]
     exclusions_LJ = [0.5, 0.]
@@ -272,6 +272,7 @@ class openMM_Factory:
     
     def __init__(self, top=None, MD_params=None, top_state=None, water_model=SPC, 
                  RF_flag=True, NB_cutoff=None, **kwargs):
+        self.FG_map = dict(self.cls_FG_map)
         self.FG_gr_nb_count = self.FG_NB_CUSTOM_GROUP_START
         if top_state:
             top.set_top_state(top_state)
@@ -1024,7 +1025,7 @@ class openMM_Factory:
     @staticmethod
     def _get_elem(atom):
         try:
-            return app.element.Element.getByAtomicNumber(int(at.gr_get_element()))
+            return app.element.Element.getByAtomicNumber(int(atom.gr_get_element()))
         except:
             return
 

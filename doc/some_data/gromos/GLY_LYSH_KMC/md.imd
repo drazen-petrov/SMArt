@@ -8,7 +8,7 @@ SYSTEM
 END
 STEP
 #   NSTLIM         T        DT
-    100000       600     0.002
+         1       600     0.002
 END
 BOUNDCOND
 #      NTB    NDFMIN
@@ -104,9 +104,9 @@ PRINTOUT
 #NTPR: print out energies, etc. every NTPR steps
 #NTPP: =1 perform dihedral angle transition monitoring
 #     NTPR      NTPP
-       250         0
+         1         0
 END
 WRITETRAJ
 #    NTWX     NTWSE      NTWV      NTWF      NTWE      NTWG      NTWB
-      250         0         0         0       250         0         0
+        1         0         0         0         1         0         0
 END

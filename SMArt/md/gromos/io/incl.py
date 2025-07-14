@@ -898,7 +898,7 @@ class MTBBlocksParser(GromosParser):
     def __MTBUILDBLSOLUTE_v1(self, gs, **kwargs):
         bb = self.BuildingBlock()
         bb._parse_bb_call(gs, ff=self, **kwargs)
-        self.add2container(bb, create=True)
+        self.add2container(bb, create=True, **kwargs)
 
     def parse_mtb(self, parse_from, parse_from_file = True, **kwargs):
         """parses a mtb file and set appropriate parameters within the instance of MTB"""

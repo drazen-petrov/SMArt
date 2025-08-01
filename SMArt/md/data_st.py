@@ -1660,6 +1660,17 @@ class Configuration(cnfBlocksParser, cnfBlocksWriter, gmConfigurationIO):
         for i, at in enumerate(self.atoms):
             at.coord = self._coord[i]
 
+    def get_velocities(self, flag_check=True):
+        if hasattr(self, "_vel"):
+            return self._vel
+        if flag_check:
+            assert hasattr(self.atoms[0], 'vel')
+        self._vel = np.zeros((len(self.atoms), self._N_dim))
+        for i, at in enumerate(self.atoms):
+            self._vel[i] = at.vel
+            at.vel = self._vel[i]
+        return self._vel
+
     def _d2(self, c1, c2):
         temp_d2 = c1 - c2
         return np.dot(temp_d2, temp_d2)
@@ -1789,7 +1800,6 @@ class Configuration(cnfBlocksParser, cnfBlocksWriter, gmConfigurationIO):
             if at.res_name in solv_res_names:
                 break
         return at_i
-
 
 _Configuration_defs = {}
 _Configuration_defs['solv_res_names'] = ('SOL', 'SOLV', 'H2O')

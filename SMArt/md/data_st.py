@@ -702,10 +702,14 @@ class GeneralTopology(DataDumping, InteractionContainer, GraphDirected):
         :param find_other_state: find the other state for ptp or EDS ('any', 1, -1)
                 'any' - any non-None; 1 - first non-None from top_state; -1 first non-None from top_state with the step -1
         :param kwargs:
+            flag_only_1_state_allowed: allowed to have only 1 element in the list (assumes that all states are the same)
         :return:
         """
         if top_state is None:
             top_state = getattr(self, 'top_state', 0)
+        if kwargs.get('flag_only_1_state_allowed') or getattr(self, '_flag_only_1_state_allowed', False):
+            if len(states)==1:
+                states = [states[0]] * self.N_states
         res_state = states[top_state]
         if self._check_if_physical_state(res_state):
             return res_state

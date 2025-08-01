@@ -1410,6 +1410,7 @@ class PTP_EDS_BlocksParser(GromosParser):
     def __MPERTATOM_v1(self, parse_from, bl_name):
         ff = self.get_intDB()
         N_EDS_atoms, N_states = (int(next(parse_from.block_split_fnc)), int(next(parse_from.block_split_fnc)))
+        self.N_states = N_states
         self.state_names = []
         for j in range(N_states):
             self.state_names.append(next(parse_from.block_split_fnc))

@@ -6,6 +6,7 @@ from SMArt.md.data_st import MD_Parameters
 
 import openmm as mm
 from openmm import app
+from openmm.app.internal.unitcell import reducePeriodicBoxVectors
 
 ### non-bonded
 # for LJ
@@ -274,7 +275,7 @@ class openMM_Factory:
                  RF_flag=True, NB_cutoff=None, **kwargs):
         self.FG_map = dict(self.cls_FG_map)
         self.FG_gr_nb_count = self.FG_NB_CUSTOM_GROUP_START
-        if top_state:
+        if top_state is not None:
             top.set_top_state(top_state)
         self._top = top
         self.top = top.reduce()
@@ -929,8 +930,8 @@ class openMM_Factory:
         if native_NB_flags is None:
             native_NB_flags = {}
         self._native_NB_flags = self.Native_NB_Flags(**native_NB_flags)
+        self.N_water = N_water
         if N_water:
-            self.N_water = N_water
             self.generate_water_top(N_water)
 
         self.create_openMM_system()
@@ -1043,7 +1044,36 @@ class openMM_Factory:
                 assert at is top_atoms[top_atom_idx] # ensures that order of atoms is the same as the order of residues x atoms_in_res
                 top_atom_idx+=1
                 mm_top.addAtom(at.name, self._get_elem(at), mm_res)
+        omm_atoms = list(mm_top.atoms())
         for bi in self.top.bonds: # bi - bonded interaction
-            atoms_idx = [at._openmm_id for at in bi.atoms]
+            atoms_idx = [omm_atoms[at._openmm_id] for at in bi.atoms]
             mm_top.addBond(*atoms_idx)
         return mm_top
+
+def create_openMM_simulation(openMM_sys, conf, integrator, flag_water=True, flag_openMM_native_charges=False):
+    if flag_water:
+        N_water = int((len(conf.atoms) - len(openMM_sys.top.atoms)) / 3)
+    else:
+        N_water=0
+    if not flag_openMM_native_charges:
+        # GROMOS custom energy
+        openMM_sys.make_predefined_openmm_system(native_charges=False, N_water=N_water)
+    else:
+        # native openMM charges + custom GROMOM energy for the rest
+        openMM_sys.make_predefined_openmm_system(native_charges=True, N_water=N_water)
+
+    mm_sys = openMM_sys.system 
+    mm_top = openMM_sys.make_openmm_top()
+    # add the box information
+    mm_sys.setDefaultPeriodicBoxVectors(*reducePeriodicBoxVectors(np.diag(conf.box.abc)))
+    mm_top.setPeriodicBoxVectors(reducePeriodicBoxVectors(np.diag(conf.box.abc)))
+
+    # create integrator and simulation objects
+    simulation = app.simulation.Simulation(mm_top, mm_sys, integrator)
+
+    # add coordinates, velocities and the box information to the simulation object
+    simulation.context.setPositions(cnf._coord)
+    if hasattr(cnf.atoms[0], 'vel'):
+        simulation.context.setVelocities(cnf.get_velocities())
+    simulation.context.setPeriodicBoxVectors(*reducePeriodicBoxVectors(np.diag(conf.box.abc)))
+    return simulation

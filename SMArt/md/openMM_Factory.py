@@ -1072,8 +1072,8 @@ def create_openMM_simulation(openMM_sys, conf, integrator, flag_water=True, flag
     simulation = app.simulation.Simulation(mm_top, mm_sys, integrator)
 
     # add coordinates, velocities and the box information to the simulation object
-    simulation.context.setPositions(cnf._coord)
-    if hasattr(cnf.atoms[0], 'vel'):
-        simulation.context.setVelocities(cnf.get_velocities())
+    simulation.context.setPositions(conf._coord)
+    if hasattr(conf.atoms[0], 'vel'):
+        simulation.context.setVelocities(conf.get_velocities())
     simulation.context.setPeriodicBoxVectors(*reducePeriodicBoxVectors(np.diag(conf.box.abc)))
     return simulation

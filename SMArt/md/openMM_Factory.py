@@ -469,7 +469,7 @@ class openMM_Factory:
         """
         if nb_force:
             if self.RF_flag:
-                print('setting eps =', self.ELE_params.RF_eps)
+                #print('setting eps =', self.ELE_params.RF_eps)
                 nb_force.setReactionFieldDielectric(self.ELE_params.RF_eps)
             self.__set_pbc_nb_force(nb_force, pbc, True, openMM_cutoff=openMM_cutoff)# True -> to treat it as a native openMM NB force
         if custom_nb_forces:
@@ -1050,30 +1050,38 @@ class openMM_Factory:
             mm_top.addBond(*atoms_idx)
         return mm_top
 
-def create_openMM_simulation(openMM_sys, conf, integrator, flag_water=True, flag_openMM_native_charges=False):
-    if flag_water:
-        N_water = int((len(conf.atoms) - len(openMM_sys.top.atoms)) / 3)
-    else:
-        N_water=0
-    if not flag_openMM_native_charges:
-        # GROMOS custom energy
-        openMM_sys.make_predefined_openmm_system(native_charges=False, N_water=N_water)
-    else:
-        # native openMM charges + custom GROMOM energy for the rest
-        openMM_sys.make_predefined_openmm_system(native_charges=True, N_water=N_water)
+    def create_openMM_simulation(self, conf, integrator, flag_water=True, flag_openMM_native_charges=False, **kwargs):
+        if kwargs.get('flag_pdb_file'):
+            N_atoms = len(pdb.positions)
+            pos = conf.positions
+            box_vec = pdb.topology.getPeriodicBoxVectors()
+        else:
+            N_atoms = len(conf.atoms)
+            pos = conf._coord
+            box_vec = reducePeriodicBoxVectors(np.diag(conf.box.abc))
+        if flag_water:
+            N_water = (N_atoms - len(self.top.atoms)) // 3
+        else:
+            N_water=0
+        if not flag_openMM_native_charges:
+            # GROMOS custom energy
+            self.make_predefined_openmm_system(native_charges=False, N_water=N_water)
+        else:
+            # native openMM charges + custom GROMOM energy for the rest
+            self.make_predefined_openmm_system(native_charges=True, N_water=N_water)
 
-    mm_sys = openMM_sys.system 
-    mm_top = openMM_sys.make_openmm_top()
-    # add the box information
-    mm_sys.setDefaultPeriodicBoxVectors(*reducePeriodicBoxVectors(np.diag(conf.box.abc)))
-    mm_top.setPeriodicBoxVectors(reducePeriodicBoxVectors(np.diag(conf.box.abc)))
+        mm_sys = self.system 
+        mm_top = self.make_openmm_top()
+        # add the box information
+        mm_sys.setDefaultPeriodicBoxVectors(*box_vec)
+        mm_top.setPeriodicBoxVectors(box_vec)
 
-    # create integrator and simulation objects
-    simulation = app.simulation.Simulation(mm_top, mm_sys, integrator)
+        # create integrator and simulation objects
+        simulation = app.simulation.Simulation(mm_top, mm_sys, integrator)
 
-    # add coordinates, velocities and the box information to the simulation object
-    simulation.context.setPositions(conf._coord)
-    if hasattr(conf.atoms[0], 'vel'):
-        simulation.context.setVelocities(conf.get_velocities())
-    simulation.context.setPeriodicBoxVectors(*reducePeriodicBoxVectors(np.diag(conf.box.abc)))
-    return simulation
+        # add coordinates, velocities and the box information to the simulation object
+        simulation.context.setPositions(pos)
+        if not kwargs.get('flag_pdb_file') and hasattr(conf.atoms[0], 'vel'):
+            simulation.context.setVelocities(conf.get_velocities())
+        simulation.context.setPeriodicBoxVectors(*box_vec)
+        return simulation

@@ -108,5 +108,5 @@ PRINTOUT
 END
 WRITETRAJ
 #    NTWX     NTWSE      NTWV      NTWF      NTWE      NTWG      NTWB
-        1         0         0         0         1         0         0
+        1         0         1         1         1         0         0
 END

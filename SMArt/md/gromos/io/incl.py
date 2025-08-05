@@ -1634,6 +1634,12 @@ class TrjCnfBlocksParser(gr_TrajectoryParser):
             self.N_atoms = len(frame_coord)
             self.get_frame_dtype()
 
+    def __VELOCITYRED_v1(self, parse_from, bl_name, **kwargs):
+        self.__POSITIONRED_v1(parse_from, bl_name, **kwargs)
+
+    def __FREEFORCERED_v1(self, parse_from, bl_name, **kwargs):
+        self.__POSITIONRED_v1(parse_from, bl_name, **kwargs)
+
     def __GENBOX_v1(self, parse_from, bl_name, **kwargs):
         self.box_type = np.int8(next(parse_from.block_split_fnc))
         temp_box =  np.empty((4,3), dtype=self.real_num_dtype)
@@ -1646,6 +1652,8 @@ class TrjCnfBlocksParser(gr_TrajectoryParser):
 
 _TrjCnfBlocksParser_defs = {}
 _TrjCnfBlocksParser_defs['_POSITIONRED_parser'] = '__POSITIONRED_v1'
+_TrjCnfBlocksParser_defs['_VELOCITYRED_parser'] = '__VELOCITYRED_v1'
+_TrjCnfBlocksParser_defs['_FREEFORCERED_parser'] = '__FREEFORCERED_v1'
 _TrjCnfBlocksParser_defs['_GENBOX_parser'] = '__GENBOX_v1'
 TrjCnfBlocksParser._add_defaults(_TrjCnfBlocksParser_defs, flag_set=True)
 

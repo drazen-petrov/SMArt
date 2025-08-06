@@ -331,6 +331,7 @@ class openMM_Factory:
             b_params = [(k_bond_quarter, r0_2)]
             force.addBond(*(atoms_idx + b_params))
         self.system.addForce(force)
+        return force
 
     def _generate_openmm_gromos_angles(self):
         energy = 'k_ang_half*(cos(theta)-cos_theta0)^2'
@@ -351,6 +352,7 @@ class openMM_Factory:
             b_params = [(k_ang_half, cos_theta0)]
             force.addAngle(*(atoms_idx + b_params))
         self.system.addForce(force)
+        return force
 
     def _generate_openmm_gromos_impropers(self):
         energy = 'k_imp_rad_half * (theta - theta0)^2' # d_thera is in rad!
@@ -371,6 +373,7 @@ class openMM_Factory:
             b_params = [(k_imp_rad_half, theta0)]
             force.addTorsion(*(atoms_idx + b_params))
         self.system.addForce(force)
+        return force
 
     def _generate_openmm_gromos_dihedrals(self):
         energy = 'k_dih*(1 + cos_delta0 * cos(m*theta))'
@@ -393,6 +396,7 @@ class openMM_Factory:
             b_params = [(k_dih, cos_delta0, m)]
             force.addTorsion(*(atoms_idx + b_params))
         self.system.addForce(force)
+        return force
 
     ########### Non-bonded energy ###########
     ## helper functions
@@ -970,7 +974,6 @@ class openMM_Factory:
             temp_gromos_NB_flags = self.GROMOS_NB_Flags(**temp_gromos_NB_flags_dict)
             temp_gr_b_force = self._generate_openmm_gromos_excl_pairs(temp_gromos_NB_flags, **temp_gromos_NB_dict)
             custom_b_forces.append(temp_gr_b_force)
-        
         # exclusion / pairs non-bonded interaction (GROMOS form) via custom bonded force
 
         # add NB forces to the system
@@ -980,19 +983,23 @@ class openMM_Factory:
         for temp_b_force in custom_b_forces:
             self.system.addForce(temp_b_force)
 
-        # set the pbc and cutoff
-        self.set_pbc(pbc=pbc, nb_force=nb_force, custom_nb_forces=custom_nb_forces, custom_b_forces=custom_b_forces)
-
         ### bonded
         # add bonds / constraints
         if bond_constraints:
             self.add_constraints()
         else:
-            self.add_bonds()    
+            bi_force = self.add_bonds()
+            custom_b_forces.append(bi_force)
         ### add angles; imp; dih
-        self.add_angles()
-        self.add_impropers()
-        self.add_dihedrals()
+        bi_force = self.add_angles()
+        custom_b_forces.append(bi_force)
+        bi_force = self.add_impropers()
+        custom_b_forces.append(bi_force)
+        bi_force = self.add_dihedrals()
+        custom_b_forces.append(bi_force)
+
+        # set the pbc and cutoff
+        self.set_pbc(pbc=pbc, nb_force=nb_force, custom_nb_forces=custom_nb_forces, custom_b_forces=custom_b_forces)
         return
     
     def make_predefined_openmm_system(self, native_charges=False, N_water=0, bond_constraints=True, pbc=True, **kwargs):

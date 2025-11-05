@@ -35,6 +35,8 @@ def read_xvg_data(f_path, comments=XVG_COMMENTS, skip=None, stride=None, flag_pd
     data = np.loadtxt(f_path, comments = comments, **kwargs)
     if flag_pdDF:
         cols = _get_xvg_labels(f_path, comments=comments)
+        if data.ndim==1:
+            data = data.reshape((1,data.shape[0]))
         data = pd.DataFrame(data, columns=cols)
     return data
 

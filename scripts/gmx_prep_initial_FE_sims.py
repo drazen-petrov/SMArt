@@ -19,6 +19,7 @@ if __name__ == '__main__':
     parser.add_argument('-max_sim_t', type=float, help='max simulation time in ns (e.g. due to slurm time limits)', default=None)
     parser.add_argument('-N_LPs', type=int, help='number of lambda points', default=11)
     parser.add_argument('-cmd_prefix', type=str, help='command prefix to be used for running/submitting the run files, e.g. sbatch', default="./")
+    parser.add_argument('-gmx', type=str, help='path to gmx', default="gmx")
     parser.add_argument('-temp_fd', type=str, help='temp folder on a local disk to write during simulation and copy to main storate after simulation done (e.g. /scratch/\${SLURM_JOBID}/)')
     parser.add_argument('-nproc', type=int, help='if partial usage of a node is required, use this. also adjust the submit command (e.g. --cpus-per-task for slurm')
     
@@ -53,6 +54,7 @@ if __name__ == '__main__':
                 sim['job_kwargs'] = dict(temp_fd=args.temp_fd, flag_cp_all=False)
                 sim['flag_cp_before_new_sub'] = True
 
+    GMX_FE_sim_set_processor.gmx_path = args.gmx
     GMX_sim_process = GMX_FE_sim_set_processor(gro, top, mdp)
     GMX_sim_process.additional_mdrun_kwargs = {}
     if args.nproc:

@@ -517,7 +517,11 @@ class GeneralTopAtom(GeneralAtom):
 
     def gr_get_element(self):
         if self.a_type.name == 'P,SI':
-            if round(self.m_type.m) == 31:
+            try:
+                m = self.m_type.m
+            except:
+                m = self.m
+            if round(m) == 31:
                 return _atomtype_name__element_map['P']
             else:
                 return _atomtype_name__element_map['SI']

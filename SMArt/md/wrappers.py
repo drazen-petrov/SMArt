@@ -44,6 +44,7 @@ def run_prog(prog, pipe=(None, None), format_type='gr', **flags):
     return _run_prog(prog, flag_character, pre_comm=pre_comm, pipe=pipe, **flags)
 
 class GMX_FE_sim_set_processor:
+    gmx_path = 'gmx'
 
     additional_mdrun_kwargs = dict(v='', nt=4)
 
@@ -55,6 +56,17 @@ class GMX_FE_sim_set_processor:
         self.kwargs = kwargs
         self.dt = self.mdp.get_dt()
         self.LPs_pred = self.mdp.get_LPs_pred()
+
+    def run_gm_prog(self, prog, pipe=(None, None), **flags):
+        """
+        run GROMACS program
+    :param prog: program to run (e.g. grompp)
+    :param pipe: pipe the output to a file
+    :param flags: flags to be passed to the program (e.g. dict(f=path_to_mdp_file))
+    :return: command
+        """
+        return _run_prog(prog, '-', pre_comm=self.gmx_path + ' ', pipe=pipe, **flags)
+
 
     def fnc2process(self, sim, sim_set, job_f, sim_fd, name, **kwargs):
         flag_continue_cpt = kwargs.get('flag_continue_cpt')
@@ -73,7 +85,7 @@ class GMX_FE_sim_set_processor:
         in_conf = sim.get('input_conf', self.current_conf)
         if not flag_continue_cpt:
             in_conf = sim.get('prev_FE_sim_final_conf', in_conf)
-        comm = run_gm_prog('grompp', f=mdp_out, c=in_conf, p=self.top, o=sys_name, **grompp_kwargs)
+        comm = self.run_gm_prog('grompp', f=mdp_out, c=in_conf, p=self.top, o=sys_name, **grompp_kwargs)
         commands.append(comm)
         if sim['eq']:
             self.current_conf = os.path.join(sim_fd, sys_name + '.gro')
@@ -83,7 +95,7 @@ class GMX_FE_sim_set_processor:
         mdrun_kwargs.update(self.additional_mdrun_kwargs)
         if flag_continue_cpt:
             mdrun_kwargs['cpi'] = sys_name + '.cpt'
-        comm = run_gm_prog('mdrun', deffnm=sys_name, **mdrun_kwargs)
+        comm = self.run_gm_prog('mdrun', deffnm=sys_name, **mdrun_kwargs)
         commands.append(comm)
         # update sim setup dictionary for next FE sims
         if not sim['eq']:

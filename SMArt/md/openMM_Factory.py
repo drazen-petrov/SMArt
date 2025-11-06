@@ -228,7 +228,14 @@ class openMM_Factory:
         top_w._add_excl_pair_types()
         excl_type = top_w.get_intDB().excl_pair['excl']
         self.N_water=N_water
+        if N_water>10000:
+            print('adding water might take some time, as they are added as individual particles')
+            N_print_list = list(np.linspace(0, N_water+1, 51)[::-1])
+            current_N_print = int(N_print_list.pop())
         for i in range(N_water):
+            if N_water>10000 and i == current_N_print:
+                print(int(round(100*i/N_water,0)), '%', end='\r')
+                current_N_print = int(N_print_list.pop())
             new_res = top_w.add_residue(res_name=water_res_name)
             OW = top_w.add_atom(atom_name=self.water_model.O_name)
             HW1 = top_w.add_atom(atom_name=self.water_model.H_name + '1')
@@ -936,7 +943,7 @@ class openMM_Factory:
         self._native_NB_flags = self.Native_NB_Flags(**native_NB_flags)
         self.N_water = N_water
         if N_water:
-            self.generate_water_top(N_water)
+            self.generate_water_top(N_water, **kwargs)
 
         self.create_openMM_system()
         ### add atoms (masses)
@@ -1079,6 +1086,7 @@ class openMM_Factory:
 
         mm_sys = self.system 
         mm_top = self.make_openmm_top()
+        self.mm_top = mm_top
         # add the box information
         mm_sys.setDefaultPeriodicBoxVectors(*box_vec)
         mm_top.setPeriodicBoxVectors(box_vec)

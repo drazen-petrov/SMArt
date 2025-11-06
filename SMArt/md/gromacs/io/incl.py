@@ -1,3 +1,4 @@
+from copy import deepcopy
 from SMArt.incl import os, copy, OrderedDict, np, do_warn
 from SMArt.incl import Defaults, GeneralContainer, FileStream, StringStream, split_gen, get_id_string
 from SMArt.md.incl import *
@@ -1411,9 +1412,11 @@ class gmFragmentMoleculeIO(GromacsParser, GromacsWriter):
         if not int_container:return
         txt2write = ''
         for temp_interaction in int_container:
+            temp_txt2write = ''
             flag_write = self._check_flag_write(temp_interaction, **kwargs)
             if not flag_write:continue
             temp_txt = (self.__atom_format + ' ') * len(temp_interaction.atoms)
+            temp_txt2write += temp_txt.format(*[get_id_string(at, flag_id='gm_id') for at in temp_interaction.atoms])
             txt2write += temp_txt.format(*[get_id_string(at, flag_id='gm_id') for at in temp_interaction.atoms])
             temp_int_ptp = self.get_ptp_states(temp_interaction)
             if temp_int_ptp:
@@ -1444,6 +1447,7 @@ class gmFragmentMoleculeIO(GromacsParser, GromacsWriter):
                 temp_gm_int_type = temp_interaction.states[0]
             """
             if temp_gm_int_type.fnc_type:
+                temp_txt2write += self.__fnc_type_format.format(temp_gm_int_type.fnc_type)
                 txt2write += self.__fnc_type_format.format(temp_gm_int_type.fnc_type)
             if kwargs.get('write_params', True):
                 flag_write_params = True
@@ -1478,7 +1482,20 @@ class gmFragmentMoleculeIO(GromacsParser, GromacsWriter):
                         defines = None
                         if kwargs.get('flag_use_define'):
                             defines = kwargs.get('defines', getattr(self.ff, 'defines', None))
-                        txt2write += ' ' + temp_ptp_gm_int_type._write_gm_params(defines = defines, **kwargs)
+                        temp_txt2write_PTPstate = ' ' +  temp_ptp_gm_int_type._write_gm_params(defines = defines, **kwargs)
+                        if int_type == DihedralType and temp_gm_int_type.p[2]!=temp_ptp_gm_int_type.p[2]: # dihedrals of different multiplicity
+                            di = deepcopy(temp_gm_int_type)
+                            di.p = list(di.p)
+                            di.p[1] = 0
+                            txt2write += ' ' + di._write_gm_params() + '\n' # add the same dihedral type with the k=0
+                            # add another dihedral with the same atoms, perturbing the PTP_state dihedral from k=0 to the true value of k
+                            txt2write += temp_txt2write
+                            di = deepcopy(temp_ptp_gm_int_type)
+                            di.p = list(di.p)
+                            di.p[1] = 0
+                            txt2write += ' ' + di._write_gm_params() # add the same dihedral type with the k=0
+                        # write the perturbation state parameters
+                        txt2write += temp_txt2write_PTPstate
             txt2write += '\n'
         return txt2write
 

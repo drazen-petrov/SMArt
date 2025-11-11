@@ -2336,6 +2336,7 @@ class MCS(DataDumping):
                     if at_top!=Dummy:
                         top_atms_done[top_i].add(at_top)
         last_l = kwargs.get('N_levels',3)
+        atms2add_info = kwargs.get('atms2add_info')
         # loop over other tops and keep adding individual branches
         for iter_idx, top_i in enumerate(state_order[1:]):
             temp_top = sol.tops[top_i]
@@ -2348,7 +2349,7 @@ class MCS(DataDumping):
                     # find atoms to add and anchor points
                     atms2add = [at for at, l in G.BFS(v_at, visited=temp_set)][1:]
                     anch_points_by_level = {}
-                    for at,l in G.BFS(v_at, visited=temp_rev_set):
+                    for at,l in G.BFS(v_at, visited=temp_rev_set.copy()):
                         if l>=last_l:
                             break
                         if l not in anch_points_by_level:
@@ -2362,6 +2363,11 @@ class MCS(DataDumping):
                         for at in temp_atoms:
                             sol_at = sol.find_sol_atom_ID((top_i, at))
                             sol_at_anch_points.append(sol_at)
+                    # store atms2add and anch_points + weights
+                    if atms2add_info is not None:
+                        atms2add_names = tuple(temp_at.name for temp_at in atms2add)
+                        anch_points_names = tuple(temp_at.name for temp_at in anch_points)
+                        atms2add_info.append(dict(atms2add=atms2add_names, anch_points=anch_points_names, weights=tuple(weights)))
                     atms2add_coord = self._coords_df[top_i].loc[atms2add].values
                     AP_coord = self._coords_df[top_i].loc[anch_points].values
                     sol_at_AP_coord = df.loc[sol_at_anch_points].values

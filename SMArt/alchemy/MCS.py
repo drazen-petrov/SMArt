@@ -2287,7 +2287,11 @@ class MCS(DataDumping):
             row = sol._sol.loc[at.sol_id]
             if None not in at.ND_a_type_states:
                 assert Dummy not in row.values
-                core_at.append(at)
+                if kwargs.get('align_on_heavy_atoms_only', True):
+                    if min(at.ND_m_states) > 2:
+                        core_at.append(at)
+                else:
+                    core_at.append(at)
             else:
                 assert Dummy in row.values
         # get core_coord_df for each state
@@ -2342,6 +2346,8 @@ class MCS(DataDumping):
             temp_top = sol.tops[top_i]
             temp_set = set(top_atms_done[top_i])
             temp_rev_set = set(temp_top.get_atoms()) - temp_set
+            if kwargs.get('align_on_heavy_atoms_only', True):
+                temp_rev_set |= set(temp_top.get_HH()[0])
             G = temp_top.sub_graph(temp_top.get_atoms(), flag_directed=True, parents=temp_set)
             for v_at in G.parent_v:
                 v = G.Gv[v_at]

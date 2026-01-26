@@ -16,9 +16,14 @@ def find_files(fd, ext_list, pat_list=None, pat_v_list=None, abs_pat_list=None, 
     :param flag_ext_add_dot: make sure that extensions in ext_list start with a "."
     :return: list of paths
     """
-    for pat_variable in (pat_list, pat_v_list, abs_pat_list, abs_pat_v_list):
-        if pat_variable is None:
-            pat_variable = []
+    if pat_list is None:
+        pat_list = []
+    if pat_v_list is None:
+        pat_v_list = []
+    if abs_pat_list is None:  
+        abs_pat_list = []
+    if abs_pat_v_list is None:
+        abs_pat_v_list = []
     if flag_ext_add_dot:
         ext_list_dot = []
         for ext in ext_list:

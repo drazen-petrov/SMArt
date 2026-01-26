@@ -3,21 +3,36 @@ from SMArt.md.ana.incl import _not_start_with_comm, _get_lines, Real
 
 XVG_COMMENTS = ('#', '@')
 
-def _get_xvg_labels(f_path, comments=XVG_COMMENTS):
+def _get_xvg_labels(f_path, comments=XVG_COMMENTS, include_yaxis=False):
     f = open(f_path)
     labels = ['x']
+    y_label = None
     for l in f:
         temp_res = re.search('@[ ]*xaxis.*label[ ]*"(.*)"', l)
         if temp_res:
             labels[0] = temp_res.group(1)
+        if include_yaxis:
+            temp_res = re.search('@[ ]*yaxis.*label[ ]*"(.*)"', l)
+            if temp_res:
+                labels.append(temp_res.group(1))
+        if include_yaxis is None:
+            temp_res = re.search('@[ ]*yaxis.*label[ ]*"(.*)"', l)
+            if temp_res:
+                y_label = temp_res.group(1)
         temp_res = re.search(r'@ s\d* legend[ ]*"(.*)"', l)
         if temp_res:
             labels.append(temp_res.group(1))
         if _not_start_with_comm(l, comments):
             break
+    if include_yaxis is None:
+        if y_label is not None:
+            labels_with_y = labels[:1] + [y_label] + labels[1:]
+        else:
+            labels_with_y = labels
+        return labels, labels_with_y
     return labels
 
-def read_xvg_data(f_path, comments=XVG_COMMENTS, skip=None, stride=None, flag_pdDF=False, **kwargs):
+def read_xvg_data(f_path, comments=XVG_COMMENTS, skip=None, stride=None, flag_pdDF=False, include_yaxis=False, **kwargs):
     """
         parses data from a xvg file
     :param f_path: path to a xvg file
@@ -34,9 +49,13 @@ def read_xvg_data(f_path, comments=XVG_COMMENTS, skip=None, stride=None, flag_pd
         f_path = _get_lines(f_path, comments, skip, stride) # generator that skips lines
     data = np.loadtxt(f_path, comments = comments, **kwargs)
     if flag_pdDF:
-        cols = _get_xvg_labels(f_path, comments=comments)
         if data.ndim==1:
             data = data.reshape((1,data.shape[0]))
+        cols = _get_xvg_labels(f_path, comments=comments, include_yaxis=include_yaxis)
+        if include_yaxis is None:
+            cols, cols_with_y = cols
+            if data.shape[1] == len(cols_with_y):
+                cols = cols_with_y
         data = pd.DataFrame(data, columns=cols)
     return data
 

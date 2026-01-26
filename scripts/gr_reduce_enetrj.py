@@ -19,10 +19,8 @@ run gzip path_to_freene_trajectory_file in terminal to get *.trg.gz file
 """
 
 import os
-import glob
 import numpy as np
 from SMArt.md.data_st import gr_EnegyTrajectory
-from SMArt.incl import test_time
 
 def check_ext(f_name, extensions=('tre', 'trg')):
     for ext in extensions:

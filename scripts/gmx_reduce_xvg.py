@@ -46,7 +46,8 @@ def read_reduced_gmx_xvg(f_path, flag_pdDF=False):
 if __name__ == '__main__':
     #------------------------------------------------------
     import argparse
-    parser = argparse.ArgumentParser(fromfile_prefix_chars='@')
+    parser = argparse.ArgumentParser(fromfile_prefix_chars='@',
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('-trj_files', type=str, nargs='+', help='list of trajectory files')
     parser.add_argument('-fd', type=str, help='folder to search')
     parser.add_argument('-in_file_ext', type=str, nargs='+', default=('xvg',), help='list of file extensions')

@@ -549,6 +549,9 @@ class GromacsWriter(GeneralContainer, Defaults):
         full_kwargs = self.__update_kwargs4write_gromacs_format(flag_include = flag_include, flag_if = flag_if,
                                   flag_defines = flag_defines, flag_title = flag_title, **kwargs)
         temp_f(gs, directives = directives, **full_kwargs)
+        last_lines = kwargs.get('last_lines', [])
+        for l in last_lines:
+            gs.write(l.strip() + '\n')
         if kwargs.get('flag_close'):
             gs.f.close()
 
@@ -1369,7 +1372,12 @@ class gmFragmentMoleculeIO(GromacsParser, GromacsWriter):
 #        if self._check_flag_write(self, **kwargs):
         if directives is None:
             directives = mol_directives
-        self.write_gromacs_format(gs, directives, **kwargs)
+        # add posres if statement if needed
+        lines_to_add = []
+        posres_include_file = getattr(self, 'posres_file', None)
+        if posres_include_file:
+            lines_to_add = ["#ifdef POSRES", f'#include "{posres_include_file}"', "#endif"]
+        self.write_gromacs_format(gs, directives, last_lines=lines_to_add, **kwargs)
 
     def __write_moleculetype_v1(self, **kwargs):
         if self._check_flag_write(self, **kwargs):

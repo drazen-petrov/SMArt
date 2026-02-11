@@ -1798,12 +1798,53 @@ class AlchemicalSolution_base:
         return common_atoms
 
     @staticmethod
+    def _get_atom_element(at):
+        """Get the element (atomic number as string) of a topology atom.
+        Tries a_type.element, gr_get_element(), mass-based inference, and atom name.
+        :param at: topology atom object
+        :return: element identifier (atomic number as string), or None if unknown
+        """
+        # try a_type.element (set during GROMACS FF conversion)
+        try:
+            el = at.a_type.element
+            if el and el != '0':
+                return el
+        except AttributeError:
+            pass
+        # try gr_get_element (GROMOS atom type mapping)
+        try:
+            return at.gr_get_element()
+        except (AttributeError, KeyError):
+            pass
+        # infer from mass
+        _mass_element_map = {1: '1', 12: '6', 14: '7', 16: '8', 19: '9',
+                             23: '11', 28: '14', 31: '15', 32: '16', 35: '17', 40: '18', 80: '35'}
+        try:
+            if at.m > 0:
+                return _mass_element_map.get(round(at.m))
+        except (AttributeError, TypeError):
+            pass
+        return None
+
+    @staticmethod
     def _parse_coord_file(coord_file):
         """Parse a coordinate file and return atom IDs and coordinates.
-        Supported formats: GROMACS .gro, GROMOS .cnf
+        Supported formats: GROMACS .gro, GROMOS .cnf, PDB .pdb
         :param coord_file: path to coordinate file
         :return: dict mapping atom ID to coordinate (np.array of shape (3,))
         """
+        if coord_file.endswith('.pdb'):
+            coord_map = {}
+            with open(coord_file) as f:
+                for line in f:
+                    if line.startswith(('ATOM', 'HETATM')):
+                        at_id = int(line[6:11])
+                        # PDB coordinates are in Angstrom, convert to nm
+                        x = float(line[30:38]) / 10.0
+                        y = float(line[38:46]) / 10.0
+                        z = float(line[46:54]) / 10.0
+                        coord_map[at_id] = np.array([x, y, z])
+            return coord_map
         from SMArt.md.data_st import Configuration
         cnf = Configuration(f_path=coord_file)
         coord_map = {}
@@ -1811,12 +1852,12 @@ class AlchemicalSolution_base:
             coord_map[at.id] = at.coord.copy()
         return coord_map
 
-    def get_common_atoms_coordinates(self, coord_files, cutoff=0.05):
+    def get_common_atoms_coordinates(self, coord_files, cutoff=0.1):
         """Match atoms across topologies based on overlapping 3D coordinates.
-        Parses coordinate files (.gro, .cnf) and matches atoms based on spatial
+        Parses coordinate files (.gro, .cnf, .pdb) and matches atoms based on spatial
         proximity using the Hungarian algorithm.
         :param coord_files: tuple/list of coordinate file paths, one per topology
-        :param cutoff: distance cutoff in nm for considering two atoms as matching (default: 0.05 nm)
+        :param cutoff: distance cutoff in nm for considering two atoms as matching (default: 0.1 nm)
         :return: common_atoms in the same format as get_common_atoms_csv
         """
         from scipy.optimize import linear_sum_assignment
@@ -1824,27 +1865,28 @@ class AlchemicalSolution_base:
         # parse coordinate files and get atom coordinates
         file_coords = [self._parse_coord_file(coord_file) for coord_file in coord_files]
         # for each topology, collect atoms that have coordinates in the coordinate file
-        top_atoms = []  # list of lists of (atom_object, coordinate)
+        top_atoms = []  # list of lists of (atom_object, coordinate, element)
         for top_i, top in enumerate(self.tops):
             atoms_with_coords = []
             for at in top.get_atoms():
                 at_id = at.id
-                if at_id in file_coords[top_i]:
-                    atoms_with_coords.append((at, file_coords[top_i][at_id]))
-                else:
+                coord = file_coords[top_i].get(at_id)
+                if coord is None:
                     try:
-                        at_id_int = int(at_id)
-                        if at_id_int in file_coords[top_i]:
-                            atoms_with_coords.append((at, file_coords[top_i][at_id_int]))
+                        coord = file_coords[top_i].get(int(at_id))
                     except (ValueError, TypeError):
                         pass
+                if coord is not None:
+                    element = self._get_atom_element(at)
+                    atoms_with_coords.append((at, coord, element))
             top_atoms.append(atoms_with_coords)
         # match atoms across topologies using pairwise coordinate matching
         # use topology 0 as reference and match each other topology against it
         ref_atoms = top_atoms[0]
         if not ref_atoms:
             return [[] for _ in range(len(self.tops))]
-        ref_coords = np.array([coord for _, coord in ref_atoms])
+        ref_coords = np.array([coord for _, coord, _ in ref_atoms])
+        ref_elements = [el for _, _, el in ref_atoms]
         # pairwise_matches[top_i] maps ref atom index -> matched atom from topology top_i
         pairwise_matches = {0: {i: ref_atoms[i][0] for i in range(len(ref_atoms))}}
         for top_i in range(1, len(self.tops)):
@@ -1852,10 +1894,16 @@ class AlchemicalSolution_base:
             if not other_atoms:
                 pairwise_matches[top_i] = {}
                 continue
-            other_coords = np.array([coord for _, coord in other_atoms])
+            other_coords = np.array([coord for _, coord, _ in other_atoms])
+            other_elements = [el for _, _, el in other_atoms]
             # compute pairwise distance matrix
             diff = ref_coords[:, np.newaxis, :] - other_coords[np.newaxis, :, :]
             dist_matrix = np.sqrt(np.sum(diff ** 2, axis=2))
+            # prevent matching atoms of different elements
+            for r, r_el in enumerate(ref_elements):
+                for c, c_el in enumerate(other_elements):
+                    if r_el is not None and c_el is not None and r_el != c_el:
+                        dist_matrix[r, c] = np.inf
             # use Hungarian algorithm for optimal assignment
             row_ind, col_ind = linear_sum_assignment(dist_matrix)
             matches = {}
@@ -1933,8 +1981,8 @@ class AlchemicalSolution(AlchemicalSolution_base):
             common_atoms_csv
                 csv file with a table of common_atoms
             common_atoms_coordinates
-                tuple/dict with 'coord_files' (list of coordinate file paths, .gro or .cnf) and optional 'cutoff' (float, nm)
-                e.g. {'coord_files': ['mol1.gro', 'mol2.gro'], 'cutoff': 0.05}
+                tuple/dict with 'coord_files' (list of coordinate file paths, .gro, .cnf, or .pdb) and optional 'cutoff' (float, nm)
+                e.g. {'coord_files': ['mol1.gro', 'mol2.gro'], 'cutoff': 0.1}
                 alternatively, just a list/tuple of coordinate file paths
             tried_pairs
                 [((top_index, atom), (top_index, atom)), ((top_index, atom), (top_index, atom)), ...]
@@ -1950,10 +1998,10 @@ class AlchemicalSolution(AlchemicalSolution_base):
         if common_atoms_coordinates:
             if isinstance(common_atoms_coordinates, dict):
                 coord_files = common_atoms_coordinates.get('coord_files', common_atoms_coordinates.get('gro_files'))
-                cutoff = common_atoms_coordinates.get('cutoff', 0.05)
+                cutoff = common_atoms_coordinates.get('cutoff', 0.1)
             else:
                 coord_files = common_atoms_coordinates
-                cutoff = 0.05
+                cutoff = 0.1
             coord_common_atoms = self.get_common_atoms_coordinates(coord_files, cutoff=cutoff)
             if common_atoms:
                 # merge coordinate-based matches with existing common atoms

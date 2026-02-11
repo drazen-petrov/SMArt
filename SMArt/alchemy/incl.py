@@ -1852,12 +1852,12 @@ class AlchemicalSolution_base:
             coord_map[at.id] = at.coord.copy()
         return coord_map
 
-    def get_common_atoms_coordinates(self, coord_files, cutoff=0.1):
+    def get_common_atoms_coordinates(self, coord_files, cutoff=0.02):
         """Match atoms across topologies based on overlapping 3D coordinates.
         Parses coordinate files (.gro, .cnf, .pdb) and matches atoms based on spatial
         proximity using the Hungarian algorithm.
         :param coord_files: tuple/list of coordinate file paths, one per topology
-        :param cutoff: distance cutoff in nm for considering two atoms as matching (default: 0.1 nm)
+        :param cutoff: distance cutoff in nm for considering two atoms as matching (default: 0.02 nm)
         :return: common_atoms in the same format as get_common_atoms_csv
         """
         from scipy.optimize import linear_sum_assignment
@@ -1982,7 +1982,7 @@ class AlchemicalSolution(AlchemicalSolution_base):
                 csv file with a table of common_atoms
             common_atoms_coordinates
                 tuple/dict with 'coord_files' (list of coordinate file paths, .gro, .cnf, or .pdb) and optional 'cutoff' (float, nm)
-                e.g. {'coord_files': ['mol1.gro', 'mol2.gro'], 'cutoff': 0.1}
+                e.g. {'coord_files': ['mol1.gro', 'mol2.gro'], 'cutoff': 0.02}
                 alternatively, just a list/tuple of coordinate file paths
             tried_pairs
                 [((top_index, atom), (top_index, atom)), ((top_index, atom), (top_index, atom)), ...]
@@ -1998,10 +1998,10 @@ class AlchemicalSolution(AlchemicalSolution_base):
         if common_atoms_coordinates:
             if isinstance(common_atoms_coordinates, dict):
                 coord_files = common_atoms_coordinates.get('coord_files', common_atoms_coordinates.get('gro_files'))
-                cutoff = common_atoms_coordinates.get('cutoff', 0.1)
+                cutoff = common_atoms_coordinates.get('cutoff', 0.02)
             else:
                 coord_files = common_atoms_coordinates
-                cutoff = 0.1
+                cutoff = 0.02
             coord_common_atoms = self.get_common_atoms_coordinates(coord_files, cutoff=cutoff)
             if common_atoms:
                 # merge coordinate-based matches with existing common atoms

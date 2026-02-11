@@ -1798,42 +1798,44 @@ class AlchemicalSolution_base:
         return common_atoms
 
     @staticmethod
-    def _parse_gro_coords(gro_file):
-        """Parse a GROMACS .gro file and return atom IDs and coordinates.
-        :param gro_file: path to .gro file
-        :return: dict mapping atom ID (int) to coordinate (np.array of shape (3,))
+    def _parse_coord_file(coord_file):
+        """Parse a coordinate file and return atom IDs and coordinates.
+        Supported formats: GROMACS .gro, GROMOS .cnf
+        :param coord_file: path to coordinate file
+        :return: dict mapping atom ID to coordinate (np.array of shape (3,))
         """
         from SMArt.md.data_st import Configuration
-        cnf = Configuration(f_path=gro_file)
+        cnf = Configuration(f_path=coord_file)
         coord_map = {}
         for at in cnf.atoms:
             coord_map[at.id] = at.coord.copy()
         return coord_map
 
-    def get_common_atoms_coordinates(self, gro_files, cutoff=0.02):
-        """Match atoms across topologies based on overlapping 3D coordinates from .gro files.
-        Parses .gro files and matches atoms based on spatial proximity using the Hungarian algorithm.
-        :param gro_files: tuple/list of .gro file paths, one per topology
-        :param cutoff: distance cutoff in nm for considering two atoms as matching (default: 0.02 nm)
+    def get_common_atoms_coordinates(self, coord_files, cutoff=0.05):
+        """Match atoms across topologies based on overlapping 3D coordinates.
+        Parses coordinate files (.gro, .cnf) and matches atoms based on spatial
+        proximity using the Hungarian algorithm.
+        :param coord_files: tuple/list of coordinate file paths, one per topology
+        :param cutoff: distance cutoff in nm for considering two atoms as matching (default: 0.05 nm)
         :return: common_atoms in the same format as get_common_atoms_csv
         """
         from scipy.optimize import linear_sum_assignment
-        assert len(gro_files) == len(self.tops)
-        # parse .gro files and get atom coordinates
-        gro_coords = [self._parse_gro_coords(gro_file) for gro_file in gro_files]
-        # for each topology, collect atoms that have coordinates in the .gro file
+        assert len(coord_files) == len(self.tops)
+        # parse coordinate files and get atom coordinates
+        file_coords = [self._parse_coord_file(coord_file) for coord_file in coord_files]
+        # for each topology, collect atoms that have coordinates in the coordinate file
         top_atoms = []  # list of lists of (atom_object, coordinate)
         for top_i, top in enumerate(self.tops):
             atoms_with_coords = []
             for at in top.get_atoms():
                 at_id = at.id
-                if at_id in gro_coords[top_i]:
-                    atoms_with_coords.append((at, gro_coords[top_i][at_id]))
+                if at_id in file_coords[top_i]:
+                    atoms_with_coords.append((at, file_coords[top_i][at_id]))
                 else:
                     try:
                         at_id_int = int(at_id)
-                        if at_id_int in gro_coords[top_i]:
-                            atoms_with_coords.append((at, gro_coords[top_i][at_id_int]))
+                        if at_id_int in file_coords[top_i]:
+                            atoms_with_coords.append((at, file_coords[top_i][at_id_int]))
                     except (ValueError, TypeError):
                         pass
             top_atoms.append(atoms_with_coords)
@@ -1931,9 +1933,9 @@ class AlchemicalSolution(AlchemicalSolution_base):
             common_atoms_csv
                 csv file with a table of common_atoms
             common_atoms_coordinates
-                tuple/dict with 'gro_files' (list of .gro file paths) and optional 'cutoff' (float, nm)
-                e.g. {'gro_files': ['mol1.gro', 'mol2.gro'], 'cutoff': 0.02}
-                alternatively, just a list/tuple of .gro file paths
+                tuple/dict with 'coord_files' (list of coordinate file paths, .gro or .cnf) and optional 'cutoff' (float, nm)
+                e.g. {'coord_files': ['mol1.gro', 'mol2.gro'], 'cutoff': 0.05}
+                alternatively, just a list/tuple of coordinate file paths
             tried_pairs
                 [((top_index, atom), (top_index, atom)), ((top_index, atom), (top_index, atom)), ...]
                 e.g. [((0,1), (1,1)), ((0,1), (2,2)), ((1,2), (2,3))]
@@ -1947,12 +1949,12 @@ class AlchemicalSolution(AlchemicalSolution_base):
         common_atoms_coordinates = kwargs.get('common_atoms_coordinates')
         if common_atoms_coordinates:
             if isinstance(common_atoms_coordinates, dict):
-                gro_files = common_atoms_coordinates['gro_files']
-                cutoff = common_atoms_coordinates.get('cutoff', 0.02)
+                coord_files = common_atoms_coordinates.get('coord_files', common_atoms_coordinates.get('gro_files'))
+                cutoff = common_atoms_coordinates.get('cutoff', 0.05)
             else:
-                gro_files = common_atoms_coordinates
-                cutoff = 0.02
-            coord_common_atoms = self.get_common_atoms_coordinates(gro_files, cutoff=cutoff)
+                coord_files = common_atoms_coordinates
+                cutoff = 0.05
+            coord_common_atoms = self.get_common_atoms_coordinates(coord_files, cutoff=cutoff)
             if common_atoms:
                 # merge coordinate-based matches with existing common atoms
                 for top_i in range(len(self.tops)):

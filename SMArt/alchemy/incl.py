@@ -1797,6 +1797,85 @@ class AlchemicalSolution_base:
                         common_atoms[top_i].append(self.tops[top_i].atoms[int(at_id)])
         return common_atoms
 
+    @staticmethod
+    def _parse_gro_coords(gro_file):
+        """Parse a GROMACS .gro file and return atom IDs and coordinates.
+        :param gro_file: path to .gro file
+        :return: dict mapping atom ID (int) to coordinate (np.array of shape (3,))
+        """
+        from SMArt.md.data_st import Configuration
+        cnf = Configuration(f_path=gro_file)
+        coord_map = {}
+        for at in cnf.atoms:
+            coord_map[at.id] = at.coord.copy()
+        return coord_map
+
+    def get_common_atoms_coordinates(self, gro_files, cutoff=0.02):
+        """Match atoms across topologies based on overlapping 3D coordinates from .gro files.
+        Parses .gro files and matches atoms based on spatial proximity using the Hungarian algorithm.
+        :param gro_files: tuple/list of .gro file paths, one per topology
+        :param cutoff: distance cutoff in nm for considering two atoms as matching (default: 0.02 nm)
+        :return: common_atoms in the same format as get_common_atoms_csv
+        """
+        from scipy.optimize import linear_sum_assignment
+        assert len(gro_files) == len(self.tops)
+        # parse .gro files and get atom coordinates
+        gro_coords = [self._parse_gro_coords(gro_file) for gro_file in gro_files]
+        # for each topology, collect atoms that have coordinates in the .gro file
+        top_atoms = []  # list of lists of (atom_object, coordinate)
+        for top_i, top in enumerate(self.tops):
+            atoms_with_coords = []
+            for at in top.get_atoms():
+                at_id = at.id
+                if at_id in gro_coords[top_i]:
+                    atoms_with_coords.append((at, gro_coords[top_i][at_id]))
+                else:
+                    try:
+                        at_id_int = int(at_id)
+                        if at_id_int in gro_coords[top_i]:
+                            atoms_with_coords.append((at, gro_coords[top_i][at_id_int]))
+                    except (ValueError, TypeError):
+                        pass
+            top_atoms.append(atoms_with_coords)
+        # match atoms across topologies using pairwise coordinate matching
+        # use topology 0 as reference and match each other topology against it
+        ref_atoms = top_atoms[0]
+        if not ref_atoms:
+            return [[] for _ in range(len(self.tops))]
+        ref_coords = np.array([coord for _, coord in ref_atoms])
+        # pairwise_matches[top_i] maps ref atom index -> matched atom from topology top_i
+        pairwise_matches = {0: {i: ref_atoms[i][0] for i in range(len(ref_atoms))}}
+        for top_i in range(1, len(self.tops)):
+            other_atoms = top_atoms[top_i]
+            if not other_atoms:
+                pairwise_matches[top_i] = {}
+                continue
+            other_coords = np.array([coord for _, coord in other_atoms])
+            # compute pairwise distance matrix
+            diff = ref_coords[:, np.newaxis, :] - other_coords[np.newaxis, :, :]
+            dist_matrix = np.sqrt(np.sum(diff ** 2, axis=2))
+            # use Hungarian algorithm for optimal assignment
+            row_ind, col_ind = linear_sum_assignment(dist_matrix)
+            matches = {}
+            for r, c in zip(row_ind, col_ind):
+                if dist_matrix[r, c] <= cutoff:
+                    matches[r] = other_atoms[c][0]
+            pairwise_matches[top_i] = matches
+        # combine pairwise matches into common_atoms
+        # only include ref atoms that have at least one match in another topology
+        common_atoms = [[] for _ in range(len(self.tops))]
+        for ref_i in range(len(ref_atoms)):
+            has_match = any(ref_i in pairwise_matches[top_i] for top_i in range(1, len(self.tops)))
+            if not has_match:
+                continue
+            common_atoms[0].append(ref_atoms[ref_i][0])
+            for top_i in range(1, len(self.tops)):
+                if ref_i in pairwise_matches[top_i]:
+                    common_atoms[top_i].append(pairwise_matches[top_i][ref_i])
+                else:
+                    common_atoms[top_i].append(Dummy)
+        return common_atoms
+
     def convert_sol_df(self, related_tops):
         # generates a new sol DataFrame based on the atom IDs - e.g. if MCS was first done on heavy atoms only
         common_atoms = []
@@ -1851,6 +1930,10 @@ class AlchemicalSolution(AlchemicalSolution_base):
                     Dummy means dummy, None means not decided yet
             common_atoms_csv
                 csv file with a table of common_atoms
+            common_atoms_coordinates
+                tuple/dict with 'gro_files' (list of .gro file paths) and optional 'cutoff' (float, nm)
+                e.g. {'gro_files': ['mol1.gro', 'mol2.gro'], 'cutoff': 0.02}
+                alternatively, just a list/tuple of .gro file paths
             tried_pairs
                 [((top_index, atom), (top_index, atom)), ((top_index, atom), (top_index, atom)), ...]
                 e.g. [((0,1), (1,1)), ((0,1), (2,2)), ((1,2), (2,3))]
@@ -1861,6 +1944,21 @@ class AlchemicalSolution(AlchemicalSolution_base):
         common_atoms_csv = kwargs.get('common_atoms_csv')
         if common_atoms_csv:
             common_atoms = self.get_common_atoms_csv(common_atoms_csv)
+        common_atoms_coordinates = kwargs.get('common_atoms_coordinates')
+        if common_atoms_coordinates:
+            if isinstance(common_atoms_coordinates, dict):
+                gro_files = common_atoms_coordinates['gro_files']
+                cutoff = common_atoms_coordinates.get('cutoff', 0.02)
+            else:
+                gro_files = common_atoms_coordinates
+                cutoff = 0.02
+            coord_common_atoms = self.get_common_atoms_coordinates(gro_files, cutoff=cutoff)
+            if common_atoms:
+                # merge coordinate-based matches with existing common atoms
+                for top_i in range(len(self.tops)):
+                    common_atoms[top_i].extend(coord_common_atoms[top_i])
+            else:
+                common_atoms = coord_common_atoms
         if isinstance(common_atoms, pd.DataFrame):
             assert common_atoms.shape[1] == len(tops)
             self._sol = common_atoms

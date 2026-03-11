@@ -62,7 +62,6 @@ if __name__ == '__main__':
             temp_atms.add2container(rt.atoms[at_id], create=True)
         temp_atms.renumber_container('atoms')
         rt.sort_container('atoms')
-    
     # make a new bb
     if args.bb_name:
         bb_name = args.bb_name
@@ -139,6 +138,8 @@ if __name__ == '__main__':
                               "\t\t\tin new bb:", new_bb.atoms[temp_at.id], "\t\tflag_excl:", args.flag_excl)
                         if args.flag_excl:
                             new_e_l.append(new_bb.atoms[temp_at.id])
+                else:
+                    new_e_l.append(temp_at)
             at.e_l = new_e_l
     if bb:
         for at in bb.get_atoms():
@@ -163,6 +164,7 @@ if __name__ == '__main__':
                 flag_non_pre_post_atm = False
                 for at in b.atoms:
                     if at.flag_bb:
+                        flag_non_pre_post_atm=True
                         new_bb_at = get_new_bb_at(at)
                     else:
                         flag_non_bb_atms = True
@@ -178,9 +180,9 @@ if __name__ == '__main__':
                     print(b.int_type, b.atoms, "\t\t\tin new bb:", new_bb_atoms,"\t\tflag_bond:", args.flag_bond)
                     if flag_non_pre_post_atm:
                         if args.flag_bond:
-                            new_bb.add2container(b, create=True, db_type=list)
+                            new_bb.add2container(new_b, create=True, db_type=list)
                     else:
-                        new_bb.add2container(b, create=True, db_type=list)
+                        new_bb.add2container(new_b, create=True, db_type=list)
     ### fix bb atoms ###
     new_bb_atoms = list(new_bb.get_atoms())
     for at in new_bb_atoms:

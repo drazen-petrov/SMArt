@@ -318,10 +318,15 @@ def _get_mbar(Es, nfr, T):
     kT = kb * T
     return MBAR(Es/kT, nfr), kT
 
-def calc_dg_mbar(Es, nfr, T = 300):
+def calc_dg_mbar(Es, nfr, T = 300, compute_uncertainty=True):
     mbar, kT = _get_mbar(Es, nfr, T)
-    Deltaf_ij, dDeltaf_ij = getattr(mbar, d_FE_fnc_name)()
-    return Deltaf_ij*kT, dDeltaf_ij*kT, mbar
+    if compute_uncertainty:
+        Deltaf_ij, dDeltaf_ij = getattr(mbar, d_FE_fnc_name)()
+        return Deltaf_ij*kT, dDeltaf_ij*kT, mbar
+    else:
+        dDeltaf_ij=None
+        Deltaf_ij = getattr(mbar, d_FE_fnc_name)(compute_uncertainty=False)
+        return Deltaf_ij*kT, dDeltaf_ij, mbar
 
 def calc_dg_bar(LPs_map, Es, nfr, T = 300):
     dg = [0]

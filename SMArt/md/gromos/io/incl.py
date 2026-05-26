@@ -238,16 +238,24 @@ class GromosParser(GeneralContainer, GromosDefaults):
         setattr(self, getattr(self._gr_block_names, kwargs['bl_name']), list(gs.block_lines()))
 
     def __oneliner_block_v1(self, gs, *args, **kwargs):
+        bl_name = kwargs['bl_name']
         temp = list(gs.block_lines())
         if len(temp) != 1:
-            raise Exception('expected 1 line block and got ' + str(len(temp)) + 'lines')
+            raise Exception('block: {bl_name}; expected 1 line block and got ' + str(len(temp)) + 'lines')
         setattr(self, getattr(self._gr_block_names, kwargs['bl_name']), temp[0].strip())
+
+    def __simple_block_v1(self, gs, *args, **kwargs):
+        """
+        returns a list of individual parameters (based on str split)
+        not keeping the track of number of params per line...
+        """
+        setattr(self, getattr(self._gr_block_names, kwargs['bl_name']), list(gs.block_split_fnc))
 
 _GromosParser_defs = {}
 _GromosParser_defs['__parse_gr_v'] = '__parse_gr_v1' # this will take __parse_gr_v1 function
 _GromosParser_defs['__read_unknown_block_v'] = '__read_unknown_block_v1'
 _GromosParser_defs['_TITLE_parser'] = '__TITLE_v1'
-_GromosParser_defs['_FORCEFIELD_parser'] = '__oneliner_block_v1'
+_GromosParser_defs['_FORCEFIELD_parser'] = '__simple_block_v1'
 _GromosParser_defs['_MAKETOPVERSION_parser'] = '__oneliner_block_v1'
 _GromosParser_defs['_PHYSICALCONSTANTS_parser'] = '__PHYSICALCONSTANTS_v1'
 _GromosParser_defs['_oneliner_block'] = '__oneliner_block_v1'

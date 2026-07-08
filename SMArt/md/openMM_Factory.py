@@ -279,7 +279,7 @@ class openMM_Factory:
                 yield at
     
     def __init__(self, top=None, MD_params=None, top_state=None, water_model=SPC, 
-                 RF_flag=True, NB_cutoff=None, **kwargs):
+                 RF_flag=True, NB_cutoff=None, PME_flag=False, **kwargs):
         self.FG_map = dict(self.cls_FG_map)
         self.FG_gr_nb_count = self.FG_NB_CUSTOM_GROUP_START
         if top_state is not None:
@@ -288,6 +288,8 @@ class openMM_Factory:
         self.top = top.reduce()
         self.MD_params = MD_params
         self.RF_flag = RF_flag
+        self.PME_flag = PME_flag
+        assert self.RF_flag + self.PME_flag <= 1, 'RF and PME cannot be used together'
         self.ELE_params = self._get_ELE_params(MD_params)
         self.ELE_params.set_all_constants(top=top)
         if NB_cutoff:
@@ -452,8 +454,12 @@ class openMM_Factory:
     ## set pbc parameters (and cutoff) to the forces
     def __set_pbc_nb_force(self, temp_nb_force, pbc, flag_native, openMM_cutoff=None):
         if pbc:
+            assert self.RF_flag + self.PME_flag == 1, 'one of the RF and PME has to be defined and they cannot be used together'
             if flag_native:
-                temp_nb_force.setNonbondedMethod(mm.NonbondedForce.CutoffPeriodic)
+                if self.PME_flag:
+                    temp_nb_force.setNonbondedMethod(mm.NonbondedForce.PME)
+                else:
+                    temp_nb_force.setNonbondedMethod(mm.NonbondedForce.CutoffPeriodic)
             else:
                 temp_nb_force.setNonbondedMethod(mm.CustomNonbondedForce.CutoffPeriodic)
         else:
@@ -951,7 +957,7 @@ class openMM_Factory:
 
         ### non-bonded
         # open MM native non-bonded interaction
-        nb_force = self._generate_openmm_native_nonbonded(flag_add_params=True)
+        nb_force = self._generate_openmm_native_nonbonded(flag_add_params=True, **kwargs)
 
         # general non-bonded interaction (GROMOS form)
         self.FG_gr_nb_count = self.FG_NB_CUSTOM_GROUP_START
@@ -984,7 +990,13 @@ class openMM_Factory:
         # exclusion / pairs non-bonded interaction (GROMOS form) via custom bonded force
 
         # add NB forces to the system
-        self.system.addForce(nb_force)
+        always_include_native_NB = kwargs.get('always_include_native_NB', True)
+        if self._native_NB_flags.use_charges or self._native_NB_flags.use_lj_solute_solute:
+            self.system.addForce(nb_force)
+        elif always_include_native_NB:
+            self.system.addForce(nb_force)
+            print('WARNING: native NB force is added to the system, but it does not include any interactions! Consider setting always_include_native_NB to False if you do not want to have it in the system.')
+
         for temp_nb_force in custom_nb_forces:
             self.system.addForce(temp_nb_force)
         for temp_b_force in custom_b_forces:
@@ -1010,26 +1022,33 @@ class openMM_Factory:
         return
     
     def make_predefined_openmm_system(self, native_charges=False, N_water=0, bond_constraints=True, pbc=True, **kwargs):
-        if native_charges:
+        if self.RF_flag:
+            if native_charges:
+                native_NB_flags = dict(use_charges=True)
+                GROMOS_NB_flags = [dict(use_charges=False, use_lj=True)]
+                # LJ 14
+                GROMOS_B_flags = [dict(use_lj=True)]
+                # 14 RF, RFC
+                GROMOS_B_flags.append(dict(use_lj=False, use_charges=True, coul=False, use_Q_14=True, use_Q_excl=False, FG_name_suf='_14'))
+            else:
+                native_NB_flags = dict(use_charges=False, use_lj_water=False, use_lj_solute_solute=False)
+                GROMOS_NB_flags = [dict(use_charges=True, use_lj=True)]
+                # LJ 14
+                GROMOS_B_flags = [dict(use_lj=True)]
+                # 14 coul, RF, RFC
+                GROMOS_B_flags.append(dict(use_lj=False, use_charges=True, use_Q_14=True, use_Q_excl=False, FG_name_suf='_14'))
+            self._add_excl_RF(GROMOS_B_flags)
+        if self.PME_flag:
+            assert native_charges, 'PME can only be used with native charges'
             native_NB_flags = dict(use_charges=True)
             GROMOS_NB_flags = [dict(use_charges=False, use_lj=True)]
             # LJ 14
             GROMOS_B_flags = [dict(use_lj=True)]
-            # 14 RF, RFC
-            GROMOS_B_flags.append(dict(use_lj=False, use_charges=True, coul=False, use_Q_14=True, use_Q_excl=False, FG_name_suf='_14'))
-        else:
-            native_NB_flags = dict(use_charges=False, use_lj_water=False, use_lj_solute_solute=False)
-            GROMOS_NB_flags = [dict(use_charges=True, use_lj=True)]
-            # LJ 14
-            GROMOS_B_flags = [dict(use_lj=True)]
-            # 14 coul, RF, RFC
-            GROMOS_B_flags.append(dict(use_lj=False, use_charges=True, use_Q_14=True, use_Q_excl=False, FG_name_suf='_14'))
-        self.__add_excl_RF(GROMOS_B_flags)
-        
+        # make the system        
         self.make_openmm_system(N_water=N_water, bond_constraints=bond_constraints, pbc=pbc, native_NB_flags=native_NB_flags,
                                 gromos_NB_flags=GROMOS_NB_flags, gromos_B_flags=GROMOS_B_flags, **kwargs)
             
-    def __add_excl_RF(self, GROMOS_B_flags):
+    def _add_excl_RF(self, GROMOS_B_flags):
         if self.ELE_params.flag_RF_excl:
             # excl RF, RFC
             GROMOS_B_flags.append(dict(use_lj=False, use_charges=True, coul=False, use_Q_14=False, use_Q_excl=True, FG_name_suf='_excl'))
@@ -1064,8 +1083,23 @@ class openMM_Factory:
             mm_top.addBond(*atoms_idx)
         return mm_top
 
-    def create_openMM_simulation(self, conf, integrator, flag_water=True, flag_openMM_native_charges=False, **kwargs):
+    def _create_openMM_simulation(self, integrator, positions=None, velocities=None, box_vec=None, **kwargs):
+        # create simulation objects
+        simulation = app.simulation.Simulation(self.mm_top, self.system, integrator)
+
+        # add coordinates, velocities and the box information to the simulation object
+        if positions is not None:
+            simulation.context.setPositions(positions)
+        if velocities is not None:
+            simulation.context.setVelocities(velocities)
+        if box_vec is not None:
+            simulation.context.setPeriodicBoxVectors(*box_vec)
+        return simulation
+
+
+    def create_openMM_simulation(self, conf, integrator, flag_water=True, flag_openMM_native_charges=False, additional_forces=None, **kwargs):
         if kwargs.get('flag_pdb_file'):
+            pdb = conf
             N_atoms = len(pdb.positions)
             pos = conf.positions
             box_vec = pdb.topology.getPeriodicBoxVectors()
@@ -1090,13 +1124,19 @@ class openMM_Factory:
         # add the box information
         mm_sys.setDefaultPeriodicBoxVectors(*box_vec)
         mm_top.setPeriodicBoxVectors(box_vec)
+        #box_vec = self.system..getDefaultPeriodicBoxVectors()
 
-        # create integrator and simulation objects
-        simulation = app.simulation.Simulation(mm_top, mm_sys, integrator)
-
-        # add coordinates, velocities and the box information to the simulation object
-        simulation.context.setPositions(pos)
+        # get velocities
+        vel=None
         if not kwargs.get('flag_pdb_file') and hasattr(conf.atoms[0], 'vel'):
-            simulation.context.setVelocities(conf.get_velocities())
-        simulation.context.setPeriodicBoxVectors(*box_vec)
+            vel = conf.get_velocities()
+        
+        # add additional forces (e.g. barostat)
+        if additional_forces is None:
+            additional_forces=[]
+        for temp_force in additional_forces:
+            mm_sys.addForce(temp_force)
+
+        # create simulation obj
+        simulation = self._create_openMM_simulation(integrator, pos, vel, box_vec)
         return simulation

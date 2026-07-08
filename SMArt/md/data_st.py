@@ -1983,7 +1983,7 @@ class MD_Parameters(IMD_IO):
             if gr_unknown_bl_v:
                 assert gr_unknown_bl_v in ('2_1', '2_2', '3')
                 self._GromosParser__read_unknown_block_v = '_GromosParser__read_unknown_block_v' + gr_unknown_bl_v
-                self._GromosWriter__write_unknown_block_v = '_GromosWriter__write_unknown_block_v2_3'
+                self._GromosWriter__write_unknown_block_v = '_GromosWriter__write_unknown_block_v' + gr_unknown_bl_v[0]
             self._parse_gr(self.md_in)
 
     def get_LPs_pred(self):
